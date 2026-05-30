@@ -1,91 +1,115 @@
 # Mindscript
 
-**Rewire your mind. One mindful script at a time.**
+Rewire your mind. One mindful script at a time.
 
-A React-based mindfulness and behavioral change application with a 3-day personalized program.
+Mindscript is a React + Capacitor app for mindfulness and behavior change, with guided daily rituals, progress tracking, Firebase authentication, and Android support.
 
-## Features
+## Current Features
 
-- **7 Programs**: Calm, Focus, Confidence, Healing, Discipline, Purpose, Habit Building
-- **Personalized Onboarding**: Goal selection, questionnaire, and schedule setup
-- **Daily Sessions**: Morning, Midday, and Night rituals
-- **Program-specific Breathwork**: Animated breathing exercises tailored to each goal
-- **Action Tasks**: Real-world behavioral exercises with timers
-- **Nightly Reflections**: Track your progress and insights
-- **Progress Tracking**: Streak counts, session stats, and 3-day overview
-- **Behavioral Pattern Report**: Personalized analysis after completing the program
-- **Local Storage Persistence**: Your progress is saved automatically
+- 7 core programs: Calm, Focus, Confidence, Healing, Discipline, Purpose, Habit Building
+- Free and paid program paths (including multi-day paid tracks)
+- Personalized onboarding: goals, questionnaire, schedule setup
+- Daily sessions: morning, midday, night
+- Program-specific breathwork and action tasks
+- Reflection flow and end-of-program behavioral report
+- Progress persistence via local storage plus user-scoped restoration after login
+- Firebase Authentication: email/password and Google sign-in
+- Android build and sync through Capacitor
 
 ## Tech Stack
 
-- **React 18** - UI framework
-- **Vite** - Build tool and dev server
-- **CSS-in-JS** - Inline styles with design system
+- React 18
+- Vite 5
+- Capacitor 8 (Android)
+- Firebase (Auth, Firestore, Analytics)
 
-## Getting Started
+## Prerequisites
 
-### Prerequisites
+- Node.js 18+
+- npm
+- Android Studio (for Android builds)
 
-- Node.js 18+ 
-- npm or yarn
-
-### Installation
+## Quick Start (Web)
 
 ```bash
-# Install dependencies
 npm install
-
-# Start development server
 npm run dev
 ```
 
-The app will be available at `http://localhost:5173`
+App URL: `http://localhost:5173`
 
-### Build for Production
+## Build and Android Commands
+
+```bash
+# Web production build
+npm run build
+
+# Build web and sync to Android project
+npm run android:sync
+
+# Open Android Studio project
+npm run android:open
+
+# Build, sync, and open Android project
+npm run android:run
+```
+
+## Firebase Setup
+
+Firebase is required for authentication flows.
+
+1. Configure web credentials in `src/config/firebase.js`.
+2. Ensure `android/app/google-services.json` matches your Firebase Android app (`com.mindscript.app`).
+3. Enable Email/Password and Google auth in Firebase Console.
+
+Detailed guide: `FIREBASE_SETUP.md`
+
+## White Screen Troubleshooting
+
+If the app shows a blank white screen:
+
+1. Open browser devtools and check Console for runtime errors.
+2. Rebuild and resync assets:
 
 ```bash
 npm run build
+npx cap sync android
 ```
 
-The production build will be in the `dist` folder.
+3. Re-run from Android Studio after Gradle sync.
+
+Recent fix included in this project:
+- Resolved a startup crash in `src/App.jsx` caused by `screen` being referenced before initialization (`ReferenceError: Cannot access 'screen' before initialization`).
 
 ## Project Structure
 
-```
+```text
 mindscript/
 ├── src/
 │   ├── components/
-│   │   ├── ui/           # Shared UI components (Buttons, Cards, Icons, etc.)
-│   │   ├── onboarding/   # Onboarding flow screens
-│   │   ├── app/          # Main app tabs and navigation
-│   │   └── session/      # Session, breathing, and timer components
-│   ├── data/             # Program data, questions, breath patterns
-│   ├── hooks/            # Custom React hooks (future)
-│   ├── utils/            # Helper functions
-│   ├── styles/           # Design system and global styles
-│   ├── App.jsx           # Root component
-│   └── main.jsx          # Entry point
-├── index.html
-├── vite.config.js
+│   │   ├── onboarding/
+│   │   ├── app/
+│   │   ├── session/
+│   │   └── ui/
+│   ├── config/            # Firebase config
+│   ├── data/              # Program content and questions
+│   ├── styles/
+│   ├── utils/             # Auth, storage, notifications, helpers
+│   ├── App.jsx
+│   └── main.jsx
+├── android/               # Capacitor Android project
+├── capacitor.config.json
+├── FIREBASE_SETUP.md
+├── README_ANDROID.md
 └── package.json
 ```
 
-## Design System
+## Helpful Docs
 
-The app uses a cohesive design system with:
-
-- **Colors**: Sage green primary, neutral backgrounds, program-specific accents
-- **Typography**: Cormorant Garamond (serif) for headings, DM Sans for body
-- **Animations**: Smooth transitions, breathing animations, celebration effects
-
-## Future Improvements
-
-- [ ] Backend integration for user accounts
-- [ ] Push notifications
-- [ ] More programs and longer durations
-- [ ] Audio-guided sessions
-- [ ] Social features and community
-- [ ] Analytics dashboard
+- `README_ANDROID.md`
+- `ANDROID_BUILD_GUIDE.md`
+- `QUICK_START_ANDROID.md`
+- `FIREBASE_SETUP.md`
 
 ## License
 
