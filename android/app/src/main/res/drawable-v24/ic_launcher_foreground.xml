@@ -1,0 +1,50 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportHeight="108"
+    android:viewportWidth="108">
+
+    <!-- Exact Wavy patterns at bottom (Sage, Sand, Tan) -->
+    <path
+        android:fillColor="#F0F4E8"
+        android:pathData="M0,75 Q25,70 50,80 T108,75 L108,108 L0,108 Z" />
+    <path
+        android:fillColor="#E8ECD7"
+        android:pathData="M0,85 Q25,80 50,90 T108,85 L108,108 L0,108 Z" />
+    <path
+        android:fillColor="#E2D6C5"
+        android:pathData="M0,95 Q25,90 50,100 T108,95 L108,108 L0,108 Z" />
+
+    <!-- Elegant Handwritten "M" - Exact Proportions -->
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M32,60 C32,60 36,25 47,55 C47,55 53,25 63,60"
+        android:strokeColor="#92AD87"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:strokeWidth="5" />
+
+    <!-- Leaf Branch -->
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M63,60 C70,55 80,45 87,45"
+        android:strokeColor="#92AD87"
+        android:strokeLineCap="round"
+        android:strokeWidth="2.5" />
+
+    <!-- Three Leaves -->
+    <path
+        android:fillColor="#92AD87"
+        android:pathData="M80,43 C84,38 91,38 89,45 C87,52 80,48 80,43 Z" />
+    <path
+        android:fillColor="#92AD87"
+        android:pathData="M70,49 C73,45 78,45 76,52 C74,57 70,54 70,49 Z" />
+    <path
+        android:fillColor="#92AD87"
+        android:pathData="M65,55 C67,52 71,52 69,57 C68,61 65,59 65,55 Z" />
+
+    <!-- Signature Sparkle Detail -->
+    <path
+        android:fillColor="#92AD87"
+        android:pathData="M80,32 L81.5,34.5 L84,36 L81.5,37.5 L80,40 L78.5,37.5 L76,36 L78.5,34.5 Z" />
+</vector>

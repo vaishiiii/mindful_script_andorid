@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">MindScript</string>
+    <string name="title_activity_main">MindScript</string>
+    <string name="package_name">com.mindscript.app</string>
+    <string name="custom_url_scheme">com.mindscript.app</string>
+    <string name="server_client_id">23022655078-clcvv27p6pcjlih8cgce087t3a5tfm54.apps.googleusercontent.com</string>
+</resources>

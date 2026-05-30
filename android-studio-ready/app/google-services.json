@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "23022655078",
+    "project_id": "mindscript-1001",
+    "storage_bucket": "mindscript-1001.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:23022655078:android:9cb9798764dac934197fa7",
+        "android_client_info": {
+          "package_name": "com.mindscript.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "23022655078-br7pvli5gamjciu67j9ptas85lbu3q1d.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mindscript.app",
+            "certificate_hash": "dd0309548665b1251f3ef5e7dc7b464a3d301686"
+          }
+        },
+        {
+          "client_id": "23022655078-t6oufp6jf1fidf20d67545d786sf8qe0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mindscript.app",
+            "certificate_hash": "f725d80c5e209443525e209443525e209443525e"
+          }
+        },
+        {
+          "client_id": "23022655078-clcvv27p6pcjlih8cgce087t3a5tfm54.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDcr-0nwt-IjSpC33DmVTr1tr0Dl590uIA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "23022655078-clcvv27p6pcjlih8cgce087t3a5tfm54.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,12 @@
+{
+  "appId": "com.mindscript.app",
+  "appName": "MindScript",
+  "webDir": "dist",
+  "plugins": {
+    "GoogleAuth": {
+      "scopes": ["profile", "email"],
+      "serverClientId": "23022655078-clcvv27p6pcjlih8cgce087t3a5tfm54.apps.googleusercontent.com",
+      "forceCodeForRefreshToken": true
+    }
+  }
+}
