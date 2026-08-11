@@ -8,23 +8,12 @@ Write-Host "╚═════════════════════�
 # Set execution policy for this session
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force
 
-# Step 1: Build web app
-Write-Host "Step 1: Building web app..." -ForegroundColor Yellow
-npm run build
+# Step 1: Restore running AAB baseline and sync Android assets (both project folders)
+Write-Host "Step 1: Restoring AAB baseline and syncing Android assets..." -ForegroundColor Yellow
+npm run android:sync
 
 if ($LASTEXITCODE -eq 0) {
-    Write-Host "✓ Web app built successfully!`n" -ForegroundColor Green
-} else {
-    Write-Host "✗ Build failed! Check errors above.`n" -ForegroundColor Red
-    exit 1
-}
-
-# Step 2: Sync to Android
-Write-Host "Step 2: Syncing to Android..." -ForegroundColor Yellow
-npx cap sync android
-
-if ($LASTEXITCODE -eq 0) {
-    Write-Host "✓ Synced to Android successfully!`n" -ForegroundColor Green
+    Write-Host "✓ Synced Android assets successfully!`n" -ForegroundColor Green
 } else {
     Write-Host "✗ Sync failed! Check errors above.`n" -ForegroundColor Red
     exit 1

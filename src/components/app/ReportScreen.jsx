@@ -143,7 +143,7 @@ const getTransformationStage = (readinessScore, completionRate, reflectionDepth)
     { name: 'Experimentation', color: '#B5956A', pct: 30, desc: 'You are testing what works. Your system is absorbing new inputs and beginning to differentiate response patterns.',                                                         next: 'Increase consistency in your highest-impact session time.' },
     { name: 'Integration',     color: '#8E9EC4', pct: 56, desc: 'New behaviours are merging with your existing identity. Resistance is decreasing. You are consolidating gains.',                                                          next: 'Begin layering complexity — add one intentional challenge per week.' },
     { name: 'Consolidation',   color: '#9BB5B8', pct: 78, desc: 'The practices are becoming automatic. Your baseline state has measurably shifted. You are rewiring, not just practising.',                                               next: 'Prepare for the next programme level to sustain the trajectory.' },
-    { name: 'Mastery',         color: '#7A9E87', pct: 94, desc: 'You have embodied the practice. The change is not what you do — it is who you are. The next frontier is depth, not breadth.',                                           next: 'Move to advanced-level programming to continue neurological deepening.' },
+    { name: 'Mastery',         color: 'var(--ms-accent)', pct: 94, desc: 'You have embodied the practice. The change is not what you do — it is who you are. The next frontier is depth, not breadth.',                                           next: 'Move to advanced-level programming to continue neurological deepening.' },
   ];
   const score = Math.round((readinessScore + completionRate + Math.min(reflectionDepth, 100)) / 3);
   if (score >= 87) return stages[4];
@@ -226,8 +226,8 @@ const generateReportHTML = ({
   emotionalTrajectory, completionRates, reflectionDepthScore, allDayCompletions,
 }) => {
   const date    = new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
-  const color   = prog?.color || '#7A9E87';
-  const bg      = prog?.bg    || '#E8F0EB';
+  const color   = prog?.color || 'var(--ms-accent)';
+  const bg      = prog?.bg    || 'var(--ms-accent-soft)';
   const guidance = PROGRAM_GUIDANCE[program] || {};
 
   const scoreBar = (label, val, note, c) => `
@@ -240,7 +240,7 @@ const generateReportHTML = ({
           <div style="font-size:9px;font-weight:700;border:1px solid ${c};color:${c};border-radius:20px;padding:1px 8px;text-transform:uppercase;letter-spacing:0.04em;display:inline-block;margin-top:2px">${val>=70?'Strength':val>=45?'Developing':'Growth Edge'}</div>
         </div>
       </div>
-      <div style="height:7px;background:#E8F0EB;border-radius:4px;overflow:hidden">
+      <div style="height:7px;background:${bg};border-radius:4px;overflow:hidden">
         <div style="width:${val}%;height:100%;background:${c};border-radius:4px"></div>
       </div>
     </div>`;
@@ -271,7 +271,7 @@ const generateReportHTML = ({
       <p style="font-size:13px;color:#5E6B64;line-height:1.65">${tip}</p>
     </div>`).join('');
 
-  const trajColor = emotionalTrajectory.change > 0 ? '#7A9E87' : emotionalTrajectory.change < 0 ? '#A67B7B' : '#B5956A';
+  const trajColor = emotionalTrajectory.change > 0 ? color : emotionalTrajectory.change < 0 ? '#A67B7B' : '#B5956A';
   const trajIcon  = emotionalTrajectory.change > 0 ? '↗' : emotionalTrajectory.change < 0 ? '↘' : '→';
 
   const para1 = `Over the course of your ${activeProgramDuration}-day <strong>${prog?.label||''}</strong> programme, you completed <strong>${total} of a possible ${activeProgramDuration*3} sessions</strong> — a <strong>${rate}% completion rate</strong> that places you in the ${rate>=80?'top tier of programme adherence':rate>=50?'solid mid-range of engagement':'early adoption phase of behaviour change'}. Your profile is that of <em>${archetype.name}</em> — ${archetype.desc.split('.')[0].toLowerCase()}.`;
@@ -417,7 +417,7 @@ const generateReportHTML = ({
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
       <div style="text-align:center;background:#F5F9F6;border-radius:12px;padding:14px 8px">
-        <div style="font-size:24px;font-weight:700;color:#7A9E87">${reflectionSignals.positive}</div>
+        <div style="font-size:24px;font-weight:700;color:${color}">${reflectionSignals.positive}</div>
         <div style="font-size:9px;color:#9BA8A0;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-top:4px">Positive</div>
       </div>
       <div style="text-align:center;background:#FDF5F0;border-radius:12px;padding:14px 8px">
@@ -615,7 +615,7 @@ const ReportScreen = ({ program, allDayCompletions, reflectionData = [], activeP
   const mitigation = getMitigationSuggestions(reflectionSignals, program);
   const programFocus = PROGRAM_GUIDANCE[program]?.focus || 'behavioral growth';
 
-  const gc = (v) => (v >= 70 ? "#7A9E87" : v >= 45 ? "#B5956A" : "#A67B7B");
+  const gc = (v) => (v >= 70 ? (prog?.color || "var(--ms-accent)") : v >= 45 ? "#B5956A" : "#A67B7B");
   const gl = (v) => (v >= 70 ? "Strength" : v >= 45 ? "Developing" : "Growth Edge");
 
   const archetype = useMemo(() => getBehavioralArchetype(program, rate, reflectionSignals), [program, rate, reflectionSignals]);
@@ -644,7 +644,7 @@ const ReportScreen = ({ program, allDayCompletions, reflectionData = [], activeP
 
   return (
     <div style={{ minHeight: "100vh", background: "#F7F6F2", paddingBottom: "48px" }}>
-      <div style={{ background: prog?.bg || "#E8F0EB", padding: "48px 22px 30px" }}>
+      <div style={{ background: prog?.bg || "var(--ms-accent-soft)", padding: "48px 22px 30px" }}>
         <div style={{ maxWidth: 480, margin: "0 auto" }}>
           <Tag label={`${activeProgramDuration}-Day Program Complete`} color={prog?.color} />
           <h1 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "30px", fontWeight: 500, marginTop: "12px", lineHeight: 1.25, color: "#2C3530" }}>
@@ -655,7 +655,7 @@ const ReportScreen = ({ program, allDayCompletions, reflectionData = [], activeP
           <p style={{ fontSize: "14px", color: "#5E6B64", marginTop: "10px", lineHeight: 1.65 }}>
             Based on your session engagement, task completion, and reflection responses across your full program.
           </p>
-          <p style={{ fontSize: "13px", color: prog?.color || "#7A9E87", fontWeight: 600, marginTop: "6px" }}>{resolvedTitle}</p>
+          <p style={{ fontSize: "13px", color: prog?.color || "var(--ms-accent)", fontWeight: 600, marginTop: "6px" }}>{resolvedTitle}</p>
         </div>
       </div>
 
@@ -666,7 +666,7 @@ const ReportScreen = ({ program, allDayCompletions, reflectionData = [], activeP
           style={{
             width: "100%",
             padding: "14px 20px",
-            background: prog?.color || "#7A9E87",
+            background: prog?.color || "var(--ms-accent)",
             color: "#fff",
             border: "none",
             borderRadius: "14px",
@@ -689,7 +689,7 @@ const ReportScreen = ({ program, allDayCompletions, reflectionData = [], activeP
           <p style={{ fontSize: "11px", fontWeight: 600, color: "#9BA8A0", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "14px" }}>
             Program Completion Rate
           </p>
-          <div style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "54px", fontWeight: 500, color: "#7A9E87", lineHeight: 1 }}>{rate}%</div>
+          <div style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "54px", fontWeight: 500, color: prog?.color || "var(--ms-accent)", lineHeight: 1 }}>{rate}%</div>
           <p style={{ fontSize: "13px", color: "#5E6B64", marginTop: "8px", lineHeight: 1.5 }}>
             {rate >= 80
               ? "Exceptional consistency. You showed up every time it mattered."
@@ -713,7 +713,7 @@ const ReportScreen = ({ program, allDayCompletions, reflectionData = [], activeP
                   </div>
                   <Tag label={l} color={c} />
                 </div>
-                <div style={{ height: 6, background: "#C4D8CB", borderRadius: 3 }}>
+                <div style={{ height: 6, background: "var(--ms-accent-border)", borderRadius: 3 }}>
                   <div style={{ width: `${p.val}%`, height: "100%", background: c, borderRadius: 3, transition: "width 1.1s ease" }} />
                 </div>
               </div>
@@ -721,8 +721,8 @@ const ReportScreen = ({ program, allDayCompletions, reflectionData = [], activeP
           })}
         </Card>
 
-        <Card style={{ background: "#E8F0EB", border: "none", marginBottom: "14px" }}>
-          <p style={{ fontSize: "11px", fontWeight: 600, color: "#7A9E87", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: "10px" }}>Personalized Summary</p>
+        <Card style={{ background: "var(--ms-accent-soft)", border: "none", marginBottom: "14px" }}>
+          <p style={{ fontSize: "11px", fontWeight: 600, color: prog?.color || "var(--ms-accent)", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: "10px" }}>Personalized Summary</p>
           <p style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "16px", lineHeight: 1.72, color: "#2C3530" }}>
             Your {prog?.label || 'program'} journey shows a <strong>{challengeTrend}</strong> emotional pattern with <strong>{dominantTheme}</strong> as the strongest theme.
             You completed {total} sessions and wrote {reflectionSignals.totalEntries} reflections, showing clear momentum in <strong>{programFocus}</strong> and revealing what to train next.
@@ -769,7 +769,7 @@ const ReportScreen = ({ program, allDayCompletions, reflectionData = [], activeP
         </Card>
 
         {/* Upgrade */}
-        <div style={{ borderRadius: "28px", border: "1.5px solid #C4D8CB", overflow: "hidden" }}>
+        <div style={{ borderRadius: "28px", border: "1.5px solid var(--ms-accent-border)", overflow: "hidden" }}>
           <div style={{ padding: "20px 20px 0" }}>
             <p style={{ fontSize: "11px", fontWeight: 600, color: "#B5956A", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: "7px" }}>
               Continue Your Work
@@ -787,8 +787,8 @@ const ReportScreen = ({ program, allDayCompletions, reflectionData = [], activeP
               onClick={() => onNavigateToPrograms && onNavigateToPrograms()}
               style={{
                 padding: "13px 20px",
-                background: i === 1 ? "#7A9E87" : "#fff",
-                borderTop: "1px solid #C4D8CB",
+                background: i === 1 ? (prog?.color || "var(--ms-accent)") : "#fff",
+                borderTop: "1px solid var(--ms-accent-border)",
                 cursor: "pointer",
                 display: "flex",
                 justifyContent: "space-between",
@@ -804,7 +804,7 @@ const ReportScreen = ({ program, allDayCompletions, reflectionData = [], activeP
                   {p.dur} · {p.desc.slice(0, 44)}…
                 </p>
               </div>
-              <span style={{ fontSize: "13px", fontWeight: 600, color: i === 1 ? "#fff" : "#7A9E87" }}>→</span>
+              <span style={{ fontSize: "13px", fontWeight: 600, color: i === 1 ? "#fff" : (prog?.color || "var(--ms-accent)") }}>→</span>
             </div>
           ))}
         </div>

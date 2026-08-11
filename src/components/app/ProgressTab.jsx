@@ -77,7 +77,7 @@ const PremiumSurveyModal = ({ prog, onClose, user }) => {
               onClick={onClose}
               style={{
                 padding: '12px 32px', borderRadius: '14px', border: 'none',
-                background: prog?.color || '#7A9E87', color: '#fff', fontSize: '14px',
+                background: prog?.color || 'var(--ms-accent)', color: '#fff', fontSize: '14px',
                 fontWeight: 700, cursor: 'pointer', fontFamily: "'DM Sans', system-ui, sans-serif",
               }}
             >Done</button>
@@ -86,7 +86,7 @@ const PremiumSurveyModal = ({ prog, onClose, user }) => {
           <form onSubmit={handleSubmit}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
               <div>
-                <p style={{ fontSize: '11px', fontWeight: 700, color: prog?.color || '#7A9E87', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '4px' }}>Coming Soon</p>
+                <p style={{ fontSize: '11px', fontWeight: 700, color: prog?.color || 'var(--ms-accent)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '4px' }}>Coming Soon</p>
                 <h3 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '22px', fontWeight: 500, color: '#2C3530' }}>Personalized AI Report</h3>
               </div>
               <button type="button" onClick={onClose} style={{ background: 'none', border: 'none', fontSize: '20px', color: '#9BA8A0', cursor: 'pointer', padding: '4px' }}>×</button>
@@ -108,8 +108,8 @@ const PremiumSurveyModal = ({ prog, onClose, user }) => {
                   onClick={() => setInterest(opt.val)}
                   style={{
                     padding: '14px 16px', borderRadius: '14px', textAlign: 'left',
-                    border: `2px solid ${interest === opt.val ? (prog?.color || '#7A9E87') : '#E8E4DC'}`,
-                    background: interest === opt.val ? (prog?.bg || '#E8F0EB') : '#fff',
+                    border: `2px solid ${interest === opt.val ? (prog?.color || 'var(--ms-accent)') : '#E8E4DC'}`,
+                    background: interest === opt.val ? (prog?.bg || 'var(--ms-accent-soft)') : '#fff',
                     cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px',
                     fontFamily: "'DM Sans', system-ui, sans-serif",
                   }}
@@ -136,7 +136,7 @@ const PremiumSurveyModal = ({ prog, onClose, user }) => {
               disabled={!interest}
               style={{
                 width: '100%', padding: '14px', borderRadius: '14px',
-                background: interest ? (prog?.color || '#7A9E87') : '#D0D0D0',
+                background: interest ? (prog?.color || 'var(--ms-accent)') : '#D0D0D0',
                 color: '#fff', border: 'none', fontSize: '14px', fontWeight: 700,
                 cursor: interest ? 'pointer' : 'not-allowed',
                 fontFamily: "'DM Sans', system-ui, sans-serif",
@@ -203,11 +203,11 @@ const MetricBar = ({ label, value, change, color }) => (
   <Card style={{ marginBottom: '10px', padding: '16px 18px' }}>
     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
       <span style={{ fontSize: '15px', fontWeight: 600, color: '#2C3530' }}>{label}</span>
-      <span style={{ fontSize: '13px', fontWeight: 600, color: change >= 0 ? '#7A9E87' : '#C4A882' }}>
+      <span style={{ fontSize: '13px', fontWeight: 600, color: change >= 0 ? color : '#C4A882' }}>
         {change >= 0 ? '+' : ''}{change}%
       </span>
     </div>
-    <div style={{ position: 'relative', height: '8px', background: '#E8F0EB', borderRadius: '4px', overflow: 'hidden' }}>
+    <div style={{ position: 'relative', height: '8px', background: 'var(--ms-accent-soft)', borderRadius: '4px', overflow: 'hidden' }}>
       <div 
         style={{ 
           position: 'absolute',
@@ -229,13 +229,13 @@ const MetricBar = ({ label, value, change, color }) => (
 
 // AI Insight card
 const InsightCard = ({ insight, highlight }) => (
-  <Card style={{ background: '#F8FAF8', border: '1px solid #E8F0EB', marginBottom: '18px' }}>
+  <Card style={{ background: '#F8FAF8', border: '1px solid var(--ms-accent-soft)', marginBottom: '18px' }}>
     <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
       <div style={{ 
         width: 32, 
         height: 32, 
         borderRadius: '10px', 
-        background: '#E8F0EB', 
+        background: 'var(--ms-accent-soft)',
         display: 'flex', 
         alignItems: 'center', 
         justifyContent: 'center',
@@ -244,14 +244,14 @@ const InsightCard = ({ insight, highlight }) => (
         <span style={{ fontSize: '14px' }}>📈</span>
       </div>
       <div>
-        <p style={{ fontSize: '11px', fontWeight: 700, color: '#7A9E87', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '6px' }}>
+        <p style={{ fontSize: '11px', fontWeight: 700, color: 'var(--ms-accent)', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '6px' }}>
           Insight
         </p>
         <p style={{ fontSize: '14px', color: '#5E6B64', lineHeight: 1.6 }}>
           {insight.split(highlight).map((part, i, arr) => (
             <React.Fragment key={i}>
               {part}
-              {i < arr.length - 1 && <strong style={{ color: '#7A9E87' }}>{highlight}</strong>}
+              {i < arr.length - 1 && <strong style={{ color: 'var(--ms-accent)' }}>{highlight}</strong>}
             </React.Fragment>
           ))}
         </p>
@@ -488,7 +488,7 @@ const ProgressTab = ({
         label: programMetrics.primary, 
         value: Math.min(Math.max(baseProgress + variance(0), 45), 95), 
         change: Math.round(8 + streak * 4),
-        color: prog?.color || '#7A9E87'
+        color: prog?.color || 'var(--ms-accent)'
       },
       { 
         label: programMetrics.secondary, 
@@ -542,7 +542,7 @@ const ProgressTab = ({
   // SVG Icons for stats
   const StatIcons = {
     days: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#7A9E87" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--ms-accent)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
         <line x1="16" y1="2" x2="16" y2="6" />
         <line x1="8" y1="2" x2="8" y2="6" />
@@ -554,17 +554,17 @@ const ProgressTab = ({
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
         <path d="M12 2C12 2 8 6 8 10C8 12.21 9.79 14 12 14C14.21 14 16 12.21 16 10C16 6 12 2 12 2Z" fill="#F5A623" stroke="#E8941A" strokeWidth="1.5"/>
         <path d="M12 8C12 8 10 10 10 12C10 13.1 10.9 14 12 14C13.1 14 14 13.1 14 12C14 10 12 8 12 8Z" fill="#FFCC4D"/>
-        <path d="M12 14V22M9 19H15" stroke="#7A9E87" strokeWidth="2" strokeLinecap="round"/>
+        <path d="M12 14V22M9 19H15" stroke="var(--ms-accent)" strokeWidth="2" strokeLinecap="round"/>
       </svg>
     ),
     time: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#7A9E87" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--ms-accent)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="12" cy="12" r="10" />
         <polyline points="12,6 12,12 16,14" />
       </svg>
     ),
     sessions: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#7A9E87" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--ms-accent)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
         <polyline points="22,4 12,14.01 9,11.01" />
       </svg>
@@ -581,7 +581,7 @@ const ProgressTab = ({
   return (
     <>
     <div style={{ padding: "32px 22px 100px", maxWidth: 480, margin: "0 auto" }}>
-      <p style={{ fontSize: "12px", fontWeight: 700, color: prog?.color || "#7A9E87", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: "6px" }}>
+      <p style={{ fontSize: "12px", fontWeight: 700, color: prog?.color || "var(--ms-accent)", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: "6px" }}>
         Progress
       </p>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "22px" }}>
@@ -589,7 +589,7 @@ const ProgressTab = ({
           <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "26px", fontWeight: 500, marginBottom: "6px" }}>
             Your journey so far
           </h2>
-          <p style={{ fontSize: "13px", color: prog?.color || "#7A9E87", fontWeight: 600 }}>
+          <p style={{ fontSize: "13px", color: prog?.color || "var(--ms-accent)", fontWeight: 600 }}>
             {prog?.label} — Day {day} of {activeProgramDuration}
           </p>
         </div>
@@ -602,8 +602,8 @@ const ProgressTab = ({
             onClick={() => setShowProgramHistory((prev) => !prev)}
             style={{
               width: "100%",
-              background: `${prog?.bg || '#E8F0EB'}50`,
-              border: `1px solid ${prog?.color || '#7A9E87'}30`,
+              background: `${prog?.bg || 'var(--ms-accent-soft)'}50`,
+              border: `1px solid ${prog?.color || 'var(--ms-accent)'}30`,
               borderRadius: showProgramHistory ? "16px 16px 0 0" : "16px",
               padding: "14px 18px",
               cursor: "pointer",
@@ -615,21 +615,21 @@ const ProgressTab = ({
             }}
           >
             <div>
-              <p style={{ fontSize: "11px", fontWeight: 700, color: prog?.color || "#7A9E87", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: "3px" }}>
+              <p style={{ fontSize: "11px", fontWeight: 700, color: prog?.color || "var(--ms-accent)", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: "3px" }}>
                 Programs Completed
               </p>
               <p style={{ fontSize: "16px", fontWeight: 700, color: "#2C3530" }}>{programHistory.length} complete</p>
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
               <span style={{ fontSize: "28px" }}>🏆</span>
-              <span style={{ fontSize: "12px", color: prog?.color || "#7A9E87", fontWeight: 600 }}>
+              <span style={{ fontSize: "12px", color: prog?.color || "var(--ms-accent)", fontWeight: 600 }}>
                 {showProgramHistory ? "▲" : "▼"}
               </span>
             </div>
           </button>
 
           {showProgramHistory && (
-            <div style={{ border: `1px solid ${prog?.color || '#7A9E87'}30`, borderTop: "none", borderRadius: "0 0 16px 16px", overflow: "hidden", background: "#fff" }}>
+            <div style={{ border: `1px solid ${prog?.color || 'var(--ms-accent)'}30`, borderTop: "none", borderRadius: "0 0 16px 16px", overflow: "hidden", background: "#fff" }}>
               {[...programHistory].reverse().map((entry, idx) => {
                 const entryProg = PROGRAMS.find((p) => p.id === entry.program);
                 const completedDate = entry.completedAt
@@ -650,7 +650,7 @@ const ProgressTab = ({
                     <div style={{ display: "flex", alignItems: "center", gap: "12px", flex: 1, minWidth: 0 }}>
                       <div style={{
                         width: 36, height: 36, borderRadius: "10px",
-                        background: entryProg?.bg || "#E8F0EB",
+                        background: entryProg?.bg || "var(--ms-accent-soft)",
                         display: "flex", alignItems: "center", justifyContent: "center",
                         fontSize: "18px", flexShrink: 0,
                       }}>
@@ -668,7 +668,7 @@ const ProgressTab = ({
                     <button
                       onClick={() => onViewReport(entry)}
                       style={{
-                        background: hasSnapshot ? (entryProg?.color || "#7A9E87") : "#E8E4DC",
+                        background: hasSnapshot ? (entryProg?.color || "var(--ms-accent)") : "#E8E4DC",
                         color: hasSnapshot ? "#fff" : "#9BA8A0",
                         border: "none",
                         borderRadius: "10px",
@@ -727,10 +727,10 @@ const ProgressTab = ({
         <p style={{ fontSize: "14px", fontWeight: 600, color: "#2C3530", marginBottom: "16px" }}>
           Weekly Mood Trends
         </p>
-        <MoodTrendChart data={trendData} color={prog?.color || "#7A9E87"} />
+        <MoodTrendChart data={trendData} color={prog?.color || "var(--ms-accent)"} />
         <div style={{ display: "flex", justifyContent: "center", gap: "20px", marginTop: "12px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-            <div style={{ width: 8, height: 8, borderRadius: "50%", background: prog?.color || "#7A9E87" }} />
+            <div style={{ width: 8, height: 8, borderRadius: "50%", background: prog?.color || "var(--ms-accent)" }} />
             <span style={{ fontSize: "11px", color: "#9BA8A0" }}>{metrics[0].label}</span>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
@@ -780,8 +780,8 @@ const ProgressTab = ({
                   borderRadius: "16px",
                   padding: "16px 10px",
                   textAlign: "center",
-                  background: full ? prog?.color || "#7A9E87" : cur ? prog?.bg || "#E8F0EB" : "#F5F4F0",
-                  border: cur ? `2px solid ${prog?.color || "#7A9E87"}` : "2px solid transparent",
+                  background: full ? prog?.color || "var(--ms-accent)" : cur ? prog?.bg || "var(--ms-accent-soft)" : "#F5F4F0",
+                  border: cur ? `2px solid ${prog?.color || "var(--ms-accent)"}` : "2px solid transparent",
                   transition: "all .3s",
                 }}
               >
@@ -792,13 +792,13 @@ const ProgressTab = ({
                 {/* Circular progress indicator */}
                 <div style={{ position: "relative", width: 48, height: 48, margin: "0 auto 8px" }}>
                   <svg width="48" height="48" viewBox="0 0 48 48">
-                    <circle cx="24" cy="24" r="20" fill="none" stroke={full ? "rgba(255,255,255,0.3)" : "#E8F0EB"} strokeWidth="4" />
+                    <circle cx="24" cy="24" r="20" fill="none" stroke={full ? "rgba(255,255,255,0.3)" : "var(--ms-accent-soft)"} strokeWidth="4" />
                     <circle 
                       cx="24" 
                       cy="24" 
                       r="20" 
                       fill="none" 
-                      stroke={full ? "#fff" : prog?.color || "#7A9E87"} 
+                      stroke={full ? "#fff" : prog?.color || "var(--ms-accent)"}
                       strokeWidth="4"
                       strokeDasharray={`${pct * 1.26} 126`}
                       strokeLinecap="round"
@@ -820,14 +820,14 @@ const ProgressTab = ({
                         width: 6,
                         height: 6,
                         borderRadius: "50%",
-                        background: dc[ss] ? (full ? "rgba(255,255,255,0.8)" : prog?.color || "#7A9E87") : "rgba(0,0,0,0.1)",
+                        background: dc[ss] ? (full ? "rgba(255,255,255,0.8)" : prog?.color || "var(--ms-accent)") : "rgba(0,0,0,0.1)",
                       }}
                     />
                   ))}
                 </div>
                 
                 {full && <p style={{ fontSize: "9px", color: "rgba(255,255,255,0.9)", marginTop: "6px", fontWeight: 600 }}>Complete ✓</p>}
-                {cur && !full && <p style={{ fontSize: "9px", color: prog?.color || "#7A9E87", marginTop: "6px", fontWeight: 600 }}>In Progress</p>}
+                {cur && !full && <p style={{ fontSize: "9px", color: prog?.color || "var(--ms-accent)", marginTop: "6px", fontWeight: 600 }}>In Progress</p>}
               </div>
             );
           })}
@@ -836,7 +836,7 @@ const ProgressTab = ({
 
       {/* Motivation message */}
       {streak < activeProgramDuration && !programCompleted && (
-        <Card style={{ background: prog?.bg || "#E8F0EB", border: "none", marginBottom: "18px" }}>
+        <Card style={{ background: prog?.bg || "var(--ms-accent-soft)", border: "none", marginBottom: "18px" }}>
           <p style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "16px", fontWeight: 500, color: "#2C3530", marginBottom: "5px" }}>
             {streak === 0 ? "Your transformation starts today." : streak === 1 ? "One day in. The momentum is building." : streak === 2 ? "Two days complete. Keep building momentum." : `${streak} days strong. Your progress is building.`}
           </p>
@@ -858,7 +858,7 @@ const ProgressTab = ({
                   background: 'none',
                   border: 'none',
                   cursor: 'pointer',
-                  color: '#7A9E87',
+                  color: 'var(--ms-accent)',
                   fontSize: '11px',
                   fontWeight: 700,
                   textTransform: 'uppercase',
@@ -909,7 +909,7 @@ const ProgressTab = ({
                 background: 'none',
                 border: 'none',
                 cursor: 'pointer',
-                color: '#7A9E87',
+                color: 'var(--ms-accent)',
                 fontSize: '12px',
                 fontWeight: 600,
                 width: '100%',
@@ -929,8 +929,8 @@ const ProgressTab = ({
           position: "relative",
           borderRadius: "20px",
           overflow: "hidden",
-          background: "linear-gradient(135deg, #F8FAF8 0%, #E8F0EB 100%)",
-          border: "1.5px solid #C4D8CB",
+          background: "linear-gradient(135deg, #F8FAF8 0%, var(--ms-accent-soft) 100%)",
+          border: "1.5px solid var(--ms-accent-border)",
           padding: "24px 20px",
         }}
       >
@@ -963,11 +963,11 @@ const ProgressTab = ({
           <p style={{ fontSize: "12px", color: "#9BA8A0", marginBottom: "4px", textAlign: "center", maxWidth: 220 }}>
             Unlock detailed behavioral analysis with our premium programs
           </p>
-          <p style={{ fontSize: "10px", fontWeight: 700, color: prog?.color || "#7A9E87", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: "14px" }}>🚀 Coming Soon</p>
+          <p style={{ fontSize: "10px", fontWeight: 700, color: prog?.color || "var(--ms-accent)", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: "14px" }}>🚀 Coming Soon</p>
           <button
             onClick={() => setShowPremiumSurvey(true)}
             style={{
-              background: prog?.color || "#7A9E87",
+              background: prog?.color || "var(--ms-accent)",
               color: "#fff",
               border: "none",
               borderRadius: "12px",
@@ -984,18 +984,18 @@ const ProgressTab = ({
         
         {/* Blurred preview content behind */}
         <div style={{ opacity: 0.4 }}>
-          <p style={{ fontSize: "12px", fontWeight: 700, color: prog?.color || "#7A9E87", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "10px" }}>
+          <p style={{ fontSize: "12px", fontWeight: 700, color: prog?.color || "var(--ms-accent)", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "10px" }}>
             Your Personalized Report
           </p>
           <p style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "18px", fontWeight: 500, color: "#2C3530", marginBottom: "14px" }}>
             Deep Behavioral Analysis
           </p>
           <div style={{ display: "flex", gap: "10px", marginBottom: "12px" }}>
-            <div style={{ flex: 1, height: 60, background: "#E8F0EB", borderRadius: "10px" }} />
-            <div style={{ flex: 1, height: 60, background: "#E8F0EB", borderRadius: "10px" }} />
+            <div style={{ flex: 1, height: 60, background: "var(--ms-accent-soft)", borderRadius: "10px" }} />
+            <div style={{ flex: 1, height: 60, background: "var(--ms-accent-soft)", borderRadius: "10px" }} />
           </div>
-          <div style={{ height: 40, background: "#E8F0EB", borderRadius: "8px", marginBottom: "10px" }} />
-          <div style={{ height: 30, background: "#E8F0EB", borderRadius: "8px", width: "70%" }} />
+          <div style={{ height: 40, background: "var(--ms-accent-soft)", borderRadius: "8px", marginBottom: "10px" }} />
+          <div style={{ height: 30, background: "var(--ms-accent-soft)", borderRadius: "8px", width: "70%" }} />
         </div>
       </div>
     </div>

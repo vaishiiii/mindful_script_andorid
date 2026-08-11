@@ -125,7 +125,7 @@ const ProgramsTab = ({ program, onSelectPaidProgram, programHistory = [], active
 
   return (
     <div style={{ padding: "32px 22px", maxWidth: 480, margin: "0 auto" }}>
-      <p style={{ fontSize: "12px", fontWeight: 700, color: "#7A9E87", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: "6px" }}>Programs</p>
+      <p style={{ fontSize: "12px", fontWeight: 700, color: prog?.color || "var(--ms-accent)", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: "6px" }}>Programs</p>
       <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "26px", fontWeight: 500, marginBottom: "6px" }}>Continue your journey</h2>
       <p style={{ fontSize: "14px", color: "#9BA8A0", marginBottom: "22px", lineHeight: 1.6 }}>
         Personalized to your <strong>{prog?.label}</strong> goal. {!hasCompletedFreeTrial && "Complete 3-day trial to unlock paid programs."}
@@ -171,8 +171,8 @@ const ProgramsTab = ({ program, onSelectPaidProgram, programHistory = [], active
       {/* Currently Enrolled Paid Program */}
       {activePaidProgram && !programCompleted && (
         <Card style={{ 
-          background: "linear-gradient(135deg, #E8F5E9 0%, #F1F8E9 100%)", 
-          border: "1.5px solid #7A9E87",
+          background: `linear-gradient(135deg, ${prog?.bg || 'var(--ms-accent-soft)'} 0%, #F7F6F2 100%)`, 
+          border: `1.5px solid ${prog?.color || 'var(--ms-accent)'}`,
           marginBottom: "18px" 
         }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
@@ -189,7 +189,7 @@ const ProgramsTab = ({ program, onSelectPaidProgram, programHistory = [], active
               width: 40,
               height: 40,
               borderRadius: "50%",
-              background: "#7A9E87",
+              background: prog?.color || "var(--ms-accent)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -201,7 +201,7 @@ const ProgramsTab = ({ program, onSelectPaidProgram, programHistory = [], active
           <div style={{
             marginTop: "12px",
             padding: "10px 14px",
-            background: "rgba(122, 158, 135, 0.1)",
+            background: `${prog?.color || 'var(--ms-accent)'}1A`,
             borderRadius: "10px"
           }}>
             <p style={{ fontSize: "11px", color: "#5E6B64", lineHeight: 1.5 }}>
@@ -251,7 +251,7 @@ const ProgramsTab = ({ program, onSelectPaidProgram, programHistory = [], active
                     width: 28,
                     height: 28,
                     borderRadius: "50%",
-                    background: "#7A9E87",
+                    background: prog?.color || "var(--ms-accent)",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",

@@ -38,7 +38,7 @@ const BreathEngine = ({ program, sessionType, onComplete, devMode = false }) => 
     return () => clearTimeout(ref.current);
   }, [started, done, sec, phase, cycle, totalCycles, pat.phases.length, times]);
 
-  const c = PROG_COLORS[program] || "#7A9E87";
+  const c = PROG_COLORS[program] || "var(--ms-accent)";
   const currentPhase = pat.phases[phase];
 
   return (

@@ -3,6 +3,7 @@ import { LoginScreen, GoalScreen, QuestionnaireScreen, SetupScreen, IdentityScre
 import { HomeTab, ProgramsTab, ProgressTab, ProfileTab, ReportScreen, BottomNav } from '@/components/app';
 import { saveToStorage, loadFromStorage } from '@/utils/helpers';
 import paidProgramCalm7 from '@/data/paidProgramCalm7';
+import { PROGRAMS } from '@/data/programs';
 import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
 import { Capacitor } from '@capacitor/core';
 import { App as CapApp } from '@capacitor/app';
@@ -24,6 +25,21 @@ const DEFAULT_SETUP = {
 const DEFAULT_COMPLETIONS = { morning: false, midday: false, night: false };
 
 const getUserStateKey = (userId) => `${STORAGE_KEYS.APP_STATE}_${userId}`;
+
+const hexToRgb = (hex) => {
+  if (!hex || typeof hex !== 'string') return null;
+  const cleaned = hex.replace('#', '').trim();
+  const full = cleaned.length === 3
+    ? cleaned.split('').map((c) => c + c).join('')
+    : cleaned;
+  if (!/^[0-9A-Fa-f]{6}$/.test(full)) return null;
+  const int = parseInt(full, 16);
+  return {
+    r: (int >> 16) & 255,
+    g: (int >> 8) & 255,
+    b: int & 255,
+  };
+};
 
 function App() {
   // User authentication state
@@ -359,6 +375,21 @@ function App() {
     }
   }, [screen, program, setup, tab, day, completions, allDayCompletions, totalMinutes, streak, programCompleted, questionnaireAnswers, reflectionData, activePaidProgram, activeProgramDuration, programHistory, currentUser]);
 
+  // Keep a global accent theme synced with the selected goal.
+  useEffect(() => {
+    const root = document?.documentElement;
+    if (!root) return;
+    const selectedProgram = PROGRAMS.find((p) => p.id === program);
+    const accent = selectedProgram?.color || '#7A9E87';
+    const accentSoft = selectedProgram?.bg || '#E8F0EB';
+    const rgb = hexToRgb(accent) || { r: 122, g: 158, b: 135 };
+
+    root.style.setProperty('--ms-accent', accent);
+    root.style.setProperty('--ms-accent-soft', accentSoft);
+    root.style.setProperty('--ms-accent-border', `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.35)`);
+    root.style.setProperty('--ms-accent-rgb', `${rgb.r},${rgb.g},${rgb.b}`);
+  }, [program]);
+
   const handleSessionComplete = (type) => {
     const updated = { ...completions, [type]: true };
     setCompletions(updated);
@@ -497,6 +528,7 @@ function App() {
       )}
       {screen === "questionnaire" && (
         <QuestionnaireScreen 
+          program={program}
           onNext={(answers) => {
             setQuestionnaireAnswers(answers);
             setScreen("setup");
@@ -505,6 +537,7 @@ function App() {
       )}
       {screen === "setup" && (
         <SetupScreen
+          program={program}
           onNext={(s) => {
             setSetup(s);
             setScreen("identity");

@@ -20,7 +20,7 @@ const IdentityScreen = ({ program, onNext, user, onRequireLogin }) => {
   };
 
   return (
-    <div className="fade-in" style={{ minHeight: "100vh", display: "flex", flexDirection: "column", background: prog?.bg || "#E8F0EB" }}>
+    <div className="fade-in" style={{ minHeight: "100vh", display: "flex", flexDirection: "column", background: prog?.bg || "var(--ms-accent-soft)" }}>
       <div
         style={{
           flex: 1,
@@ -67,7 +67,7 @@ const IdentityScreen = ({ program, onNext, user, onRequireLogin }) => {
         <p style={{ fontSize: "15px", color: "#5E6B64", lineHeight: 1.75, maxWidth: 330 }}>{prog?.identityDesc}</p>
       </div>
       <div style={{ background: "#fff", borderRadius: "28px 28px 0 0", padding: "26px 22px 44px" }}>
-        <p style={{ fontSize: "12px", fontWeight: 700, color: "#7A9E87", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "14px" }}>
+        <p style={{ fontSize: "12px", fontWeight: 700, color: prog?.color || 'var(--ms-accent)', letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "14px" }}>
           Your Free 3-Day Program Includes
         </p>
         {[

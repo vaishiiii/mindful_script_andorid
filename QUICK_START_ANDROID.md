@@ -76,8 +76,11 @@ Quick steps:
 # Build & sync & open
 npm run android:run
 
-# Just sync changes
+# Just sync changes (both android and android-studio-ready folders)
 npm run android:sync
+
+# Sync only core android project (rarely needed)
+npm run android:sync:core
 
 # Just open Android Studio
 npm run android:open

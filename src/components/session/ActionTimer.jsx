@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Btn } from '@/components/ui';
 
-const ActionTimer = ({ seconds, onComplete, devMode = false }) => {
+const ActionTimer = ({ seconds, onComplete, devMode = false, accentColor = "var(--ms-accent)" }) => {
   const [left, setLeft] = useState(seconds);
   const [running, setRunning] = useState(false);
   const [fin, setFin] = useState(false);
@@ -28,16 +28,16 @@ const ActionTimer = ({ seconds, onComplete, devMode = false }) => {
   const ss = left % 60;
 
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: "14px", padding: "14px 16px", background: "#E8F0EB", borderRadius: "16px" }}>
+    <div style={{ display: "flex", alignItems: "center", gap: "14px", padding: "14px 16px", background: "var(--ms-accent-soft)", borderRadius: "16px" }}>
       <div style={{ position: "relative", flexShrink: 0 }}>
         <svg width="80" height="80" viewBox="0 0 80 80" style={{ transform: "rotate(-90deg)" }}>
-          <circle cx="40" cy="40" r={R} fill="none" stroke="#C4D8CB" strokeWidth="5" />
+          <circle cx="40" cy="40" r={R} fill="none" stroke="var(--ms-accent-border)" strokeWidth="5" />
           <circle
             cx="40"
             cy="40"
             r={R}
             fill="none"
-            stroke="#7A9E87"
+            stroke={accentColor}
             strokeWidth="5"
             strokeDasharray={circ}
             strokeDashoffset={circ * (1 - pct)}
@@ -46,7 +46,7 @@ const ActionTimer = ({ seconds, onComplete, devMode = false }) => {
           />
         </svg>
         <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)" }}>
-          <span style={{ fontSize: "12px", fontWeight: 700, color: "#7A9E87" }}>
+          <span style={{ fontSize: "12px", fontWeight: 700, color: accentColor }}>
             {mm}:{ss.toString().padStart(2, "0")}
           </span>
         </div>
@@ -54,7 +54,7 @@ const ActionTimer = ({ seconds, onComplete, devMode = false }) => {
       <div style={{ flex: 1 }}>
         {fin ? (
           <div style={{ textAlign: "center" }}>
-            <p style={{ fontSize: "16px", fontWeight: 700, color: "#7A9E87", marginBottom: "4px" }}>✨ Complete!</p>
+            <p style={{ fontSize: "16px", fontWeight: 700, color: accentColor, marginBottom: "4px" }}>✨ Complete!</p>
             <p style={{ fontSize: "12px", color: "#5A7A67" }}>Great focus. Moving to next step...</p>
           </div>
         ) : running ? (

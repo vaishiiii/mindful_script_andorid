@@ -32,7 +32,7 @@ export const Toast = ({ msg, onDismiss }) => {
           width: 8,
           height: 8,
           borderRadius: "50%",
-          background: "#7A9E87",
+          background: "var(--ms-accent)",
           flexShrink: 0,
           marginTop: "5px",
         }}

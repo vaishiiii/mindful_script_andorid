@@ -54,7 +54,8 @@ npm run dev                    # Start web dev server
 npm run build                  # Build web app
 
 # Android Commands
-npm run android:sync           # Build web + sync to Android
+npm run android:sync           # Restore running AAB baseline + sync to Android
+npm run android:sync:from-src  # Build from src + sync to Android (explicit opt-in)
 npm run android:open           # Open in Android Studio
 npm run android:run            # Build, sync, and open (recommended!)
 ```

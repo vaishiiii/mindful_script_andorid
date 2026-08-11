@@ -8,7 +8,10 @@
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
-    "android:sync": "npm run build && npx cap sync android",
+    "android:sync:from-src": "powershell -ExecutionPolicy Bypass -Command \"Write-Error 'Blocked by AAB freeze policy. Use npm run android:sync only.'; exit 1\"",
+    "android:sync": "npm run recovery:restore-aab && npx cap sync android && powershell -ExecutionPolicy Bypass -Command \"Copy-Item -Path '.\\dist\\*' -Destination '.\\android-studio-ready\\app\\src\\main\\assets\\public' -Recurse -Force\"",
+    "android:release:fresh": "powershell -ExecutionPolicy Bypass -Command \"Write-Error 'Blocked by AAB freeze policy. Use npm run android:sync and build from Android Studio.'; exit 1\"",
+    "android:freeze:verify": "powershell -ExecutionPolicy Bypass -File .\\verify-aab-freeze.ps1",
     "android:open": "npx cap open android",
     "android:run": "npm run android:sync && npm run android:open",
     "recovery:restore-aab": "powershell -ExecutionPolicy Bypass -File .\\restore-running-aab.ps1"

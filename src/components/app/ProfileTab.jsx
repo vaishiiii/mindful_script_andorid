@@ -47,7 +47,7 @@ const ProfileTab = ({ program, setup, onUpdateSetup, onReset, user, onLogout }) 
         />
       )}
 
-      <p style={{ fontSize: "12px", fontWeight: 700, color: "#7A9E87", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: "6px" }}>Profile</p>
+      <p style={{ fontSize: "12px", fontWeight: 700, color: prog?.color || "var(--ms-accent)", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: "6px" }}>Profile</p>
       <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "26px", fontWeight: 500, marginBottom: "22px" }}>Your settings</h2>
 
       {/* User Info */}
@@ -58,7 +58,7 @@ const ProfileTab = ({ program, setup, onUpdateSetup, onReset, user, onLogout }) 
             {user.photoURL ? (
               <img src={user.photoURL} alt="Profile" style={{ width: 40, height: 40, borderRadius: "50%" }} />
             ) : (
-              <div style={{ width: 40, height: 40, borderRadius: "50%", background: "#7A9E87", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontWeight: 600 }}>
+              <div style={{ width: 40, height: 40, borderRadius: "50%", background: prog?.color || "var(--ms-accent)", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontWeight: 600 }}>
                 {(user.displayName || user.email)?.[0]?.toUpperCase()}
               </div>
             )}
@@ -115,7 +115,7 @@ const ProfileTab = ({ program, setup, onUpdateSetup, onReset, user, onLogout }) 
               width: 44,
               height: 24,
               borderRadius: 12,
-              background: notifs ? "#7A9E87" : "#C4D8CB",
+              background: notifs ? (prog?.color || "var(--ms-accent)") : "var(--ms-accent-border)",
               position: "relative",
               cursor: "pointer",
               transition: "background .25s",

@@ -25,7 +25,7 @@ export const InputField = ({ label, type = "text", value, onChange, placeholder,
         width: "100%",
         padding: "13px 16px",
         borderRadius: "14px",
-        border: `1.5px solid ${error ? "#A67B7B" : "#C4D8CB"}`,
+        border: `1.5px solid ${error ? "#A67B7B" : "var(--ms-accent-border)"}`,
         background: "#fff",
         fontFamily: "'DM Sans', system-ui, sans-serif",
         fontSize: "15px",
@@ -41,7 +41,7 @@ export const TimePicker = ({ value, onChange, label }) => {
   const { h, m } = parseT(value);
   const selStyle = {
     background: "#F0EFE9",
-    border: "1.5px solid #C4D8CB",
+    border: "1.5px solid var(--ms-accent-border)",
     borderRadius: "14px",
     padding: "12px 36px 12px 14px",
     fontFamily: "'DM Sans', system-ui, sans-serif",

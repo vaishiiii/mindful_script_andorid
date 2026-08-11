@@ -1,11 +1,17 @@
 import React, { useState } from 'react';
 import { Card, ProgressBar } from '@/components/ui';
 import { QUESTIONS } from '@/data/questions';
+import { PROGRAMS } from '@/data/programs';
 
-const QuestionnaireScreen = ({ onNext }) => {
+const QuestionnaireScreen = ({ onNext, program }) => {
   const [idx, setIdx] = useState(0);
   const [ans, setAns] = useState({});
   const [key, setKey] = useState(0);
+  const prog = PROGRAMS.find((p) => p.id === program);
+  const accent = prog?.color || 'var(--ms-accent)';
+  const accentSoft = prog?.bg || 'var(--ms-accent-soft)';
+  const accentMid = prog?.color ? `${prog.color}8C` : 'rgba(var(--ms-accent-rgb), 0.55)';
+  const accentBorder = `1.5px solid ${prog?.color || 'var(--ms-accent)'}`;
 
   const pick = (opt) => {
     const a = { ...ans, [idx]: opt };
@@ -32,11 +38,11 @@ const QuestionnaireScreen = ({ onNext }) => {
 
   return (
     <div style={{ minHeight: "100vh", padding: "48px 22px 32px", maxWidth: 480, margin: "0 auto" }}>
-      <ProgressBar step={2} total={4} />
+      <ProgressBar step={2} total={4} accentColor={prog?.color} />
       {/* Header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "22px" }}>
         <div>
-          <p style={{ fontSize: "12px", fontWeight: 600, color: "#7A9E87", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: "6px" }}>
+          <p style={{ fontSize: "12px", fontWeight: 600, color: accent, letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: "6px" }}>
             Step 2 of 4
           </p>
           <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "24px", fontWeight: 500 }}>
@@ -69,13 +75,13 @@ const QuestionnaireScreen = ({ onNext }) => {
               width: 42,
               height: 42,
               borderRadius: "50%",
-              background: "#E8F0EB",
+              background: accentSoft,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               fontSize: "12px",
               fontWeight: 700,
-              color: "#7A9E87",
+              color: accent,
             }}
           >
             {pct}%
@@ -92,7 +98,7 @@ const QuestionnaireScreen = ({ onNext }) => {
               flex: 1,
               height: 3,
               borderRadius: 2,
-              background: i < idx ? "#7A9E87" : i === idx ? "rgba(122,158,135,0.55)" : "#C4D8CB",
+              background: i < idx ? accent : i === idx ? accentMid : 'var(--ms-accent-border)',
               transition: "all .3s",
             }}
           />
@@ -101,7 +107,7 @@ const QuestionnaireScreen = ({ onNext }) => {
 
       {/* Question card */}
       <div key={key} className="slide-up">
-        <Card style={{ marginBottom: "20px", background: "#E8F0EB", border: "none", padding: "20px" }}>
+        <Card style={{ marginBottom: "20px", background: accentSoft, border: "none", padding: "20px" }}>
           <p style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "20px", fontWeight: 500, lineHeight: 1.5, color: "#2C3530" }}>
             {q.q}
           </p>
@@ -112,9 +118,9 @@ const QuestionnaireScreen = ({ onNext }) => {
               key={opt}
               onClick={() => pick(opt)}
               style={{
-                background: ans[idx] === opt ? "#7A9E87" : "#fff",
+                background: ans[idx] === opt ? accent : "#fff",
                 color: ans[idx] === opt ? "#fff" : "#2C3530",
-                border: `1.5px solid ${ans[idx] === opt ? "#7A9E87" : "#C4D8CB"}`,
+                border: ans[idx] === opt ? accentBorder : "1.5px solid var(--ms-accent-border)",
                 borderRadius: "16px",
                 padding: "13px 18px",
                 fontFamily: "'DM Sans', system-ui, sans-serif",

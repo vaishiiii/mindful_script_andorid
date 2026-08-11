@@ -2,7 +2,8 @@ param(
     [string]$RecoveredRelativePath = "recovered/running-aab-public-20260811",
     [switch]$NoBackup,
     [switch]$SkipDist,
-    [switch]$SkipAndroidPublic
+    [switch]$SkipAndroidPublic,
+    [switch]$SkipAndroidStudioReadyPublic
 )
 
 $ErrorActionPreference = "Stop"
@@ -60,6 +61,11 @@ if (-not $SkipDist) {
 if (-not $SkipAndroidPublic) {
     $androidPublicPath = Join-Path $repoRoot "android/app/src/main/assets/public"
     Backup-And-Replace -SourcePath $recoveredRoot -TargetPath $androidPublicPath -Label "android public assets" -DisableBackup:$NoBackup
+}
+
+if (-not $SkipAndroidStudioReadyPublic) {
+    $androidStudioReadyPublicPath = Join-Path $repoRoot "android-studio-ready/app/src/main/assets/public"
+    Backup-And-Replace -SourcePath $recoveredRoot -TargetPath $androidStudioReadyPublicPath -Label "android-studio-ready public assets" -DisableBackup:$NoBackup
 }
 
 Write-Step "Done. Active web payload now points to the recovered running AAB assets."

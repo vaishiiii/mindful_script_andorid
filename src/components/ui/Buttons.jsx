@@ -19,9 +19,9 @@ export const Btn = ({ children, onClick, variant = "primary", style = {}, disabl
   };
 
   const variants = {
-    primary: { background: "#7A9E87", color: "#fff", boxShadow: "0 4px 16px rgba(44,53,48,0.08)" },
-    ghost: { background: "transparent", color: "#7A9E87", border: "1.5px solid #C4D8CB" },
-    soft: { background: "#E8F0EB", color: "#5A7A67" },
+    primary: { background: "var(--ms-accent)", color: "#fff", boxShadow: "0 4px 16px rgba(44,53,48,0.08)" },
+    ghost: { background: "transparent", color: "var(--ms-accent)", border: "1.5px solid var(--ms-accent-border)" },
+    soft: { background: "var(--ms-accent-soft)", color: "var(--ms-accent)" },
     danger: { background: "transparent", color: "#A67B7B", border: "1.5px solid rgba(166,123,123,0.3)" },
     text: { background: "transparent", color: "#9BA8A0", padding: "10px 16px" },
   };
@@ -41,8 +41,8 @@ export const Card = ({ children, style = {}, onClick, selected }) => (
       borderRadius: "24px",
       padding: "18px",
       boxShadow: selected ? "none" : "0 1px 4px rgba(44,53,48,0.06)",
-      border: `1.5px solid ${selected ? "#7A9E87" : "transparent"}`,
-      outline: selected ? "3px solid #E8F0EB" : "none",
+      border: `1.5px solid ${selected ? "var(--ms-accent)" : "transparent"}`,
+      outline: selected ? "3px solid var(--ms-accent-soft)" : "none",
       cursor: onClick ? "pointer" : "default",
       transition: "all .22s ease",
       ...style,
@@ -52,7 +52,7 @@ export const Card = ({ children, style = {}, onClick, selected }) => (
   </div>
 );
 
-export const Tag = ({ label, color = "#7A9E87" }) => (
+export const Tag = ({ label, color = "var(--ms-accent)" }) => (
   <span
     style={{
       display: "inline-block",
@@ -70,7 +70,7 @@ export const Tag = ({ label, color = "#7A9E87" }) => (
   </span>
 );
 
-export const ProgressBar = ({ step, total }) => (
+export const ProgressBar = ({ step, total, accentColor }) => (
   <div style={{ display: "flex", gap: "5px", marginBottom: "26px" }}>
     {Array.from({ length: total }).map((_, i) => (
       <div
@@ -79,7 +79,7 @@ export const ProgressBar = ({ step, total }) => (
           flex: 1,
           height: "3px",
           borderRadius: "2px",
-          background: i < step ? "#7A9E87" : "#C4D8CB",
+          background: i < step ? (accentColor || "var(--ms-accent)") : "var(--ms-accent-border)",
           transition: "background .35s",
         }}
       />

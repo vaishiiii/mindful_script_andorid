@@ -1,5 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@300;400;500;600&display=swap');
 
+:root {
+  --ms-accent: #7A9E87;
+  --ms-accent-soft: #E8F0EB;
+  --ms-accent-border: #C4D8CB;
+  --ms-accent-rgb: 122,158,135;
+}
+
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -94,7 +101,7 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #C4D8CB;
+  background: var(--ms-accent-border);
   border-radius: 3px;
 }
 

@@ -4,6 +4,8 @@ import { PROGRAMS } from '@/data/programs';
 
 const GoalScreen = ({ onNext, onBack }) => {
   const [sel, setSel] = useState(null);
+  const selectedProgram = PROGRAMS.find((p) => p.id === sel);
+  const accent = selectedProgram?.color || "var(--ms-accent)";
 
   return (
     <div className="slide-up" style={{ minHeight: "100vh", padding: "48px 22px 32px", maxWidth: 480, margin: "0 auto" }}>
@@ -29,12 +31,12 @@ const GoalScreen = ({ onNext, onBack }) => {
           Back
         </button>
       )}
-      <ProgressBar step={1} total={4} />
+      <ProgressBar step={1} total={4} accentColor={selectedProgram?.color} />
       <p
         style={{
           fontSize: "12px",
           fontWeight: 600,
-          color: "#7A9E87",
+          color: accent,
           letterSpacing: "0.12em",
           textTransform: "uppercase",
           marginBottom: "8px",
@@ -54,7 +56,13 @@ const GoalScreen = ({ onNext, onBack }) => {
             key={p.id}
             onClick={() => setSel(p.id)}
             selected={sel === p.id}
-            style={{ background: sel === p.id ? p.bg : "#fff", cursor: "pointer", padding: "15px" }}
+            style={{
+              background: sel === p.id ? p.bg : "#fff",
+              border: sel === p.id ? `1.5px solid ${p.color}` : "1.5px solid transparent",
+              outline: sel === p.id ? `3px solid ${p.bg}` : "none",
+              cursor: "pointer",
+              padding: "15px",
+            }}
           >
             <div style={{ fontSize: "19px", marginBottom: "7px" }}>{p.icon}</div>
             <div style={{ fontWeight: 600, fontSize: "13px", color: "#2C3530", marginBottom: "3px" }}>{p.label}</div>

@@ -79,16 +79,25 @@ const HomeTab = ({ program, unlocks, day, completions, onSessionComplete, streak
   }, [unlocks, completions]);
 
   const prog = PROGRAMS.find((p) => p.id === program);
-  const accent = prog?.color || '#8B7CC8';
-  const accentSoft = prog?.bg || '#E9E2FB';
+  const accent = prog?.color || 'var(--ms-accent)';
+  const accentSoft = prog?.bg || 'var(--ms-accent-soft)';
+  const goalSummary = {
+    calm: 'Your calm goal is about softer reactions and steadier breathing.',
+    focus: 'Your focus goal is about deep attention and clean execution.',
+    confidence: 'Your confidence goal is about self-trust through action.',
+    healing: 'Your healing goal is about emotional safety and release.',
+    discipline: 'Your discipline goal is about consistency over intensity.',
+    purpose: 'Your purpose goal is about meaning-led daily choices.',
+    habit: 'Your habit goal is about building automatic healthy routines.',
+  };
 
   const completionCount = [completions.morning, completions.midday, completions.night].filter(Boolean).length;
   const moodStates = [
-    { label: 'Reflective', emoji: '😶', tone: '#7B75A7', x: 28, y: 73 },
-    { label: 'Calm', emoji: '😌', tone: '#6E8DBE', x: 67, y: 82 },
-    { label: 'Steady', emoji: '🙂', tone: '#759A88', x: 80, y: 60 },
-    { label: 'Curious', emoji: '🤔', tone: '#9D83B9', x: 77, y: 37 },
-    { label: 'Light', emoji: '😊', tone: '#A88763', x: 56, y: 18 },
+    { label: 'Reflective', emoji: '😶', tone: hexToRgba(accent, 0.82), x: 28, y: 73 },
+    { label: 'Calm', emoji: '😌', tone: hexToRgba(accent, 0.88), x: 67, y: 82 },
+    { label: 'Steady', emoji: '🙂', tone: accent, x: 80, y: 60 },
+    { label: 'Curious', emoji: '🤔', tone: hexToRgba(accent, 0.76), x: 77, y: 37 },
+    { label: 'Light', emoji: '😊', tone: hexToRgba(accent, 0.7), x: 56, y: 18 },
   ];
   const defaultMoodIndex = Math.min(completionCount, moodStates.length - 1);
   const [selectedMood, setSelectedMood] = useState(defaultMoodIndex);
@@ -148,8 +157,8 @@ const HomeTab = ({ program, unlocks, day, completions, onSessionComplete, streak
         minHeight: '100%',
         background: `
           radial-gradient(circle at 8% -12%, ${hexToRgba(accent, 0.22)} 0%, rgba(255,255,255,0) 46%),
-          radial-gradient(circle at 95% 12%, rgba(183, 169, 233, 0.28) 0%, rgba(255,255,255,0) 42%),
-          linear-gradient(180deg, #F6F2FF 0%, #F7F5FB 38%, #F9F8FC 100%)
+          radial-gradient(circle at 95% 12%, ${hexToRgba(accent, 0.18)} 0%, rgba(255,255,255,0) 42%),
+          linear-gradient(180deg, ${accentSoft} 0%, #F7F6F2 100%)
         `,
       }}
     >
@@ -158,30 +167,30 @@ const HomeTab = ({ program, unlocks, day, completions, onSessionComplete, streak
       <div style={{ maxWidth: 480, margin: '0 auto', padding: '14px 14px 0' }}>
         <div
           style={{
-            background: 'linear-gradient(155deg, rgba(255,255,255,0.94) 0%, rgba(247,243,255,0.92) 100%)',
+            background: `linear-gradient(155deg, rgba(255,255,255,0.96) 0%, ${hexToRgba(accent, 0.08)} 100%)`,
             border: `1px solid ${hexToRgba(accent, 0.22)}`,
             borderRadius: '26px',
-            boxShadow: '0 16px 44px rgba(88, 78, 140, 0.13)',
+            boxShadow: `0 16px 44px ${hexToRgba(accent, 0.14)}`,
             backdropFilter: 'blur(6px)',
             padding: '14px 14px 12px',
           }}
         >
-          <p style={{ fontSize: '10px', fontWeight: 700, color: '#8D81B7', letterSpacing: '0.14em', textTransform: 'uppercase', marginBottom: '8px' }}>
+          <p style={{ fontSize: '10px', fontWeight: 700, color: accent, letterSpacing: '0.14em', textTransform: 'uppercase', marginBottom: '8px' }}>
             Today's Insight
           </p>
-          <p style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontStyle: 'italic', fontSize: '18px', lineHeight: 1.45, color: '#2E2A3D' }}>
+          <p style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontStyle: 'italic', fontSize: '18px', lineHeight: 1.45, color: '#2C3530' }}>
             "{todayQuote(program)}"
           </p>
 
-          <div style={{ height: 1, background: 'rgba(142, 131, 187, 0.18)', margin: '12px 0 10px' }} />
+          <div style={{ height: 1, background: hexToRgba(accent, 0.18), margin: '12px 0 10px' }} />
 
           <div style={{ display: 'flex', gap: '10px', alignItems: 'stretch' }}>
             <div style={{ flex: 1, minWidth: 0 }}>
-              <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '41px', fontWeight: 500, color: '#2F2A40', lineHeight: 1.02 }}>
+              <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '41px', fontWeight: 500, color: '#2C3530', lineHeight: 1.02 }}>
                 {userName ? `Hi, ${userName} ${mood.emoji}` : `${timeGreeting()} ${mood.emoji}`}
               </h2>
-              <p style={{ fontSize: '14px', color: '#706A86', lineHeight: 1.45, marginTop: '6px' }}>
-                Your purpose goal is about meaningful daily choices.
+              <p style={{ fontSize: '14px', color: '#5E6B64', lineHeight: 1.45, marginTop: '6px' }}>
+                {goalSummary[program] || 'Your journey is built around your chosen growth path.'}
               </p>
             </div>
 
@@ -196,7 +205,7 @@ const HomeTab = ({ program, unlocks, day, completions, onSessionComplete, streak
               }}
             >
               <div style={{ textAlign: 'center' }}>
-                <span style={{ fontSize: '11px', color: '#8A84A6', fontWeight: 600 }}>Mood</span>
+                <span style={{ fontSize: '11px', color: accent, fontWeight: 600 }}>Mood</span>
                 <p style={{ fontSize: '11px', color: mood.tone, fontWeight: 700, marginTop: '2px', lineHeight: 1.1 }}>{mood.label}</p>
               </div>
 
@@ -270,7 +279,7 @@ const HomeTab = ({ program, unlocks, day, completions, onSessionComplete, streak
                   </button>
                 ))}
               </div>
-              <p style={{ textAlign: 'center', fontSize: '10px', color: '#8F89A8', marginTop: '5px' }}>tap a mood</p>
+              <p style={{ textAlign: 'center', fontSize: '10px', color: accent, marginTop: '5px' }}>tap a mood</p>
             </div>
           </div>
 
@@ -304,7 +313,7 @@ const HomeTab = ({ program, unlocks, day, completions, onSessionComplete, streak
                 >
                   ‹
                 </button>
-                <Tag label={`Day ${viewingDay}/${programDuration}`} color={isPastDay ? '#9B97AE' : accent} />
+                <Tag label={`Day ${viewingDay}/${programDuration}`} color={accent} />
                 <button
                   onClick={() => setViewingDay(v => Math.min(day, v + 1))}
                   disabled={viewingDay >= day}
@@ -325,7 +334,7 @@ const HomeTab = ({ program, unlocks, day, completions, onSessionComplete, streak
                   ›
                 </button>
               </div>
-              <span style={{ fontSize: '13px', color: '#7D768F', fontWeight: 500 }}>{sessCount}/3 sessions{isPastDay ? '' : ' today'}</span>
+              <span style={{ fontSize: '13px', color: '#5E6B64', fontWeight: 500 }}>{sessCount}/3 sessions{isPastDay ? '' : ' today'}</span>
             </div>
 
             <div style={{ display: 'flex', gap: '5px' }}>
@@ -336,7 +345,7 @@ const HomeTab = ({ program, unlocks, day, completions, onSessionComplete, streak
                     flex: 1,
                     height: 4,
                     borderRadius: 999,
-                    background: viewedCompletions[s.id] ? '#6E65A6' : (!isPastDay && isTimeOk(s.id)) ? 'rgba(141, 129, 187, 0.36)' : '#D8D3E7',
+                    background: viewedCompletions[s.id] ? accent : (!isPastDay && isTimeOk(s.id)) ? hexToRgba(accent, 0.36) : '#D8D3E7',
                     transition: 'background .4s',
                   }}
                 />
@@ -344,7 +353,7 @@ const HomeTab = ({ program, unlocks, day, completions, onSessionComplete, streak
             </div>
 
             {isPastDay && (
-              <span style={{ display: 'inline-block', marginTop: '7px', fontSize: '11px', color: '#A18461', fontStyle: 'italic', fontWeight: 500 }}>
+                <span style={{ display: 'inline-block', marginTop: '7px', fontSize: '11px', color: accent, fontStyle: 'italic', fontWeight: 500 }}>
                 reviewing past day
               </span>
             )}
@@ -405,7 +414,7 @@ const HomeTab = ({ program, unlocks, day, completions, onSessionComplete, streak
 
         {/* Day complete banner — shown when all sessions are done but user hasn't continued past celebration yet */}
         {!isPastDay && completions.morning && completions.midday && completions.night && onCelebrationContinue && (
-          <Card style={{ marginTop: '4px', marginBottom: '10px', background: '#E8F0EB', border: '1.5px solid #7A9E87' }}>
+          <Card style={{ marginTop: '4px', marginBottom: '10px', background: 'var(--ms-accent-soft)', border: `1.5px solid ${accent}` }}>
             <div style={{ textAlign: 'center', padding: '6px 0' }}>
               <p style={{ fontSize: '24px', marginBottom: '6px' }}>🎉</p>
               <p style={{ fontWeight: 700, fontSize: '16px', color: '#2C3530', marginBottom: '4px' }}>Day {day} Complete!</p>

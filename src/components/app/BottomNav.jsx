@@ -18,7 +18,7 @@ const BottomNav = ({ active, onChange }) => {
         width: "100%",
         maxWidth: 480,
         background: "#fff",
-        borderTop: "1px solid #C4D8CB",
+        borderTop: "1px solid var(--ms-accent-border)",
         display: "flex",
         zIndex: 50,
       }}
@@ -37,14 +37,14 @@ const BottomNav = ({ active, onChange }) => {
             flexDirection: "column",
             alignItems: "center",
             gap: "3px",
-            color: active === t.id ? "#7A9E87" : "#9BA8A0",
+            color: active === t.id ? "var(--ms-accent)" : "#9BA8A0",
             fontFamily: "'DM Sans', system-ui, sans-serif",
             transition: "color .2s",
           }}
         >
           <span style={{ fontSize: "19px", lineHeight: 1 }}>{t.icon}</span>
           <span style={{ fontSize: "10px", fontWeight: active === t.id ? 700 : 500, letterSpacing: "0.04em", textTransform: "uppercase" }}>{t.label}</span>
-          {active === t.id && <div style={{ width: 4, height: 4, borderRadius: "50%", background: "#7A9E87" }} />}
+          {active === t.id && <div style={{ width: 4, height: 4, borderRadius: "50%", background: "var(--ms-accent)" }} />}
         </button>
       ))}
     </div>

@@ -70,7 +70,7 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
     task = dayTasks[type];
   }
 
-  c = PROG_COLORS[program] || "#7A9E87";
+  c = PROG_COLORS[program] || "var(--ms-accent)";
   const programLabel = activePaidProgram ? activePaidProgram.title : '';
   
   const SESSION_LABEL = { 
@@ -234,7 +234,7 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
                           width: 20,
                           height: 20,
                           borderRadius: "50%",
-                          background: STEPS.indexOf(step) > i ? "#7A9E87" : STEPS.indexOf(step) === i ? c : "#C4D8CB",
+                          background: STEPS.indexOf(step) > i ? c : STEPS.indexOf(step) === i ? c : "var(--ms-accent-border)",
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
@@ -258,7 +258,7 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
                         {s === "breath" ? "Breathe" : s === "journal" ? "Journal" : s === "reflect" ? "Reflect" : "Task"}
                       </span>
                     </div>
-                    {i < STEPS.filter((s) => s !== "done").length - 1 && <div style={{ width: 16, height: 1, background: "#C4D8CB" }} />}
+                    {i < STEPS.filter((s) => s !== "done").length - 1 && <div style={{ width: 16, height: 1, background: "var(--ms-accent-border)" }} />}
                   </div>
                 ))}
               </div>
@@ -300,7 +300,7 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
                             width: 22,
                             height: 22,
                             borderRadius: "50%",
-                            background: "#E8F0EB",
+                            background: "var(--ms-accent-soft)",
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
@@ -308,7 +308,7 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
                             marginTop: "1px",
                           }}
                         >
-                          <span style={{ fontSize: "10px", fontWeight: 700, color: "#7A9E87" }}>{i + 1}</span>
+                          <span style={{ fontSize: "10px", fontWeight: 700, color: c }}>{i + 1}</span>
                         </div>
                         <p style={{ fontSize: "14px", color: "#5E6B64", lineHeight: 1.65 }}>{text}</p>
                       </div>
@@ -323,7 +323,7 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
                               width: 22,
                               height: 22,
                               borderRadius: "50%",
-                              background: "#E8F0EB",
+                              background: "var(--ms-accent-soft)",
                               display: "flex",
                               alignItems: "center",
                               justifyContent: "center",
@@ -331,7 +331,7 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
                               marginTop: "1px",
                             }}
                           >
-                            <span style={{ fontSize: "10px", fontWeight: 700, color: "#7A9E87" }}>{i + 1}</span>
+                            <span style={{ fontSize: "10px", fontWeight: 700, color: c }}>{i + 1}</span>
                           </div>
                           <p style={{ fontSize: "14px", color: "#5E6B64", lineHeight: 1.65 }}>{text}</p>
                         </div>
@@ -344,7 +344,7 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
                             minHeight: "80px",
                             padding: "12px 14px",
                             borderRadius: "12px",
-                            border: "1.5px solid #C4D8CB",
+                            border: "1.5px solid var(--ms-accent-border)",
                             fontFamily: "'DM Sans', system-ui, sans-serif",
                             fontSize: "14px",
                             color: "#2C3530",
@@ -365,7 +365,7 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
                               width: 22,
                               height: 22,
                               borderRadius: "50%",
-                              background: "#E8F0EB",
+                              background: "var(--ms-accent-soft)",
                               display: "flex",
                               alignItems: "center",
                               justifyContent: "center",
@@ -373,7 +373,7 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
                               marginTop: "1px",
                             }}
                           >
-                            <span style={{ fontSize: "10px", fontWeight: 700, color: "#7A9E87" }}>{i + 1}</span>
+                            <span style={{ fontSize: "10px", fontWeight: 700, color: c }}>{i + 1}</span>
                           </div>
                           <p style={{ fontSize: "14px", color: "#5E6B64", lineHeight: 1.65 }}>{text}</p>
                         </div>
@@ -385,7 +385,7 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
                               style={{
                                 padding: "10px 18px",
                                 borderRadius: "12px",
-                                border: `1.5px solid ${taskInputs[i] === option ? c : '#C4D8CB'}`,
+                                border: `1.5px solid ${taskInputs[i] === option ? c : 'var(--ms-accent-border)'}`,
                                 background: taskInputs[i] === option ? `${c}12` : '#fff',
                                 fontFamily: "'DM Sans', system-ui, sans-serif",
                                 fontSize: "13px",
@@ -497,7 +497,7 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
             {/* Predefined timer or user-chosen timer */}
             {task.timer && !timerDone && (
               <div style={{ marginBottom: "18px" }}>
-                <ActionTimer seconds={task.timer} onComplete={() => setTimerDone(true)} devMode={devMode} />
+                <ActionTimer seconds={task.timer} onComplete={() => setTimerDone(true)} devMode={devMode} accentColor={c} />
               </div>
             )}
             {!task.timer && useTimer === null && !timerDone && (
@@ -525,7 +525,7 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
                       style={{
                         padding: "12px 8px",
                         borderRadius: "12px",
-                        border: "1.5px solid #C4D8CB",
+                        border: "1.5px solid var(--ms-accent-border)",
                         background: "#fff",
                         fontFamily: "'DM Sans', system-ui, sans-serif",
                         fontSize: "13px",
@@ -539,7 +539,7 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
                         e.target.style.background = `${c}08`;
                       }}
                       onMouseLeave={(e) => {
-                        e.target.style.borderColor = "#C4D8CB";
+                        e.target.style.borderColor = "var(--ms-accent-border)";
                         e.target.style.background = "#fff";
                       }}
                     >
@@ -569,7 +569,7 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
             )}
             {!task.timer && useTimer === true && !timerDone && (
               <div style={{ marginBottom: "18px" }}>
-                <ActionTimer seconds={customTimerSeconds} onComplete={() => setTimerDone(true)} devMode={devMode} />
+                <ActionTimer seconds={customTimerSeconds} onComplete={() => setTimerDone(true)} devMode={devMode} accentColor={c} />
               </div>
             )}
             {/* Post-timer insight capture — appears only when a timer actually ran */}
@@ -589,7 +589,7 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
                     width: "100%",
                     padding: "12px 14px",
                     borderRadius: "14px",
-                    border: "1.5px solid #C4D8CB",
+                    border: "1.5px solid var(--ms-accent-border)",
                     background: "#fff",
                     fontFamily: "'DM Sans', system-ui, sans-serif",
                     fontSize: "13px",
@@ -601,10 +601,10 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
                     boxSizing: "border-box",
                   }}
                   onFocus={(e) => { e.target.style.borderColor = c; }}
-                  onBlur={(e) => { e.target.style.borderColor = "#C4D8CB"; }}
+                  onBlur={(e) => { e.target.style.borderColor = "var(--ms-accent-border)"; }}
                 />
                 {timerInsight.trim() && (
-                  <p style={{ fontSize: "11px", color: "#7A9E87", marginTop: "6px" }}>✓ This will be saved to your insights &amp; report</p>
+                  <p style={{ fontSize: "11px", color: c, marginTop: "6px" }}>✓ This will be saved to your insights &amp; report</p>
                 )}
               </div>
             )}
@@ -648,7 +648,7 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
                 minHeight: "180px",
                 padding: "16px 18px",
                 borderRadius: "16px",
-                border: "1.5px solid #C4D8CB",
+                border: "1.5px solid var(--ms-accent-border)",
                 background: "#fff",
                 fontFamily: "'DM Sans', system-ui, sans-serif",
                 fontSize: "14px",
@@ -662,7 +662,7 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
                 e.target.style.borderColor = c;
               }}
               onBlur={(e) => {
-                e.target.style.borderColor = "#C4D8CB";
+                e.target.style.borderColor = "var(--ms-accent-border)";
               }}
             />
             <div style={{ display: "flex", gap: "10px", marginTop: "16px" }}>
@@ -708,9 +708,9 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
                     key={opt}
                     onClick={() => handleReflect(opt)}
                     style={{
-                      background: rAns[currentQ.key] === opt ? "#E8F0EB" : "#fff",
+                      background: rAns[currentQ.key] === opt ? "var(--ms-accent-soft)" : "#fff",
                       color: "#2C3530",
-                      border: `1.5px solid ${rAns[currentQ.key] === opt ? "#7A9E87" : "#C4D8CB"}`,
+                      border: `1.5px solid ${rAns[currentQ.key] === opt ? c : "var(--ms-accent-border)"}`,
                       borderRadius: "16px",
                       padding: "14px 18px",
                       fontFamily: "'DM Sans', system-ui, sans-serif",
@@ -728,8 +728,8 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
                         width: 18,
                         height: 18,
                         borderRadius: "50%",
-                        border: `2px solid ${rAns[currentQ.key] === opt ? "#7A9E87" : "#C4D8CB"}`,
-                        background: rAns[currentQ.key] === opt ? "#7A9E87" : "transparent",
+                        border: `2px solid ${rAns[currentQ.key] === opt ? c : "var(--ms-accent-border)"}`,
+                        background: rAns[currentQ.key] === opt ? c : "transparent",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
@@ -758,7 +758,7 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
                 width: 60,
                 height: 60,
                 borderRadius: "50%",
-                background: "#7A9E87",
+                background: c,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -776,8 +776,8 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
             </p>
 
             {/* Quick Reminder Buttons */}
-            <div style={{ marginBottom: "26px", padding: "18px", background: "#fff", borderRadius: "20px", border: "1.5px solid #E8F0EB" }}>
-              <p style={{ fontSize: "12px", fontWeight: 700, color: "#7A9E87", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: "12px" }}>
+            <div style={{ marginBottom: "26px", padding: "18px", background: "#fff", borderRadius: "20px", border: "1.5px solid var(--ms-accent-soft)" }}>
+              <p style={{ fontSize: "12px", fontWeight: 700, color: c, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: "12px" }}>
                 🔔 Remind me for tomorrow
               </p>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "8px" }}>
@@ -797,14 +797,14 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
                       gap: "6px",
                       padding: "12px 4px",
                       borderRadius: "14px",
-                      border: `1.5px solid ${scheduledReminders[r.id] ? "#7A9E87" : "#E8F0EB"}`,
+                      border: `1.5px solid ${scheduledReminders[r.id] ? c : "var(--ms-accent-soft)"}`,
                       background: scheduledReminders[r.id] ? "#F0F7F3" : "#F9FAF9",
                       cursor: "pointer",
                       transition: "all 0.2s"
                     }}
                   >
                     <span style={{ fontSize: "18px" }}>{scheduledReminders[r.id] ? '✅' : r.icon}</span>
-                    <span style={{ fontSize: "10px", fontWeight: 700, color: scheduledReminders[r.id] ? "#7A9E87" : "#5E6B64" }}>{r.label}</span>
+                    <span style={{ fontSize: "10px", fontWeight: 700, color: scheduledReminders[r.id] ? c : "#5E6B64" }}>{r.label}</span>
                   </button>
                 ))}
               </div>
