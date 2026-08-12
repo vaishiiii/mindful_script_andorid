@@ -26,16 +26,24 @@ export const checkNotificationPermission = async () => {
 // Schedule a reminder for tomorrow at a specific time
 export const scheduleReminderForTomorrow = async (sessionType = 'morning', programName = 'MindScript') => {
   try {
+    // Check if we have permission first
     const hasPermission = await checkNotificationPermission();
+    
     if (!hasPermission) {
       const granted = await requestNotificationPermission();
-      if (!granted) return false;
+      if (!granted) {
+        console.log('Notification permission denied');
+        return false;
+      }
     }
 
+    // Get tomorrow's date
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
     
+    // Set time based on session type
     let hour, title, body;
+    
     switch(sessionType) {
       case 'morning':
         hour = 8;
@@ -60,79 +68,45 @@ export const scheduleReminderForTomorrow = async (sessionType = 'morning', progr
     
     tomorrow.setHours(hour, 0, 0, 0);
 
+    // Generate a unique ID based on timestamp
+    const notificationId = Math.floor(Math.random() * 100000);
+
+    // Schedule the notification
     await LocalNotifications.schedule({
       notifications: [
         {
           title,
           body,
-          id: Math.floor(Math.random() * 100000),
+          id: notificationId,
           schedule: { at: tomorrow },
-          extra: { sessionType, programName },
+          sound: undefined, // Use default sound
+          attachments: undefined,
+          actionTypeId: '',
+          extra: {
+            sessionType,
+            programName,
+          },
         },
       ],
     });
 
-    console.log(`✓ Reminder scheduled for ${sessionType} at ${hour}:00`);
+    console.log(`✓ Reminder scheduled for tomorrow at ${hour}:00`);
     return true;
   } catch (error) {
     console.error('Error scheduling reminder:', error);
-    return false;
-  }
-};
-
-// Schedule reminders for all sessions tomorrow
-export const scheduleMultipleReminders = async (types = ['morning', 'midday', 'night'], programName = 'MindScript') => {
-  try {
-    const hasPermission = await checkNotificationPermission();
-    if (!hasPermission) {
-      const granted = await requestNotificationPermission();
-      if (!granted) return false;
-    }
-
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-
-    const notifications = types.map(type => {
-      let hour, title, body;
-      switch(type) {
-        case 'morning':
-          hour = 8;
-          title = '🌅 Morning Session Ready';
-          body = `Start your day with ${programName}. Your morning practice is ready.`;
-          break;
-        case 'midday':
-          hour = 13;
-          title = '☀️ Midday Practice Time';
-          body = `Take a mindful break. Your ${programName} midday session awaits.`;
-          break;
-        case 'night':
-          hour = 20;
-          title = '🌙 Evening Reflection';
-          body = `Wind down your day with ${programName}. Your night session is ready.`;
-          break;
-        default:
-          hour = 9;
-          title = '🔔 MindScript Reminder';
-          body = `Your ${programName} session is ready for you.`;
+    
+    // Fallback: Try to use browser Notification API (for web version)
+    if ('Notification' in window && Notification.permission === 'granted') {
+      // For web, we can't schedule, but we can at least show we tried
+      console.log('Web notification permission available, but scheduling requires native platform');
+    } else if ('Notification' in window && Notification.permission !== 'denied') {
+      // Request browser notification permission as fallback
+      const permission = await Notification.requestPermission();
+      if (permission === 'granted') {
+        console.log('Browser notification permission granted for future use');
       }
-
-      const scheduledDate = new Date(tomorrow);
-      scheduledDate.setHours(hour, 0, 0, 0);
-
-      return {
-        title,
-        body,
-        id: Math.floor(Math.random() * 1000000),
-        schedule: { at: scheduledDate },
-        extra: { sessionType: type, programName },
-      };
-    });
-
-    await LocalNotifications.schedule({ notifications });
-    console.log(`✓ ${notifications.length} reminders scheduled for tomorrow`);
-    return true;
-  } catch (error) {
-    console.error('Error scheduling multiple reminders:', error);
+    }
+    
     return false;
   }
 };

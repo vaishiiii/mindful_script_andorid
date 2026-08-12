@@ -1,6 +1,10 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Card, Tag } from '@/components/ui';
 import { PROGRAMS, PAID_PROGRAMS } from '@/data/programs';
+import { Capacitor } from '@capacitor/core';
+import { Filesystem, Directory } from '@capacitor/filesystem';
+import { Share } from '@capacitor/share';
+import { jsPDF } from 'jspdf';
 
 // ─── Expanded Word Banks ──────────────────────────────────────────────────────
 const WORD_BANK = {
@@ -216,6 +220,40 @@ const getSessionConsistencyScore = (program, completionRates) => {
   return Math.round((r.morning*0.4)+(r.midday*0.35)+(r.night*0.25));
 };
 
+const buildDailyMoodLog = (moodHistory = [], totalDays = 3) => {
+  const latestByDay = new Map();
+
+  moodHistory.forEach((entry) => {
+    const day = Number(entry?.day || 0);
+    if (!day || day < 1 || day > totalDays) {
+      return;
+    }
+    const existing = latestByDay.get(day);
+    const incomingTs = new Date(entry?.timestamp || 0).getTime();
+    const existingTs = new Date(existing?.timestamp || 0).getTime();
+    if (!existing || incomingTs >= existingTs) {
+      latestByDay.set(day, {
+        day,
+        moodLabel: entry?.moodLabel || 'Unknown',
+        moodEmoji: entry?.moodEmoji || '•',
+        timestamp: entry?.timestamp || null,
+      });
+    }
+  });
+
+  const moodRows = [];
+  for (let day = 1; day <= totalDays; day += 1) {
+    const hit = latestByDay.get(day);
+    moodRows.push({
+      day,
+      moodLabel: hit?.moodLabel || 'Not logged',
+      moodEmoji: hit?.moodEmoji || '—',
+      timestamp: hit?.timestamp || null,
+    });
+  }
+  return moodRows;
+};
+
 
 // ─── Comprehensive PDF-grade HTML Report ─────────────────────────────────────
 const generateReportHTML = ({
@@ -223,7 +261,7 @@ const generateReportHTML = ({
   challengeTrend, dominantTheme, programFocus, total, reflectionSignals,
   mitigation, journalEntries, readinessScore, programTitle, gc,
   archetype, transformationStage, eqScore, resilienceIndex,
-  emotionalTrajectory, completionRates, reflectionDepthScore, allDayCompletions,
+  emotionalTrajectory, completionRates, reflectionDepthScore, allDayCompletions, moodDailyLog,
 }) => {
   const date    = new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
   const color   = prog?.color || '#7A9E87';
@@ -271,6 +309,18 @@ const generateReportHTML = ({
       <p style="font-size:13px;color:#5E6B64;line-height:1.65">${tip}</p>
     </div>`).join('');
 
+  const moodRows = (moodDailyLog || []).map((entry, idx) => {
+    const stamp = entry.timestamp ? new Date(entry.timestamp).toLocaleDateString() : null;
+    return `<div style="display:flex;align-items:center;justify-content:space-between;padding:${idx < (moodDailyLog.length - 1) ? '10px 0' : '10px 0 0'};border-bottom:${idx < (moodDailyLog.length - 1) ? '1px solid #EDE9E0' : 'none'}">
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:12px;color:#9BA8A0;min-width:40px">Day ${entry.day}</span>
+        <span style="font-size:16px">${entry.moodEmoji}</span>
+        <span style="font-size:13px;color:#2C3530;font-weight:600">${entry.moodLabel}</span>
+      </div>
+      <span style="font-size:11px;color:#9BA8A0">${stamp || ''}</span>
+    </div>`;
+  }).join('');
+
   const trajColor = emotionalTrajectory.change > 0 ? '#7A9E87' : emotionalTrajectory.change < 0 ? '#A67B7B' : '#B5956A';
   const trajIcon  = emotionalTrajectory.change > 0 ? '↗' : emotionalTrajectory.change < 0 ? '↘' : '→';
 
@@ -291,13 +341,16 @@ const generateReportHTML = ({
   @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Sans:wght@400;500;600;700&display=swap');
   *{margin:0;padding:0;box-sizing:border-box}
   body{font-family:'DM Sans',system-ui,sans-serif;background:#F7F6F2;color:#2C3530;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  html,body{max-width:100%;overflow-x:hidden}
   h1,h2,h3{font-family:'Cormorant Garamond',Georgia,serif;font-weight:500}
   .cover{background:${bg};padding:52px 36px 40px;border-bottom:2px solid ${color}33}
   .body{max-width:740px;margin:0 auto;padding:36px 36px 48px}
   .section{margin-bottom:28px}
-  .card{background:#fff;border-radius:16px;padding:24px;margin-bottom:16px;border:1px solid #EDE9E0}
+  .card{background:#fff;border-radius:16px;padding:24px;margin-bottom:16px;border:1px solid #EDE9E0;overflow:hidden}
   .card-label{font-size:10px;font-weight:700;color:#9BA8A0;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:16px;border-bottom:1px solid #F0EDE8;padding-bottom:10px}
   .stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+  .triple-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+  .tile{min-width:0;word-break:break-word}
   .stat-box{background:#fff;border-radius:14px;padding:18px 10px;text-align:center;border:1px solid #EDE9E0}
   .stat-num{font-family:'Cormorant Garamond',Georgia,serif;font-size:34px;font-weight:500;color:${color};line-height:1}
   .stat-lbl{font-size:10px;color:#9BA8A0;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;margin-top:6px}
@@ -310,6 +363,16 @@ const generateReportHTML = ({
   .heatmap{display:flex;flex-wrap:wrap;gap:2px;margin-top:8px}
   .footer{text-align:center;padding:36px;border-top:1px solid #EDE9E0;margin-top:36px}
   .footer-logo{font-family:'Cormorant Garamond',Georgia,serif;font-size:22px;font-weight:500;color:${color};margin-bottom:8px}
+  @media (max-width: 900px){
+    .body{max-width:100%;padding:26px 18px 32px}
+    .cover{padding:34px 18px 24px}
+    h1{font-size:32px!important}
+  }
+  @media (max-width: 680px){
+    .stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .triple-grid{grid-template-columns:1fr}
+    .card{padding:16px}
+  }
   @media print{
     body{background:#fff}
     .cover{background:${bg}!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
@@ -415,16 +478,16 @@ const generateReportHTML = ({
         <div style="font-size:12px;color:#9BA8A0">${reflectionSignals.positive} positive signals · ${reflectionSignals.challenging} challenge signals · ${reflectionSignals.clarity} clarity moments</div>
       </div>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
-      <div style="text-align:center;background:#F5F9F6;border-radius:12px;padding:14px 8px">
+    <div class="triple-grid">
+      <div class="tile" style="text-align:center;background:#F5F9F6;border-radius:12px;padding:14px 8px">
         <div style="font-size:24px;font-weight:700;color:#7A9E87">${reflectionSignals.positive}</div>
         <div style="font-size:9px;color:#9BA8A0;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-top:4px">Positive</div>
       </div>
-      <div style="text-align:center;background:#FDF5F0;border-radius:12px;padding:14px 8px">
+      <div class="tile" style="text-align:center;background:#FDF5F0;border-radius:12px;padding:14px 8px">
         <div style="font-size:24px;font-weight:700;color:#A67B7B">${reflectionSignals.challenging}</div>
         <div style="font-size:9px;color:#9BA8A0;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-top:4px">Challenge</div>
       </div>
-      <div style="text-align:center;background:#F8F5FF;border-radius:12px;padding:14px 8px">
+      <div class="tile" style="text-align:center;background:#F8F5FF;border-radius:12px;padding:14px 8px">
         <div style="font-size:24px;font-weight:700;color:#8E9EC4">${reflectionSignals.clarity}</div>
         <div style="font-size:9px;color:#9BA8A0;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-top:4px">Clarity</div>
       </div>
@@ -437,11 +500,11 @@ const generateReportHTML = ({
   <div class="card">
     <div class="card-label">Session Time Analysis</div>
     <p style="font-size:12px;color:#9BA8A0;margin-bottom:14px">${PROGRAM_SCORING[program]?.emphasis||'Balanced session engagement drives consistent progress.'}</p>
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+    <div class="triple-grid">
       ${['morning','midday','night'].map(t => {
         const r = completionRates[t]; const c2 = gc(r);
         const icons = {morning:'🌅',midday:'☀️',night:'🌙'};
-        return `<div style="text-align:center;background:#F5F9F6;border-radius:12px;padding:16px 8px">
+        return `<div class="tile" style="text-align:center;background:#F5F9F6;border-radius:12px;padding:16px 8px">
           <div style="font-size:20px;margin-bottom:8px">${icons[t]}</div>
           <div style="font-size:24px;font-weight:700;color:${c2}">${r}%</div>
           <div style="font-size:9px;color:#9BA8A0;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-top:4px">${t}</div>
@@ -475,7 +538,17 @@ const generateReportHTML = ({
   </div>
 </div>
 
-<!-- 10. PRESCRIPTIVE ACTIONS -->
+<!-- 10. DAILY MOOD LOG -->
+${(moodDailyLog && moodDailyLog.length > 0) ? `
+<div class="section">
+  <div class="card">
+    <div class="card-label">Daily Mood Log</div>
+    <p style="font-size:12px;color:#9BA8A0;margin-bottom:8px">Latest mood logged by day during this programme cycle.</p>
+    ${moodRows}
+  </div>
+</div>` : ''}
+
+<!-- 11. PRESCRIPTIVE ACTIONS -->
 <div class="section">
   <div class="card" style="background:#FFFAF4;border:1px solid #F0DEC1">
     <div class="card-label" style="color:#B5956A">Prescriptive Action Plan</div>
@@ -489,7 +562,7 @@ const generateReportHTML = ({
   </div>
 </div>
 
-<!-- 11. REFLECTION ARCHIVE -->
+<!-- 12. REFLECTION ARCHIVE -->
 ${journalEntries.length > 0 ? `
 <div class="section">
   <div class="card">
@@ -514,10 +587,226 @@ ${journalEntries.length > 0 ? `
 </html>`;
 };
 
-const ReportScreen = ({ program, allDayCompletions, reflectionData = [], activeProgramDuration = 3, programTitle, onNavigateToPrograms }) => {
+const buildReportPdf = ({
+  prog, program, programTitle, activeProgramDuration, rate, total,
+  reflectionSignals, readinessScore, eqScore, resilienceIndex,
+  archetype, transformationStage, challengeTrend, dominantTheme,
+  programFocus, mitigation, patterns, journalEntries, completionRates,
+  reflectionDepthScore, emotionalTrajectory, allDayCompletions,
+}) => {
+  const doc = new jsPDF({ unit: 'pt', format: 'a4' });
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
+  const marginX = 42;
+  const marginTop = 52;
+  const marginBottom = 44;
+  const contentWidth = pageWidth - marginX * 2;
+  const primaryColor = prog?.color || '#7A9E87';
+  const softColor = prog?.bg || '#E8F0EB';
+  let cursorY = marginTop;
+
+  const ensureSpace = (neededHeight) => {
+    if (cursorY + neededHeight > pageHeight - marginBottom) {
+      doc.addPage();
+      cursorY = marginTop;
+    }
+  };
+
+  const addLine = (padding = 18) => {
+    ensureSpace(padding);
+    doc.setDrawColor(229, 233, 226);
+    doc.line(marginX, cursorY, pageWidth - marginX, cursorY);
+    cursorY += padding - 4;
+  };
+
+  const addHeading = (text, size = 15, color = '#2C3530') => {
+    ensureSpace(28);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(size);
+    doc.setTextColor(color);
+    doc.text(text, marginX, cursorY);
+    cursorY += size + 10;
+  };
+
+  const addBody = (text, options = {}) => {
+    const size = options.size || 11;
+    const color = options.color || '#5E6B64';
+    const lineHeight = options.lineHeight || 15;
+    const fontStyle = options.bold ? 'bold' : 'normal';
+    const lines = doc.splitTextToSize(String(text || ''), contentWidth);
+    ensureSpace(lines.length * lineHeight + 10);
+    doc.setFont('helvetica', fontStyle);
+    doc.setFontSize(size);
+    doc.setTextColor(color);
+    doc.text(lines, marginX, cursorY);
+    cursorY += lines.length * lineHeight + 6;
+  };
+
+  const addMetric = (label, value, x, y, boxWidth) => {
+    doc.setDrawColor(232, 240, 235);
+    doc.setFillColor(255, 255, 255);
+    doc.roundedRect(x, y, boxWidth, 62, 10, 10, 'FD');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(20);
+    doc.setTextColor(primaryColor);
+    doc.text(String(value), x + 14, y + 25);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.setTextColor('#9BA8A0');
+    doc.text(label.toUpperCase(), x + 14, y + 43);
+  };
+
+  const addBullet = (text, index) => {
+    const bullet = `${index + 1}. ${text}`;
+    addBody(bullet, { size: 11, color: '#5E6B64' });
+  };
+
+  const dateLabel = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  const title = programTitle || `${prog?.label || 'MindScript'} Transformation Report`;
+
+  doc.setFillColor(247, 246, 242);
+  doc.rect(0, 0, pageWidth, pageHeight, 'F');
+
+  doc.setFillColor(primaryColor);
+  doc.roundedRect(marginX, cursorY, 170, 24, 12, 12, 'F');
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(10);
+  doc.setTextColor('#FFFFFF');
+  doc.text(`${activeProgramDuration}-Day Program Complete`, marginX + 14, cursorY + 16);
+  cursorY += 42;
+
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(26);
+  doc.setTextColor('#2C3530');
+  doc.text('Psychological Transformation Report', marginX, cursorY);
+  cursorY += 26;
+
+  addBody(title, { size: 12, color: primaryColor, bold: true });
+  addBody(`Generated ${dateLabel}`, { size: 10, color: '#9BA8A0' });
+  addBody(`Completion rate: ${rate}%  |  Sessions completed: ${total}  |  Reflections: ${reflectionSignals.totalEntries}`, { size: 11, color: '#5E6B64' });
+  addLine();
+
+  addHeading('Key Metrics');
+  ensureSpace(90);
+  const metricY = cursorY;
+  const metricWidth = (contentWidth - 24) / 4;
+  addMetric('Completion', `${rate}%`, marginX, metricY, metricWidth);
+  addMetric('Sessions', total, marginX + metricWidth + 8, metricY, metricWidth);
+  addMetric('Reflections', reflectionSignals.totalEntries, marginX + (metricWidth + 8) * 2, metricY, metricWidth);
+  addMetric('Readiness', readinessScore, marginX + (metricWidth + 8) * 3, metricY, metricWidth);
+  cursorY = metricY + 78;
+
+  addHeading('Transformation Summary');
+  addBody(`Your profile reflects a ${challengeTrend} emotional pattern, with ${dominantTheme} as the dominant theme. The report places you in the ${transformationStage.name} stage of transformation and points toward ${programFocus} as the next area to train.`, { size: 11, lineHeight: 16 });
+  addBody(`Behavioural readiness: ${readinessScore}/100. EQ score: ${eqScore}/100. Resilience index: ${resilienceIndex}/100. Reflection depth score: ${reflectionDepthScore}/100.`, { size: 11, color: '#2C3530' });
+
+  addHeading('Behavioural Patterns');
+  patterns.forEach((pattern) => {
+    addBody(`• ${pattern.label}: ${pattern.val}% — ${pattern.note}`, { size: 10.5, lineHeight: 14.5 });
+  });
+
+  addHeading('Session Time Analysis');
+  addBody(`Morning: ${completionRates.morning}%  |  Midday: ${completionRates.midday}%  |  Night: ${completionRates.night}%`, { size: 11, color: '#2C3530' });
+  addBody(`This distribution suggests ${PROGRAM_SCORING[program]?.emphasis || 'balanced session engagement drives progress.'}`, { size: 11 });
+
+  addHeading('Next Actions');
+  mitigation.forEach((tip, index) => addBullet(tip, index));
+
+  if (journalEntries.length > 0) {
+    addHeading(`Reflection Archive (${journalEntries.length})`);
+    journalEntries.slice(0, 8).forEach((entry, index) => {
+      const entryLabel = `Day ${entry.day || '-'}${entry.sessionType ? ` · ${entry.sessionType}` : ''}`;
+      addBody(entryLabel, { size: 10, color: '#9BA8A0' });
+      addBody(entry.text, { size: 10.5, lineHeight: 14.5 });
+      if (index < Math.min(journalEntries.length, 8) - 1) {
+        addLine(14);
+      }
+    });
+  }
+
+  addHeading('Completion Snapshot');
+  const activeDays = allDayCompletions.reduce((sum, day) => sum + (day ? 1 : 0), 0);
+  addBody(`Program: ${title}`, { size: 11, color: '#2C3530' });
+  addBody(`Days tracked: ${activeDays} of ${activeProgramDuration}`, { size: 11, color: '#2C3530' });
+  addBody(`Archetype: ${archetype.name}`, { size: 11, color: '#2C3530' });
+
+  ensureSpace(70);
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(9);
+  doc.setTextColor('#9BA8A0');
+  doc.text('MindScript report generated from your in-app reflection and completion data.', marginX, pageHeight - 28);
+
+  return doc;
+};
+
+const blobToBase64 = (blob) =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const result = reader.result;
+      if (typeof result !== 'string' || !result.includes(',')) {
+        reject(new Error('Failed to convert blob to base64.'));
+        return;
+      }
+      resolve(result.split(',')[1]);
+    };
+    reader.onerror = () => reject(reader.error || new Error('FileReader failed.'));
+    reader.readAsDataURL(blob);
+  });
+
+const renderHtmlToPdf = async (html) => {
+  const iframe = document.createElement('iframe');
+  iframe.style.position = 'fixed';
+  iframe.style.right = '-10000px';
+  iframe.style.bottom = '-10000px';
+  iframe.style.width = '900px';
+  iframe.style.height = '1200px';
+  iframe.style.border = '0';
+  document.body.appendChild(iframe);
+
+  try {
+    const doc = iframe.contentDocument;
+    if (!doc) {
+      throw new Error('Unable to initialize HTML renderer.');
+    }
+
+    doc.open();
+    doc.write(html);
+    doc.close();
+
+    await new Promise((resolve) => {
+      if (doc.readyState === 'complete') {
+        resolve();
+        return;
+      }
+      iframe.onload = () => resolve();
+      setTimeout(resolve, 800);
+    });
+
+    const pdf = new jsPDF({ orientation: 'p', unit: 'pt', format: 'a4' });
+    await pdf.html(doc.body, {
+      margin: [18, 18, 18, 18],
+      autoPaging: 'text',
+      width: 559,
+      windowWidth: 900,
+      html2canvas: {
+        scale: 0.75,
+        useCORS: true,
+        backgroundColor: '#F7F6F2',
+      },
+    });
+
+    return pdf;
+  } finally {
+    iframe.remove();
+  }
+};
+
+const ReportScreen = ({ program, allDayCompletions, reflectionData = [], moodHistory = [], activeProgramDuration = 3, programTitle, onNavigateToPrograms }) => {
   const prog = PROGRAMS.find((p) => p.id === program);
   const paid = PAID_PROGRAMS[program] || [];
   const resolvedTitle = programTitle || `${prog?.label || ''} ${activeProgramDuration}-Day Program`;
+  const [showFullReport, setShowFullReport] = useState(false);
   const total = allDayCompletions.reduce((s, d) => s + (d?.morning ? 1 : 0) + (d?.midday ? 1 : 0) + (d?.night ? 1 : 0), 0);
   const totalPossibleSessions = Math.max(1, activeProgramDuration * 3);
   const rate = Math.round((total / totalPossibleSessions) * 100);
@@ -553,6 +842,29 @@ const ReportScreen = ({ program, allDayCompletions, reflectionData = [], activeP
       const timerText = (entry?.timerInsight || '').trim();
       if (timerText.length > 0) {
         entries.push({ ...entry, text: timerText, entryType: 'timer' });
+      }
+
+      // Task pointer answers (text/multi-choice/notes) should feed report analytics.
+      if (entry?.taskInputs && typeof entry.taskInputs === 'object') {
+        Object.entries(entry.taskInputs).forEach(([key, value]) => {
+          if (typeof value === 'string' && value.trim().length > 0) {
+            entries.push({ ...entry, text: value.trim(), entryType: 'task', taskKey: key });
+          }
+
+          if (value === true) {
+            const prompt = entry?.taskPrompts?.[key] || 'Checklist confirmation';
+            entries.push({ ...entry, text: `${prompt}: completed`, entryType: 'task', taskKey: key });
+          }
+        });
+      }
+
+      // Night reflection answers should also contribute to report signals.
+      if (entry?.answers && typeof entry.answers === 'object') {
+        Object.values(entry.answers).forEach((value) => {
+          if (typeof value === 'string' && value.trim().length > 0) {
+            entries.push({ ...entry, text: value.trim(), entryType: 'answer' });
+          }
+        });
       }
     });
     return entries.sort((a, b) => new Date(a.timestamp || 0) - new Date(b.timestamp || 0));
@@ -623,27 +935,66 @@ const ReportScreen = ({ program, allDayCompletions, reflectionData = [], activeP
   const eqScore = useMemo(() => getEQScore(reflectionSignals, journalEntries, activeProgramDuration), [reflectionSignals, journalEntries, activeProgramDuration]);
   const resilienceIndex = useMemo(() => getResilienceIndex(allDayCompletions), [allDayCompletions]);
   const emotionalTrajectory = useMemo(() => getEmotionalTrajectory(journalEntries), [journalEntries]);
-
-  const handleDownload = () => {
-    const html = generateReportHTML({
-      prog, program, activeProgramDuration, rate, patterns, challengeTrend, dominantTheme,
-      programFocus, total, reflectionSignals, mitigation, journalEntries, readinessScore,
-      programTitle: resolvedTitle, gc,
-      archetype, transformationStage, eqScore, resilienceIndex,
-      emotionalTrajectory, completionRates, reflectionDepthScore, allDayCompletions,
-    });
-    const pw = window.open('', '_blank', 'width=900,height=700');
-    if (!pw) return;
-    pw.document.write(html);
-    pw.document.close();
-    pw.onload = () => {
-      pw.print();
-      pw.onafterprint = () => pw.close();
+  const moodDailyLog = useMemo(() => buildDailyMoodLog(moodHistory, activeProgramDuration), [moodHistory, activeProgramDuration]);
+  const moodSummary = useMemo(() => {
+    const logged = moodDailyLog.filter((entry) => entry.moodLabel !== 'Not logged');
+    const loggedDays = logged.length;
+    const counts = logged.reduce((acc, entry) => {
+      const key = `${entry.moodEmoji} ${entry.moodLabel}`;
+      acc[key] = (acc[key] || 0) + 1;
+      return acc;
+    }, {});
+    const dominant = Object.entries(counts).sort((a, b) => b[1] - a[1])[0]?.[0] || 'No dominant mood yet';
+    return {
+      loggedDays,
+      totalDays: activeProgramDuration,
+      dominant,
     };
-  };
+  }, [moodDailyLog, activeProgramDuration]);
+
+  const detailedReportHtml = useMemo(() => generateReportHTML({
+    prog, program, activeProgramDuration, rate, patterns, challengeTrend, dominantTheme,
+    programFocus, total, reflectionSignals, mitigation, journalEntries, readinessScore,
+    programTitle: resolvedTitle, gc,
+    archetype, transformationStage, eqScore, resilienceIndex,
+    emotionalTrajectory, completionRates, reflectionDepthScore, allDayCompletions, moodDailyLog,
+  }), [
+    prog, program, activeProgramDuration, rate, patterns, challengeTrend, dominantTheme,
+    programFocus, total, reflectionSignals, mitigation, journalEntries, readinessScore,
+    resolvedTitle, gc, archetype, transformationStage, eqScore, resilienceIndex,
+    emotionalTrajectory, completionRates, reflectionDepthScore, allDayCompletions, moodDailyLog,
+  ]);
 
   return (
     <div style={{ minHeight: "100vh", background: "#F7F6F2", paddingBottom: "48px" }}>
+      {onNavigateToPrograms && !showFullReport && (
+        <button
+          onClick={() => onNavigateToPrograms()}
+          aria-label="Close report"
+          style={{
+            position: "fixed",
+            top: "max(12px, env(safe-area-inset-top))",
+            right: "14px",
+            width: "38px",
+            height: "38px",
+            borderRadius: "50%",
+            border: "1px solid rgba(122,158,135,0.35)",
+            background: "rgba(247,246,242,0.92)",
+            color: "#5E6B64",
+            fontSize: "24px",
+            lineHeight: 1,
+            cursor: "pointer",
+            zIndex: 1300,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            boxShadow: "0 4px 14px rgba(44,53,48,0.16)",
+            backdropFilter: "blur(4px)",
+          }}
+        >
+          ×
+        </button>
+      )}
       <div style={{ background: prog?.bg || "#E8F0EB", padding: "48px 22px 30px" }}>
         <div style={{ maxWidth: 480, margin: "0 auto" }}>
           <Tag label={`${activeProgramDuration}-Day Program Complete`} color={prog?.color} />
@@ -660,9 +1011,8 @@ const ReportScreen = ({ program, allDayCompletions, reflectionData = [], activeP
       </div>
 
       <div style={{ maxWidth: 480, margin: "0 auto", padding: "24px 22px" }}>
-        {/* Download Button */}
         <button
-          onClick={handleDownload}
+          onClick={() => setShowFullReport(true)}
           style={{
             width: "100%",
             padding: "14px 20px",
@@ -682,8 +1032,57 @@ const ReportScreen = ({ program, allDayCompletions, reflectionData = [], activeP
             letterSpacing: "0.01em",
           }}
         >
-          ↓ Download Full Report
+          View Full Detailed Report
         </button>
+
+        {showFullReport && (
+          <div
+            style={{
+              position: 'fixed',
+              inset: 0,
+              background: 'rgba(44,53,48,0.72)',
+              zIndex: 1200,
+              padding: '18px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+            onClick={(e) => {
+              if (e.target === e.currentTarget) setShowFullReport(false);
+            }}
+          >
+            <div
+              style={{
+                width: '100%',
+                maxWidth: 900,
+                height: '92vh',
+                background: '#F7F6F2',
+                borderRadius: '20px',
+                overflow: 'hidden',
+                display: 'flex',
+                flexDirection: 'column',
+                boxShadow: '0 24px 60px rgba(0,0,0,0.24)',
+              }}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 14px', background: prog?.bg || '#E8F0EB', borderBottom: '1px solid #E8E4DC' }}>
+                <p style={{ fontSize: '12px', fontWeight: 700, color: prog?.color || '#7A9E87', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+                  Detailed Report
+                </p>
+                <button
+                  onClick={() => setShowFullReport(false)}
+                  style={{ background: 'none', border: 'none', fontSize: '28px', color: '#5E6B64', cursor: 'pointer', lineHeight: 1 }}
+                >
+                  ×
+                </button>
+              </div>
+              <iframe
+                title="Detailed In-App Report"
+                srcDoc={detailedReportHtml}
+                style={{ width: '100%', flex: 1, border: 'none', background: '#fff' }}
+              />
+            </div>
+          </div>
+        )}
 
         <Card style={{ marginBottom: "14px", textAlign: "center" }}>
           <p style={{ fontSize: "11px", fontWeight: 600, color: "#9BA8A0", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "14px" }}>
@@ -696,6 +1095,18 @@ const ReportScreen = ({ program, allDayCompletions, reflectionData = [], activeP
               : rate >= 50
               ? "Solid foundation. Consistency is clearly building."
               : "You started — that's the hardest part. Now we build on it."}
+          </p>
+        </Card>
+
+        <Card style={{ marginBottom: "14px", background: "linear-gradient(160deg, rgba(255,255,255,0.96) 0%, rgba(122,158,135,0.08) 100%)", border: "1px solid rgba(122,158,135,0.2)" }}>
+          <p style={{ fontSize: "11px", fontWeight: 600, color: "#7A9E87", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: "10px" }}>
+            Mood Summary
+          </p>
+          <p style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "20px", fontWeight: 600, color: "#2C3530", marginBottom: "4px" }}>
+            {moodSummary.dominant}
+          </p>
+          <p style={{ fontSize: "12px", color: "#5E6B64", lineHeight: 1.6 }}>
+            Logged on {moodSummary.loggedDays}/{moodSummary.totalDays} days in this cycle.
           </p>
         </Card>
 

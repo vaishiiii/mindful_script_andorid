@@ -1,16 +1,47 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { App as CapacitorApp } from '@capacitor/app';
 import { Btn, Card, TimePicker, ConfirmDialog } from '@/components/ui';
 import { PROGRAMS } from '@/data/programs';
 import { computeUnlocks } from '@/utils/helpers';
 
-const ProfileTab = ({ program, setup, onUpdateSetup, onReset, user, onLogout }) => {
+const ProfileTab = ({ program, setup, onUpdateSetup, onReset, user, onLogout, accent = '#7A9E87', theme = null }) => {
   const prog = PROGRAMS.find((p) => p.id === program);
+  const tabTheme = theme || { mid: '#EFF9F0', contrast: '#3F6C43' };
   const [wake, setWake] = useState(setup.wakeTime);
   const [slp, setSlp] = useState(setup.sleepTime);
   const [notifs, setNotifs] = useState(true);
   const [saved, setSaved] = useState(false);
   const [confirm, setConfirm] = useState(false);
   const [confirmLogout, setConfirmLogout] = useState(false);
+  const [buildInfo, setBuildInfo] = useState({
+    version: '-',
+    build: '-',
+    id: '-',
+  });
+
+  useEffect(() => {
+    let mounted = true;
+
+    const loadBuildInfo = async () => {
+      try {
+        const info = await CapacitorApp.getInfo();
+        if (!mounted) return;
+        setBuildInfo({
+          version: info?.version || '-',
+          build: info?.build || '-',
+          id: info?.id || '-',
+        });
+      } catch {
+        if (!mounted) return;
+        setBuildInfo({ version: '-', build: '-', id: '-' });
+      }
+    };
+
+    loadBuildInfo();
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   const save = () => {
     onUpdateSetup({ ...setup, wakeTime: wake, sleepTime: slp, unlocks: computeUnlocks(wake, slp) });
@@ -19,7 +50,7 @@ const ProfileTab = ({ program, setup, onUpdateSetup, onReset, user, onLogout }) 
   };
 
   return (
-    <div style={{ padding: "32px 22px", maxWidth: 480, margin: "0 auto" }}>
+    <div style={{ padding: "32px 22px", maxWidth: 480, margin: "0 auto", background: `linear-gradient(180deg, ${tabTheme.mid} 0%, rgba(255,255,255,0.84) 24%, rgba(255,255,255,0.74) 100%)`, borderRadius: 20 }}>
       {confirm && (
         <ConfirmDialog
           title="Reset your program?"
@@ -47,7 +78,7 @@ const ProfileTab = ({ program, setup, onUpdateSetup, onReset, user, onLogout }) 
         />
       )}
 
-      <p style={{ fontSize: "12px", fontWeight: 700, color: "#7A9E87", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: "6px" }}>Profile</p>
+      <p style={{ fontSize: "12px", fontWeight: 700, color: accent, letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: "6px" }}>Profile</p>
       <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "26px", fontWeight: 500, marginBottom: "22px" }}>Your settings</h2>
 
       {/* User Info */}
@@ -58,7 +89,7 @@ const ProfileTab = ({ program, setup, onUpdateSetup, onReset, user, onLogout }) 
             {user.photoURL ? (
               <img src={user.photoURL} alt="Profile" style={{ width: 40, height: 40, borderRadius: "50%" }} />
             ) : (
-              <div style={{ width: 40, height: 40, borderRadius: "50%", background: "#7A9E87", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontWeight: 600 }}>
+              <div style={{ width: 40, height: 40, borderRadius: "50%", background: accent, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontWeight: 600 }}>
                 {(user.displayName || user.email)?.[0]?.toUpperCase()}
               </div>
             )}
@@ -115,7 +146,7 @@ const ProfileTab = ({ program, setup, onUpdateSetup, onReset, user, onLogout }) 
               width: 44,
               height: 24,
               borderRadius: 12,
-              background: notifs ? "#7A9E87" : "#C4D8CB",
+              background: notifs ? accent : "#C4D8CB",
               position: "relative",
               cursor: "pointer",
               transition: "background .25s",
@@ -136,6 +167,15 @@ const ProfileTab = ({ program, setup, onUpdateSetup, onReset, user, onLogout }) 
             />
           </div>
         </div>
+      </Card>
+
+      {/* Build Info */}
+      <Card style={{ marginBottom: "14px" }}>
+        <p style={{ fontSize: "12px", fontWeight: 600, color: "#9BA8A0", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: "8px" }}>App Build</p>
+        <p style={{ fontWeight: 600, fontSize: "14px", color: "#2C3530", marginBottom: "4px" }}>
+          Version {buildInfo.version} · Build {buildInfo.build}
+        </p>
+        <p style={{ fontSize: "12px", color: "#9BA8A0" }}>Bundle: {buildInfo.id}</p>
       </Card>
 
       {/* Reset */}

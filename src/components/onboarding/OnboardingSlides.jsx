@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 const SLIDES = [
   {
     id: 0,
-    bg: 'linear-gradient(160deg, #EAF3EC 0%, #F2F8F4 55%, #ECF5EE 100%)',
+    bg: 'radial-gradient(130% 110% at 12% 0%, #F3FFF8 0%, #E8F6EE 48%, #DFEFE5 100%)',
     accent: '#7A9E87',
     accentRgb: '122,158,135',
     textPrimary: '#1A3024',
@@ -38,7 +38,7 @@ const SLIDES = [
   },
   {
     id: 1,
-    bg: 'linear-gradient(160deg, #FAF4E5 0%, #FBF6EB 55%, #F8F1DC 100%)',
+    bg: 'radial-gradient(130% 115% at 10% 0%, #FFF8E9 0%, #FDF3DF 50%, #F5EBD5 100%)',
     accent: '#C4A882',
     accentRgb: '196,168,130',
     textPrimary: '#2A2210',
@@ -82,7 +82,7 @@ const SLIDES = [
   },
   {
     id: 2,
-    bg: 'linear-gradient(160deg, #EEE8F8 0%, #F3EFF9 55%, #F0EBF7 100%)',
+    bg: 'radial-gradient(130% 112% at 10% 0%, #F3EDFF 0%, #EFE8F8 48%, #E7E0F2 100%)',
     accent: '#B09FD8',
     accentRgb: '176,159,216',
     textPrimary: '#1E1540',
@@ -121,7 +121,7 @@ const SLIDES = [
   },
   {
     id: 3,
-    bg: 'linear-gradient(160deg, #E4F3F3 0%, #ECF7F7 55%, #E0F1F1 100%)',
+    bg: 'radial-gradient(130% 112% at 10% 0%, #E8FBFB 0%, #E2F4F4 48%, #DCEDED 100%)',
     accent: '#5BBFBE',
     accentRgb: '91,191,190',
     textPrimary: '#0D2626',
@@ -166,7 +166,7 @@ const SLIDES = [
   },
   {
     id: 4,
-    bg: 'linear-gradient(160deg, #E8EEF8 0%, #EEF3FB 55%, #E4EAF7 100%)',
+    bg: 'radial-gradient(130% 112% at 10% 0%, #EDF4FF 0%, #E6EDF9 48%, #DEE5F2 100%)',
     accent: '#8E9EC4',
     accentRgb: '142,158,196',
     textPrimary: '#111E3A',
@@ -219,29 +219,56 @@ const SplashScreen = ({ onDone }) => {
   return (
     <div style={{
       position: 'fixed', inset: 0,
-      background: 'linear-gradient(160deg, #152619 0%, #2C3530 60%, #1e2a20 100%)',
+      background: 'radial-gradient(148% 122% at 50% 8%, #1B4A3D 0%, #113025 52%, #0A1813 100%)',
       display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
       zIndex: 9999,
       opacity: phase === 2 ? 0 : 1,
       transition: 'opacity 0.7s ease',
+      overflow: 'hidden',
     }}>
       <div style={{
-        position: 'absolute', width: 280, height: 280, borderRadius: '50%',
-        background: 'radial-gradient(circle, rgba(122,158,135,0.18) 0%, transparent 70%)',
-        top: '50%', left: '50%', transform: 'translate(-50%, -60%)',
+        position: 'absolute', inset: 0,
+        background: 'radial-gradient(120% 95% at 50% -18%, rgba(122,255,209,0.24) 0%, rgba(122,255,209,0.02) 44%, rgba(0,0,0,0) 100%)',
+        animation: 'premiumSplashShift 12s ease-in-out infinite',
       }} />
       <div style={{
-        width: 90, height: 90, borderRadius: 28,
-        background: 'linear-gradient(135deg, #7A9E87, #4d7a61)',
+        position: 'absolute', width: 360, height: 360, borderRadius: '50%',
+        background: 'radial-gradient(circle, rgba(84,242,183,0.28) 0%, rgba(84,242,183,0) 72%)',
+        top: -160, left: -120, filter: 'blur(6px)', animation: 'heroGlowDrift 9.5s ease-in-out infinite',
+      }} />
+      <div style={{
+        position: 'absolute', width: 320, height: 320, borderRadius: '50%',
+        background: 'radial-gradient(circle, rgba(105,176,255,0.22) 0%, rgba(105,176,255,0) 74%)',
+        right: -110, bottom: -120, filter: 'blur(4px)', animation: 'premiumPulse 8.8s ease-in-out infinite',
+      }} />
+      <div style={{
+        position: 'absolute', width: 260, height: 260, borderRadius: '50%',
+        background: 'radial-gradient(circle, rgba(122,255,209,0.16) 0%, transparent 72%)',
+        top: '50%', left: '50%', transform: 'translate(-50%, -60%)', animation: 'premiumPulse 6.8s ease-in-out infinite',
+      }} />
+      <div style={{
+        width: 124, height: 124, borderRadius: '50%',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        boxShadow: '0 10px 48px rgba(122,158,135,0.5)',
-        marginBottom: 22,
+        marginBottom: 22, position: 'relative', animation: 'float 3s ease-in-out infinite',
       }}>
+        <div style={{
+          position: 'absolute', inset: 0, borderRadius: '50%',
+          background: 'conic-gradient(from 30deg, rgba(144,255,214,0.18) 0deg, rgba(144,255,214,0.72) 82deg, rgba(98,173,255,0.62) 170deg, rgba(144,255,214,0.18) 360deg)',
+          animation: 'premiumHaloSpin 8.8s linear infinite', boxShadow: '0 0 26px rgba(104,220,184,0.44)',
+        }} />
+        <div style={{
+          position: 'absolute', inset: 10, borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(20,52,41,0.98) 0%, rgba(16,39,31,0.95) 100%)',
+          border: '1.5px solid rgba(175,255,225,0.36)',
+          boxShadow: 'inset 0 0 20px rgba(83,206,165,0.25), 0 10px 26px rgba(0,0,0,0.34)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+        }}>
         {/* Leaf SVG icon */}
-        <svg width="46" height="46" viewBox="0 0 46 46" fill="none">
-          <path d="M23 6 C30 10 40 15 37 25 C34 35 20 40 13 31 C6 22 13 10 23 6 Z" fill="rgba(255,255,255,0.9)"/>
-          <path d="M23 6 C21 16 19 26 23 42" stroke="rgba(255,255,255,0.5)" strokeWidth="1.8" fill="none" strokeLinecap="round"/>
+        <svg width="42" height="42" viewBox="0 0 46 46" fill="none">
+          <path d="M23 6 C30 10 40 15 37 25 C34 35 20 40 13 31 C6 22 13 10 23 6 Z" fill="rgba(228,255,245,0.95)"/>
+          <path d="M23 6 C21 16 19 26 23 42" stroke="rgba(165,246,218,0.65)" strokeWidth="1.8" fill="none" strokeLinecap="round"/>
         </svg>
+        </div>
       </div>
       <div style={{
         opacity: phase >= 1 ? 1 : 0,
@@ -251,11 +278,13 @@ const SplashScreen = ({ onDone }) => {
       }}>
         <h1 style={{
           fontFamily: "'Cormorant Garamond', Georgia, serif",
-          fontSize: 38, fontWeight: 500, color: '#F7F6F2',
-          letterSpacing: '-0.01em', margin: 0, lineHeight: 1,
+          fontSize: 40, fontWeight: 500, color: '#EFFFF7',
+          letterSpacing: '0.04em', margin: 0, lineHeight: 1,
+          textShadow: '0 0 14px rgba(126,255,212,0.28), 0 0 28px rgba(126,255,212,0.16)',
+          animation: 'premiumTextGlow 3.2s ease-in-out infinite',
         }}>Mindscript</h1>
         <p style={{
-          fontSize: 12, color: 'rgba(247,246,242,0.5)',
+          fontSize: 12, color: 'rgba(220,247,235,0.88)',
           fontFamily: "'DM Sans', system-ui, sans-serif",
           marginTop: 8, letterSpacing: '0.12em', textTransform: 'uppercase',
         }}>Rewire Your Mind</p>
@@ -267,8 +296,9 @@ const SplashScreen = ({ onDone }) => {
       }}>
         {[0, 1, 2].map(i => (
           <div key={i} style={{
-            width: 7, height: 7, borderRadius: '50%',
-            background: '#7A9E87',
+            width: 9, height: 9, borderRadius: '50%',
+            background: '#D9FFF2',
+            boxShadow: '0 0 12px rgba(130,255,214,0.72)',
             animation: `splashDot 1.2s ${i * 0.2}s ease-in-out infinite`,
           }} />
         ))}
@@ -306,14 +336,21 @@ const Slide = ({ slide, active, direction, onNext, onSkip, current, total }) => 
     }}>
       {/* Ambient glows */}
       <div style={{
-        position: 'absolute', width: 340, height: 340, borderRadius: '50%',
-        background: `radial-gradient(circle, rgba(${slide.accentRgb},0.22) 0%, transparent 65%)`,
-        top: -100, right: -80, pointerEvents: 'none', zIndex: 0,
+        position: 'absolute', width: 370, height: 370, borderRadius: '50%',
+        background: `radial-gradient(circle, rgba(${slide.accentRgb},0.3) 0%, transparent 70%)`,
+        top: -130, right: -110, pointerEvents: 'none', zIndex: 0,
+        filter: 'blur(1px)', animation: 'heroGlowDrift 9s ease-in-out infinite',
       }} />
       <div style={{
-        position: 'absolute', width: 220, height: 220, borderRadius: '50%',
-        background: `radial-gradient(circle, rgba(${slide.accentRgb},0.13) 0%, transparent 65%)`,
-        bottom: 150, left: -60, pointerEvents: 'none', zIndex: 0,
+        position: 'absolute', width: 260, height: 260, borderRadius: '50%',
+        background: `radial-gradient(circle, rgba(${slide.accentRgb},0.18) 0%, transparent 70%)`,
+        bottom: 170, left: -80, pointerEvents: 'none', zIndex: 0,
+        animation: 'premiumPulse 8.8s ease-in-out infinite',
+      }} />
+      <div style={{
+        position: 'absolute', inset: 0,
+        background: `linear-gradient(180deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.03) 24%, rgba(255,255,255,0) 100%)`,
+        pointerEvents: 'none', zIndex: 0,
       }} />
 
       {/* Scrollable content */}
@@ -338,13 +375,14 @@ const Slide = ({ slide, active, direction, onNext, onSkip, current, total }) => 
         }}>
           <span style={{
             display: 'inline-block',
-            background: `rgba(${slide.accentRgb},0.15)`,
-            border: `1px solid rgba(${slide.accentRgb},0.35)`,
+            background: `linear-gradient(120deg, rgba(${slide.accentRgb},0.2), rgba(255,255,255,0.4))`,
+            border: `1px solid rgba(${slide.accentRgb},0.38)`,
             color: slide.accent,
             fontSize: 11, fontWeight: 700, letterSpacing: '0.1em',
             textTransform: 'uppercase',
             padding: '6px 16px', borderRadius: 20,
             fontFamily: "'DM Sans', system-ui, sans-serif",
+            boxShadow: `0 6px 16px rgba(${slide.accentRgb},0.18), inset 0 0 0 1px rgba(255,255,255,0.42)`,
           }}>{slide.badge}</span>
         </div>
 
@@ -354,6 +392,12 @@ const Slide = ({ slide, active, direction, onNext, onSkip, current, total }) => 
           opacity: mounted ? 1 : 0,
           transform: mounted ? 'scale(1) translateY(0)' : 'scale(0.88) translateY(16px)',
           transition: 'opacity 0.5s ease 0.12s, transform 0.5s cubic-bezier(0.34,1.2,0.64,1) 0.12s',
+          background: `linear-gradient(160deg, rgba(255,255,255,0.44) 0%, rgba(${slide.accentRgb},0.13) 100%)`,
+          border: `1px solid rgba(${slide.accentRgb},0.24)`,
+          borderRadius: 24,
+          boxShadow: `0 12px 28px rgba(${slide.accentRgb},0.16), inset 0 0 0 1px rgba(255,255,255,0.28)`,
+          backdropFilter: 'blur(8px)',
+          padding: '8px 8px 4px',
         }}>
           {slide.visual}
         </div>
@@ -364,6 +408,8 @@ const Slide = ({ slide, active, direction, onNext, onSkip, current, total }) => 
           fontSize: 36, fontWeight: 500, color: slide.textPrimary,
           lineHeight: 1.2, margin: '0 0 10px',
           whiteSpace: 'pre-line',
+          letterSpacing: '0.01em',
+          textShadow: `0 8px 24px rgba(${slide.accentRgb},0.15)`,
           opacity: mounted ? 1 : 0,
           transform: mounted ? 'translateY(0)' : 'translateY(16px)',
           transition: 'opacity 0.4s ease 0.22s, transform 0.4s ease 0.22s',
@@ -389,9 +435,11 @@ const Slide = ({ slide, active, direction, onNext, onSkip, current, total }) => 
           {slide.features.map((f, i) => (
             <div key={i} style={{
               display: 'flex', alignItems: 'flex-start', gap: 12,
-              background: slide.cardBg,
+              background: `linear-gradient(155deg, rgba(255,255,255,0.62) 0%, ${slide.cardBg} 100%)`,
               border: `1px solid ${slide.cardBorder}`,
               borderRadius: 14, padding: '10px 14px',
+              boxShadow: `0 8px 20px rgba(${slide.accentRgb},0.14), inset 0 0 0 1px rgba(255,255,255,0.24)`,
+              backdropFilter: 'blur(6px)',
             }}>
               <span style={{ fontSize: 21, lineHeight: 1, flexShrink: 0, marginTop: 1 }}>{f.icon}</span>
               <div>
@@ -438,7 +486,16 @@ const Slide = ({ slide, active, direction, onNext, onSkip, current, total }) => 
             color: '#fff', fontSize: 15, fontWeight: 700,
             cursor: 'pointer', letterSpacing: '-0.01em',
             fontFamily: "'DM Sans', system-ui, sans-serif",
-            boxShadow: `0 6px 20px rgba(${slide.accentRgb},0.40)`,
+            boxShadow: `0 10px 26px rgba(${slide.accentRgb},0.42), 0 0 20px rgba(${slide.accentRgb},0.26)`,
+            transition: 'transform .18s ease, box-shadow .2s ease, filter .2s ease',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = 'translateY(-1px) scale(1.012)';
+            e.currentTarget.style.filter = 'brightness(1.04) saturate(1.05)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'translateY(0) scale(1)';
+            e.currentTarget.style.filter = 'none';
           }}
         >
           {isFinal ? "Get Started - It's Free" : 'Next'}
@@ -464,8 +521,8 @@ const Slide = ({ slide, active, direction, onNext, onSkip, current, total }) => 
 };
 
 // Main Component
-const OnboardingSlides = ({ onDone }) => {
-  const [showSplash, setShowSplash] = useState(true);
+const OnboardingSlides = ({ onDone, showIntroSplash = true }) => {
+  const [showSplash, setShowSplash] = useState(showIntroSplash);
   const [current, setCurrent] = useState(0);
   const [direction, setDirection] = useState(1);
   const touchStartX = useRef(null);

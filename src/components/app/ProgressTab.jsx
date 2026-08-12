@@ -1,7 +1,21 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import emailjs from '@emailjs/browser';
 import { Card, LockIcon } from '@/components/ui';
 import { PROGRAMS } from '@/data/programs';
+import { SESSION_TASKS } from '@/data/sessions';
+import paidProgramCalm7 from '@/data/paidProgramCalm7';
+import { PAID_PROGRAM_21DAYS_CALM } from '@/data/paidProgramCalm21';
+import paidProgramConfidence5 from '@/data/paidProgramConfidence5';
+import paidProgramConfidence7 from '@/data/paidProgramConfidence7';
+import { PAID_PROGRAM_21DAYS_CONFIDENCE } from '@/data/paidProgramConfidence21';
+import paidProgramDiscipline5 from '@/data/paidProgramDiscipline5';
+import paidProgramFocus5 from '@/data/paidProgramFocus5';
+import { PAID_PROGRAM_21DAYS_FOCUS } from '@/data/paidProgramFocus21';
+import { PAID_PROGRAM_21DAYS_HABIT } from '@/data/paidProgramHabit21';
+import paidProgramHealing7 from '@/data/paidProgramHealing7';
+import paidProgramHealing21 from '@/data/paidProgramHealing21';
+import paidProgramPurpose7 from '@/data/paidProgramPurpose7';
+import { PAID_PROGRAM_21DAYS_PURPOSE } from '@/data/paidProgramPurpose21';
 import { saveWaitlistEntry } from '@/utils/userDb';
 
 const EMAILJS_SERVICE_ID  = 'service_385jidd';
@@ -199,15 +213,15 @@ const MoodTrendChart = ({ data, color }) => {
 };
 
 // Progress bar with percentage
-const MetricBar = ({ label, value, change, color }) => (
+const MetricBar = ({ label, value, change, color, accent, bg }) => (
   <Card style={{ marginBottom: '10px', padding: '16px 18px' }}>
     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
       <span style={{ fontSize: '15px', fontWeight: 600, color: '#2C3530' }}>{label}</span>
-      <span style={{ fontSize: '13px', fontWeight: 600, color: change >= 0 ? '#7A9E87' : '#C4A882' }}>
+      <span style={{ fontSize: '13px', fontWeight: 600, color: change >= 0 ? accent : '#C4A882' }}>
         {change >= 0 ? '+' : ''}{change}%
       </span>
     </div>
-    <div style={{ position: 'relative', height: '8px', background: '#E8F0EB', borderRadius: '4px', overflow: 'hidden' }}>
+    <div style={{ position: 'relative', height: '8px', background: bg, borderRadius: '4px', overflow: 'hidden' }}>
       <div 
         style={{ 
           position: 'absolute',
@@ -228,14 +242,14 @@ const MetricBar = ({ label, value, change, color }) => (
 );
 
 // AI Insight card
-const InsightCard = ({ insight, highlight }) => (
-  <Card style={{ background: '#F8FAF8', border: '1px solid #E8F0EB', marginBottom: '18px' }}>
+const InsightCard = ({ insight, highlight, accent, bg }) => (
+  <Card style={{ background: '#F8FAF8', border: `1px solid ${bg}`, marginBottom: '18px' }}>
     <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
       <div style={{ 
         width: 32, 
         height: 32, 
         borderRadius: '10px', 
-        background: '#E8F0EB', 
+        background: bg,
         display: 'flex', 
         alignItems: 'center', 
         justifyContent: 'center',
@@ -244,14 +258,14 @@ const InsightCard = ({ insight, highlight }) => (
         <span style={{ fontSize: '14px' }}>📈</span>
       </div>
       <div>
-        <p style={{ fontSize: '11px', fontWeight: 700, color: '#7A9E87', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '6px' }}>
+        <p style={{ fontSize: '11px', fontWeight: 700, color: accent, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '6px' }}>
           Insight
         </p>
         <p style={{ fontSize: '14px', color: '#5E6B64', lineHeight: 1.6 }}>
           {insight.split(highlight).map((part, i, arr) => (
             <React.Fragment key={i}>
               {part}
-              {i < arr.length - 1 && <strong style={{ color: '#7A9E87' }}>{highlight}</strong>}
+              {i < arr.length - 1 && <strong style={{ color: accent }}>{highlight}</strong>}
             </React.Fragment>
           ))}
         </p>
@@ -261,7 +275,7 @@ const InsightCard = ({ insight, highlight }) => (
 );
 
 // AI Insights Component - Analyzes user reflections
-const AIInsights = ({ reflections, program, streak, prog }) => {
+const AIInsights = ({ reflections, program, streak, prog, accent, bg }) => {
   // Filter reflections with text (journal entries)
   const journalEntries = reflections
     .map((entry) => ({
@@ -366,13 +380,13 @@ const AIInsights = ({ reflections, program, streak, prog }) => {
         🤖 AI Insights from Your Reflections
       </p>
       {insights.slice(0, 2).map((insight, idx) => (
-        <Card key={idx} style={{ background: '#F0F8FF', border: '1px solid #B8D4E8', marginBottom: '12px' }}>
+        <Card key={idx} style={{ background: '#F0F8FF', border: `1px solid ${bg}`, marginBottom: '12px' }}>
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
             <div style={{ 
               width: 32, 
               height: 32, 
               borderRadius: '10px', 
-              background: '#E0EFFF', 
+              background: bg,
               display: 'flex', 
               alignItems: 'center', 
               justifyContent: 'center',
@@ -382,10 +396,10 @@ const AIInsights = ({ reflections, program, streak, prog }) => {
               {insight.icon}
             </div>
             <div style={{ flex: 1 }}>
-              <p style={{ fontSize: '11px', fontWeight: 700, color: '#5A8FBF', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '6px' }}>
+              <p style={{ fontSize: '11px', fontWeight: 700, color: accent, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '6px' }}>
                 {insight.type}
               </p>
-              <p style={{ fontSize: '14px', color: '#3A5A7A', lineHeight: 1.6 }}>
+              <p style={{ fontSize: '14px', color: '#4B5D53', lineHeight: 1.6 }}>
                 {insight.text}
               </p>
             </div>
@@ -409,14 +423,143 @@ const ProgressTab = ({
   programCompleted = false,
   activeProgramDuration = 3,
   programHistory = [],
+  goalHistory = [],
+  moodHistory = [],
   user = null,
   onViewReport = () => {},
+  accent = '#7A9E87',
+  theme = null,
 }) => {
+  const MOOD_META = [
+    { emoji: '😣', label: 'Low', color: '#D96A62' },
+    { emoji: '😕', label: 'Off', color: '#D08D57' },
+    { emoji: '😐', label: 'Neutral', color: '#A39675' },
+    { emoji: '🙂', label: 'Good', color: '#6EA67A' },
+    { emoji: '😁', label: 'Great', color: '#4C9AB5' },
+  ];
+  const PAID_DATASETS = {
+    calm: { 7: paidProgramCalm7, 21: PAID_PROGRAM_21DAYS_CALM },
+    confidence: { 5: paidProgramConfidence5, 7: paidProgramConfidence7, 21: PAID_PROGRAM_21DAYS_CONFIDENCE },
+    discipline: { 5: paidProgramDiscipline5 },
+    focus: { 5: paidProgramFocus5, 21: PAID_PROGRAM_21DAYS_FOCUS },
+    habit: { 21: PAID_PROGRAM_21DAYS_HABIT },
+    healing: { 7: paidProgramHealing7, 21: paidProgramHealing21 },
+    purpose: { 7: paidProgramPurpose7, 21: PAID_PROGRAM_21DAYS_PURPOSE },
+  };
+
+  const getTaskStepsForEntry = (entry) => {
+    const entryProgram = entry?.program;
+    const entryDay = Number(entry?.day || 1);
+    const entrySession = entry?.sessionType;
+    const entryDuration = Number(entry?.programDuration || 3);
+    const entryPaid = Boolean(entry?.isPaidProgram) || entryDuration > 3;
+
+    if (!entryProgram || !entrySession) {
+      return [];
+    }
+
+    if (entryPaid) {
+      const paidData = PAID_DATASETS[entryProgram]?.[entryDuration];
+      const dayObj = Array.isArray(paidData) ? paidData[entryDay - 1] : null;
+      const sessionObj = dayObj?.[entrySession];
+      return Array.isArray(sessionObj?.steps) ? sessionObj.steps : [];
+    }
+
+    const programTasks = SESSION_TASKS[entryProgram] || SESSION_TASKS.calm;
+    const dayKey = `day${entryDay}`;
+    const dayTasks = programTasks?.[dayKey] || programTasks?.day1;
+    return Array.isArray(dayTasks?.[entrySession]?.steps) ? dayTasks[entrySession].steps : [];
+  };
+
+  const resolvePromptFromEntry = (entry, key) => {
+    if (entry?.taskPrompts?.[key]) {
+      return entry.taskPrompts[key];
+    }
+
+    const baseKey = key.endsWith('_note') ? key.replace('_note', '') : key;
+    const stepIndex = Number(baseKey);
+    if (Number.isNaN(stepIndex)) {
+      return `Prompt ${key}`;
+    }
+
+    const step = getTaskStepsForEntry(entry)[stepIndex];
+    if (typeof step === 'string') {
+      return step;
+    }
+
+    if (step && typeof step === 'object') {
+      if (key.endsWith('_note') && step.note) {
+        return `${step.text || `Prompt ${stepIndex + 1}`} - ${step.note}`;
+      }
+      return step.text || `Prompt ${stepIndex + 1}`;
+    }
+
+    return `Prompt ${stepIndex + 1}`;
+  };
+
   const [showAllReflections, setShowAllReflections] = useState(false);
   const [showCrossProgramHistory, setShowCrossProgramHistory] = useState(false);
   const [showPremiumSurvey, setShowPremiumSurvey] = useState(false);
   const [showProgramHistory, setShowProgramHistory] = useState(false);
+  const [showUniqueGoalsOnly, setShowUniqueGoalsOnly] = useState(false);
+  const [reflectionView, setReflectionView] = useState('insights');
+  const [progressSection, setProgressSection] = useState('overview');
+  const swipeStartRef = useRef({ x: 0, y: 0 });
   const prog = PROGRAMS.find((p) => p.id === program);
+  const tabTheme = theme || { mid: '#EFF9F0', contrast: '#3F6C43' };
+  const sectionOrder = ['overview', 'trends', 'memory'];
+
+  const shouldHandleSectionSwipe = (target) => {
+    if (!(target instanceof Element)) {
+      return true;
+    }
+    return !target.closest('button, select, input, textarea, a, [data-no-section-swipe="true"]');
+  };
+
+  const handleProgressTouchStart = (e) => {
+    if (e.touches.length !== 1) {
+      return;
+    }
+    if (!shouldHandleSectionSwipe(e.target)) {
+      swipeStartRef.current = { x: 0, y: 0 };
+      return;
+    }
+    const touch = e.touches[0];
+    swipeStartRef.current = { x: touch.clientX, y: touch.clientY };
+  };
+
+  const handleProgressTouchEnd = (e) => {
+    if (e.changedTouches.length !== 1) {
+      return;
+    }
+
+    const start = swipeStartRef.current;
+    if (!start.x && !start.y) {
+      return;
+    }
+
+    const touch = e.changedTouches[0];
+    const deltaX = touch.clientX - start.x;
+    const deltaY = touch.clientY - start.y;
+
+    swipeStartRef.current = { x: 0, y: 0 };
+
+    // Require a strong horizontal gesture to avoid interrupting vertical scroll.
+    if (Math.abs(deltaX) < 55 || Math.abs(deltaX) <= Math.abs(deltaY) * 1.2) {
+      return;
+    }
+
+    const currentIndex = sectionOrder.indexOf(progressSection);
+    if (currentIndex < 0) {
+      return;
+    }
+
+    if (deltaX < 0 && currentIndex < sectionOrder.length - 1) {
+      setProgressSection(sectionOrder[currentIndex + 1]);
+    } else if (deltaX > 0 && currentIndex > 0) {
+      setProgressSection(sectionOrder[currentIndex - 1]);
+    }
+  };
   const sessTotal = useMemo(() => {
     return allDayCompletions.reduce((s, d, i) => {
       if (i === day - 1 && !programCompleted) {
@@ -434,6 +577,37 @@ const ProgressTab = ({
     daysCompleted: streak + (programHistory.filter(h => h.isPaid).length),
     programsCompleted: programHistory.length,
   };
+
+  const goalsExplored = useMemo(() => {
+    const goals = new Set([
+      ...goalHistory.map((entry) => entry.goal),
+      ...programHistory.map((entry) => entry.program),
+      program,
+    ].filter(Boolean));
+    return goals.size;
+  }, [goalHistory, programHistory, program]);
+
+  const goalTimeline = useMemo(() => {
+    return [...goalHistory]
+      .filter((entry) => Boolean(entry?.goal))
+      .sort((a, b) => new Date(b.startedAt || 0) - new Date(a.startedAt || 0));
+  }, [goalHistory]);
+
+  const visibleGoalTimeline = useMemo(() => {
+    if (!showUniqueGoalsOnly) {
+      return goalTimeline;
+    }
+
+    const seenGoals = new Set();
+    const latestUnique = [];
+    for (const entry of goalTimeline) {
+      if (!seenGoals.has(entry.goal)) {
+        seenGoals.add(entry.goal);
+        latestUnique.push(entry);
+      }
+    }
+    return latestUnique;
+  }, [goalTimeline, showUniqueGoalsOnly]);
 
   const normalizedCurrentReflections = useMemo(() => {
     return reflectionData
@@ -459,7 +633,82 @@ const ProgressTab = ({
   }, [showCrossProgramHistory, normalizedAllReflections, normalizedCurrentReflections]);
   const hasAnyJournal = normalizedAllReflections.length > 0;
 
+  const memoryMoments = useMemo(() => {
+    const source = showCrossProgramHistory ? allReflectionData : reflectionData;
+
+    return source
+      .map((entry) => {
+        const activityThoughts = (entry?.timerInsight || '').trim();
+        const journal = (entry?.journalEntry || entry?.text || '').trim();
+        const pointerAnswers = Object.entries(entry?.taskInputs || {})
+          .map(([key, value]) => {
+            if (typeof value === 'string' && value.trim().length > 0) {
+              return {
+                key,
+                prompt: resolvePromptFromEntry(entry, key),
+                value: value.trim(),
+              };
+            }
+
+            if (value === true) {
+              return {
+                key,
+                prompt: resolvePromptFromEntry(entry, key),
+                value: 'Completed',
+              };
+            }
+
+            return null;
+          })
+          .filter(Boolean);
+        const nightlyAnswers = Object.values(entry?.answers || {})
+          .filter((value) => typeof value === 'string' && value.trim().length > 0)
+          .map((value) => value.trim());
+
+        return {
+          ...entry,
+          activityThoughts,
+          journal,
+          pointerAnswers,
+          nightlyAnswers,
+        };
+      })
+      .filter((entry) => {
+        return Boolean(
+          entry.activityThoughts ||
+          entry.journal ||
+          entry.pointerAnswers.length > 0 ||
+          entry.nightlyAnswers.length > 0
+        );
+      })
+      .sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
+  }, [showCrossProgramHistory, allReflectionData, reflectionData]);
+
   const displayedReflections = showAllReflections ? [...journalEntries].reverse() : [...journalEntries].slice(-5).reverse();
+
+  const moodEntries = useMemo(() => {
+    return [...moodHistory]
+      .filter((entry) => entry?.program === program && Number(entry?.programDuration || 3) === Number(activeProgramDuration))
+      .sort((a, b) => Number(a?.day || 0) - Number(b?.day || 0));
+  }, [moodHistory, program, activeProgramDuration]);
+
+  const dominantMood = useMemo(() => {
+    if (moodEntries.length === 0) {
+      return null;
+    }
+
+    const counts = moodEntries.reduce((acc, entry) => {
+      const idx = Number(entry?.moodIndex);
+      if (!Number.isNaN(idx)) {
+        acc[idx] = (acc[idx] || 0) + 1;
+      }
+      return acc;
+    }, {});
+
+    const [topKey] = Object.entries(counts).sort((a, b) => b[1] - a[1])[0] || [];
+    if (typeof topKey === 'undefined') return null;
+    return MOOD_META[Number(topKey)] || null;
+  }, [moodEntries]);
 
   // Calculate metrics based on program type and reflections
   const metrics = useMemo(() => {
@@ -488,7 +737,7 @@ const ProgressTab = ({
         label: programMetrics.primary, 
         value: Math.min(Math.max(baseProgress + variance(0), 45), 95), 
         change: Math.round(8 + streak * 4),
-        color: prog?.color || '#7A9E87'
+        color: accent
       },
       { 
         label: programMetrics.secondary, 
@@ -503,7 +752,7 @@ const ProgressTab = ({
         color: '#8E9EC4'
       },
     ];
-  }, [program, sessTotal, day, streak, prog]);
+  }, [program, sessTotal, day, streak, accent]);
 
   // Generate trend data for chart
   const trendData = useMemo(() => {
@@ -542,7 +791,7 @@ const ProgressTab = ({
   // SVG Icons for stats
   const StatIcons = {
     days: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#7A9E87" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={accent} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
         <line x1="16" y1="2" x2="16" y2="6" />
         <line x1="8" y1="2" x2="8" y2="6" />
@@ -554,17 +803,17 @@ const ProgressTab = ({
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
         <path d="M12 2C12 2 8 6 8 10C8 12.21 9.79 14 12 14C14.21 14 16 12.21 16 10C16 6 12 2 12 2Z" fill="#F5A623" stroke="#E8941A" strokeWidth="1.5"/>
         <path d="M12 8C12 8 10 10 10 12C10 13.1 10.9 14 12 14C13.1 14 14 13.1 14 12C14 10 12 8 12 8Z" fill="#FFCC4D"/>
-        <path d="M12 14V22M9 19H15" stroke="#7A9E87" strokeWidth="2" strokeLinecap="round"/>
+        <path d="M12 14V22M9 19H15" stroke={accent} strokeWidth="2" strokeLinecap="round"/>
       </svg>
     ),
     time: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#7A9E87" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={accent} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="12" cy="12" r="10" />
         <polyline points="12,6 12,12 16,14" />
       </svg>
     ),
     sessions: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#7A9E87" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={accent} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
         <polyline points="22,4 12,14.01 9,11.01" />
       </svg>
@@ -573,15 +822,42 @@ const ProgressTab = ({
 
   const stats = [
     { label: `Day Progress`, val: `${day}/${activeProgramDuration}`, icon: StatIcons.days, tooltip: `Current ${program} program` },
+    { label: "Goals Explored", val: goalsExplored, icon: StatIcons.sessions, tooltip: "Unique goals started" },
     { label: "Total Streak", val: `${combinedStats.daysCompleted}d`, icon: StatIcons.streak, tooltip: "Across all programs" },
     { label: "Total Time", val: `${Math.round(combinedStats.totalMinutes)}m`, icon: StatIcons.time, tooltip: "All sessions combined" },
-    { label: "Total Sessions", val: combinedStats.totalSessions, icon: StatIcons.sessions, tooltip: "Programs completed" },
   ];
+
+  const sectionPillStyle = (isActive) => ({
+    border: `1px solid ${isActive ? `${accent}44` : '#D9E2DC'}`,
+    background: isActive
+      ? `linear-gradient(135deg, ${accent} 0%, ${tabTheme.contrast || accent} 100%)`
+      : `linear-gradient(145deg, rgba(255,255,255,0.95) 0%, ${prog?.bg || '#F4F7F3'} 100%)`,
+    color: isActive ? '#fff' : '#4E5A53',
+    borderRadius: '999px',
+    padding: '7px 12px',
+    fontSize: '11px',
+    fontWeight: 700,
+    cursor: 'pointer',
+    boxShadow: isActive
+      ? `0 7px 14px ${accent}3d, 0 0 12px ${accent}30`
+      : '0 3px 8px rgba(44,53,48,0.06)',
+    transition: 'all .22s ease',
+  });
 
   return (
     <>
-    <div style={{ padding: "32px 22px 100px", maxWidth: 480, margin: "0 auto" }}>
-      <p style={{ fontSize: "12px", fontWeight: 700, color: prog?.color || "#7A9E87", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: "6px" }}>
+    <div
+      style={{
+        padding: "32px 22px 100px",
+        maxWidth: 480,
+        margin: "0 auto",
+        background: `linear-gradient(180deg, ${tabTheme.mid} 0%, rgba(255,255,255,0.84) 24%, rgba(255,255,255,0.75) 100%)`,
+        borderRadius: 20,
+      }}
+      onTouchStart={handleProgressTouchStart}
+      onTouchEnd={handleProgressTouchEnd}
+    >
+      <p style={{ fontSize: "12px", fontWeight: 700, color: accent, letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: "6px" }}>
         Progress
       </p>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "22px" }}>
@@ -589,11 +865,64 @@ const ProgressTab = ({
           <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "26px", fontWeight: 500, marginBottom: "6px" }}>
             Your journey so far
           </h2>
-          <p style={{ fontSize: "13px", color: prog?.color || "#7A9E87", fontWeight: 600 }}>
+          <p style={{ fontSize: "13px", color: accent, fontWeight: 600 }}>
             {prog?.label} — Day {day} of {activeProgramDuration}
           </p>
         </div>
       </div>
+
+      <div
+        style={{
+          display: "flex",
+          gap: "8px",
+          marginBottom: "18px",
+          overflowX: "auto",
+          WebkitOverflowScrolling: "touch",
+          scrollSnapType: "x mandatory",
+          scrollPaddingInline: "2px",
+          paddingBottom: "4px",
+        }}
+      >
+        <button
+          onClick={() => setProgressSection('overview')}
+          style={{
+            ...sectionPillStyle(progressSection === 'overview'),
+            flexShrink: 0,
+            scrollSnapAlign: "start",
+          }}
+        >
+          Overview
+        </button>
+        <button
+          onClick={() => setProgressSection('trends')}
+          style={{
+            ...sectionPillStyle(progressSection === 'trends'),
+            flexShrink: 0,
+            scrollSnapAlign: "start",
+          }}
+        >
+          Trends
+        </button>
+        <button
+          onClick={() => setProgressSection('memory')}
+          style={{
+            ...sectionPillStyle(progressSection === 'memory'),
+            flexShrink: 0,
+            scrollSnapAlign: "start",
+          }}
+        >
+          Memory Lane
+        </button>
+      </div>
+
+      <p style={{ fontSize: "12px", color: "#7B857F", marginBottom: "18px", lineHeight: 1.5 }}>
+        {progressSection === 'overview' && 'Overview keeps your key milestones in one place: day progress, goals, and journey status.'}
+        {progressSection === 'trends' && 'Trends shows your mood patterns, wellness metrics, and AI-driven pattern insights over time.'}
+        {progressSection === 'memory' && 'Memory Lane keeps your written reflections, pointer answers, and activity notes grouped by session.'}
+      </p>
+
+      {progressSection === 'overview' && (
+        <>
 
       {/* Program History — expandable completed programs list */}
       {programHistory.length > 0 && (
@@ -615,14 +944,14 @@ const ProgressTab = ({
             }}
           >
             <div>
-              <p style={{ fontSize: "11px", fontWeight: 700, color: prog?.color || "#7A9E87", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: "3px" }}>
+              <p style={{ fontSize: "11px", fontWeight: 700, color: accent, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: "3px" }}>
                 Programs Completed
               </p>
               <p style={{ fontSize: "16px", fontWeight: 700, color: "#2C3530" }}>{programHistory.length} complete</p>
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
               <span style={{ fontSize: "28px" }}>🏆</span>
-              <span style={{ fontSize: "12px", color: prog?.color || "#7A9E87", fontWeight: 600 }}>
+              <span style={{ fontSize: "12px", color: accent, fontWeight: 600 }}>
                 {showProgramHistory ? "▲" : "▼"}
               </span>
             </div>
@@ -722,41 +1051,76 @@ const ProgressTab = ({
         ))}
       </div>
 
-      {/* Weekly Mood Trends */}
-      <Card style={{ marginBottom: "24px", padding: "20px 16px 10px" }}>
-        <p style={{ fontSize: "14px", fontWeight: 600, color: "#2C3530", marginBottom: "16px" }}>
-          Weekly Mood Trends
-        </p>
-        <MoodTrendChart data={trendData} color={prog?.color || "#7A9E87"} />
-        <div style={{ display: "flex", justifyContent: "center", gap: "20px", marginTop: "12px" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-            <div style={{ width: 8, height: 8, borderRadius: "50%", background: prog?.color || "#7A9E87" }} />
-            <span style={{ fontSize: "11px", color: "#9BA8A0" }}>{metrics[0].label}</span>
+      {/* Goals Timeline */}
+      {goalTimeline.length > 0 && (
+        <Card style={{ marginBottom: "24px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
+            <p style={{ fontSize: "14px", fontWeight: 700, color: "#2C3530" }}>Goals Timeline</p>
+            <span style={{ fontSize: "11px", color: accent, fontWeight: 700 }}>
+              {showUniqueGoalsOnly ? `${visibleGoalTimeline.length} unique` : `${visibleGoalTimeline.length} starts`}
+            </span>
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-            <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#C4A882" }} />
-            <span style={{ fontSize: "11px", color: "#9BA8A0" }}>{metrics[1].label}</span>
+          <p style={{ fontSize: "12px", color: "#7B857F", marginBottom: "12px", lineHeight: 1.5 }}>
+            Every goal you started is saved so you can review your evolution across programs.
+          </p>
+          <div style={{ display: "flex", gap: "8px", marginBottom: "12px" }}>
+            <button
+              onClick={() => setShowUniqueGoalsOnly(false)}
+              style={sectionPillStyle(!showUniqueGoalsOnly)}
+            >
+              Show all starts
+            </button>
+            <button
+              onClick={() => setShowUniqueGoalsOnly(true)}
+              style={sectionPillStyle(showUniqueGoalsOnly)}
+            >
+              Show unique goals only
+            </button>
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-            <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#8E9EC4" }} />
-            <span style={{ fontSize: "11px", color: "#9BA8A0" }}>{metrics[2].label}</span>
+          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+            {visibleGoalTimeline.slice(0, 10).map((entry, idx) => {
+              const startedDate = entry.startedAt
+                ? new Date(entry.startedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+                : '—';
+              const entryProg = PROGRAMS.find((p) => p.id === entry.goal);
+              return (
+                <div
+                  key={`${entry.goal}-${entry.startedAt || idx}-${idx}`}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    padding: "10px 12px",
+                    borderRadius: "12px",
+                    background: entryProg?.bg || "#F7F6F2",
+                    border: "1px solid #ECE8E1",
+                  }}
+                >
+                  <div style={{ display: "flex", alignItems: "center", gap: "10px", minWidth: 0 }}>
+                    <span style={{ fontSize: "16px" }}>{entryProg?.icon || "◉"}</span>
+                    <div style={{ minWidth: 0 }}>
+                      <p style={{ fontSize: "13px", fontWeight: 600, color: "#2C3530", textTransform: "capitalize", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                        {entryProg?.label || entry.goal}
+                      </p>
+                      <p style={{ fontSize: "11px", color: "#8F9A93" }}>
+                        {entry.source === 'switch' ? 'Switched from another goal' : 'Started during onboarding'}
+                      </p>
+                    </div>
+                  </div>
+                  <span style={{ fontSize: "11px", color: accent, fontWeight: 600, marginLeft: "8px", flexShrink: 0 }}>
+                    {startedDate}
+                  </span>
+                </div>
+              );
+            })}
           </div>
-        </div>
-      </Card>
-
-      {/* Mental Wellness Metrics */}
-      <p style={{ fontSize: "14px", fontWeight: 600, color: "#2C3530", marginBottom: "14px" }}>
-        Mental Wellness Metrics
-      </p>
-      {metrics.map((metric) => (
-        <MetricBar key={metric.label} {...metric} />
-      ))}
-
-      {/* AI Insight */}
-      <InsightCard insight={insight.text} highlight={insight.highlight} />
-
-      {/* AI Insights from Reflections */}
-      <AIInsights reflections={reflectionData} program={program} streak={streak} prog={prog} />
+          {visibleGoalTimeline.length > 10 && (
+            <p style={{ fontSize: "11px", color: "#9BA8A0", marginTop: "10px" }}>
+              Showing latest 10 of {visibleGoalTimeline.length} entries.
+            </p>
+          )}
+        </Card>
+      )}
 
       {/* Dynamic Program Overview */}
       <Card style={{ marginBottom: "18px" }}>
@@ -770,7 +1134,7 @@ const ProgressTab = ({
             const full = sessionsDone === 3;
             const cur = d === day && !programCompleted;
             const pct = Math.round((sessionsDone / 3) * 100);
-            
+
             return (
               <div
                 key={d}
@@ -788,17 +1152,16 @@ const ProgressTab = ({
                 <p style={{ fontSize: "10px", fontWeight: 700, color: full ? "#fff" : "#9BA8A0", textTransform: "uppercase", marginBottom: "6px", letterSpacing: "0.05em" }}>
                   Day {d}
                 </p>
-                
-                {/* Circular progress indicator */}
+
                 <div style={{ position: "relative", width: 48, height: 48, margin: "0 auto 8px" }}>
                   <svg width="48" height="48" viewBox="0 0 48 48">
                     <circle cx="24" cy="24" r="20" fill="none" stroke={full ? "rgba(255,255,255,0.3)" : "#E8F0EB"} strokeWidth="4" />
-                    <circle 
-                      cx="24" 
-                      cy="24" 
-                      r="20" 
-                      fill="none" 
-                      stroke={full ? "#fff" : prog?.color || "#7A9E87"} 
+                    <circle
+                      cx="24"
+                      cy="24"
+                      r="20"
+                      fill="none"
+                      stroke={full ? "#fff" : prog?.color || "#7A9E87"}
                       strokeWidth="4"
                       strokeDasharray={`${pct * 1.26} 126`}
                       strokeLinecap="round"
@@ -810,8 +1173,7 @@ const ProgressTab = ({
                     <span style={{ fontSize: "12px", fontWeight: 700, color: full ? "#fff" : "#2C3530" }}>{pct}%</span>
                   </div>
                 </div>
-                
-                {/* Session indicators */}
+
                 <div style={{ display: "flex", justifyContent: "center", gap: "4px" }}>
                   {["morning", "midday", "night"].map((ss) => (
                     <div
@@ -825,7 +1187,7 @@ const ProgressTab = ({
                     />
                   ))}
                 </div>
-                
+
                 {full && <p style={{ fontSize: "9px", color: "rgba(255,255,255,0.9)", marginTop: "6px", fontWeight: 600 }}>Complete ✓</p>}
                 {cur && !full && <p style={{ fontSize: "9px", color: prog?.color || "#7A9E87", marginTop: "6px", fontWeight: 600 }}>In Progress</p>}
               </div>
@@ -842,85 +1204,6 @@ const ProgressTab = ({
           </p>
           <p style={{ fontSize: "13px", color: "#5E6B64" }}>Complete all 3 sessions each day to unlock your full potential.</p>
         </Card>
-      )}
-
-      {/* Reflection Journal */}
-      {hasAnyJournal && (
-        <>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px', marginTop: '6px' }}>
-            <p style={{ fontSize: "14px", fontWeight: 600, color: "#2C3530" }}>
-              📝 Your Reflection Journal
-            </p>
-            {normalizedAllReflections.length > normalizedCurrentReflections.length && (
-              <button
-                onClick={() => setShowCrossProgramHistory((prev) => !prev)}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  cursor: 'pointer',
-                  color: '#7A9E87',
-                  fontSize: '11px',
-                  fontWeight: 700,
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.04em',
-                }}
-              >
-                {showCrossProgramHistory ? 'Current Program' : 'All Programs'}
-              </button>
-            )}
-          </div>
-          {displayedReflections.map((reflection, idx) => {
-            const date = new Date(reflection.timestamp);
-            const sessionEmoji = reflection.sessionType === 'morning' ? '🌅' : reflection.sessionType === 'midday' ? '🌤' : '🌙';
-            
-            return (
-              <Card key={idx} style={{ marginBottom: '12px', background: '#FFFAF4', border: '1px solid #F5E5C8' }}>
-                <div style={{ marginBottom: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <span style={{ fontSize: '14px' }}>{sessionEmoji}</span>
-                    <span style={{ fontSize: '11px', fontWeight: 700, color: '#C4A882', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
-                      Day {reflection.day} · {reflection.sessionType}
-                    </span>
-                    {showCrossProgramHistory && reflection.program && (
-                      <span style={{ fontSize: '10px', color: '#9BA8A0', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                        {reflection.program}
-                      </span>
-                    )}
-                  </div>
-                  <span style={{ fontSize: '10px', color: '#9BA8A0' }}>
-                    {date.toLocaleDateString()}
-                  </span>
-                </div>
-                <p style={{ fontSize: '13px', color: '#5E6B64', lineHeight: 1.6, fontStyle: 'italic' }}>
-                  "{reflection.text}"
-                </p>
-              </Card>
-            );
-          })}
-          {displayedReflections.length === 0 && (
-            <p style={{ fontSize: '12px', color: '#9BA8A0', marginBottom: '12px', fontStyle: 'italic' }}>
-              No reflections yet for this program. Switch to All Programs to review your previous reflections.
-            </p>
-          )}
-          {journalEntries.length > 5 && (
-            <button
-              onClick={() => setShowAllReflections((prev) => !prev)}
-              style={{
-                background: 'none',
-                border: 'none',
-                cursor: 'pointer',
-                color: '#7A9E87',
-                fontSize: '12px',
-                fontWeight: 600,
-                width: '100%',
-                marginBottom: '18px',
-                textDecoration: 'underline',
-              }}
-            >
-              {showAllReflections ? 'Show 5 most recent reflections' : `View all ${journalEntries.length} reflections`}
-            </button>
-          )}
-        </>
       )}
 
       {/* Locked Personalized Report - for paid programs */}
@@ -981,8 +1264,7 @@ const ProgressTab = ({
             Join Waitlist →
           </button>
         </div>
-        
-        {/* Blurred preview content behind */}
+
         <div style={{ opacity: 0.4 }}>
           <p style={{ fontSize: "12px", fontWeight: 700, color: prog?.color || "#7A9E87", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "10px" }}>
             Your Personalized Report
@@ -998,6 +1280,266 @@ const ProgressTab = ({
           <div style={{ height: 30, background: "#E8F0EB", borderRadius: "8px", width: "70%" }} />
         </div>
       </div>
+      </>
+      )}
+
+      {progressSection === 'trends' && (
+        <>
+
+      {moodEntries.length > 0 && (
+        <Card style={{ marginBottom: "18px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
+            <p style={{ fontSize: "14px", fontWeight: 700, color: "#2C3530" }}>Daily Mood Log</p>
+            <span style={{ fontSize: "11px", color: accent, fontWeight: 700 }}>{moodEntries.length} entries</span>
+          </div>
+          <div style={{ display: "flex", gap: "6px", overflowX: "auto", paddingBottom: "3px", marginBottom: "10px" }}>
+            {moodEntries.map((entry, idx) => {
+              const mood = MOOD_META[Number(entry?.moodIndex)] || MOOD_META[2];
+              return (
+                <div
+                  key={`${entry.day}-${idx}`}
+                  style={{
+                    minWidth: "52px",
+                    borderRadius: "12px",
+                    border: `1px solid ${mood.color}44`,
+                    background: "#fff",
+                    padding: "8px 6px",
+                    textAlign: "center",
+                  }}
+                >
+                  <p style={{ fontSize: "16px", marginBottom: "2px" }}>{mood.emoji}</p>
+                  <p style={{ fontSize: "9px", fontWeight: 700, color: mood.color }}>Day {entry.day}</p>
+                </div>
+              );
+            })}
+          </div>
+          {dominantMood && (
+            <p style={{ fontSize: "12px", color: "#5E6B64" }}>
+              Dominant mood: <span style={{ color: dominantMood.color, fontWeight: 700 }}>{dominantMood.emoji} {dominantMood.label}</span>
+            </p>
+          )}
+        </Card>
+      )}
+
+      {/* Weekly Mood Trends */}
+      <Card style={{ marginBottom: "24px", padding: "20px 16px 10px" }}>
+        <p style={{ fontSize: "14px", fontWeight: 600, color: "#2C3530", marginBottom: "16px" }}>
+          Weekly Mood Trends
+        </p>
+        <MoodTrendChart data={trendData} color={prog?.color || "#7A9E87"} />
+        <div style={{ display: "flex", justifyContent: "center", gap: "20px", marginTop: "12px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+            <div style={{ width: 8, height: 8, borderRadius: "50%", background: prog?.color || "#7A9E87" }} />
+            <span style={{ fontSize: "11px", color: "#9BA8A0" }}>{metrics[0].label}</span>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+            <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#C4A882" }} />
+            <span style={{ fontSize: "11px", color: "#9BA8A0" }}>{metrics[1].label}</span>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+            <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#8E9EC4" }} />
+            <span style={{ fontSize: "11px", color: "#9BA8A0" }}>{metrics[2].label}</span>
+          </div>
+        </div>
+      </Card>
+
+      {/* Mental Wellness Metrics */}
+      <p style={{ fontSize: "14px", fontWeight: 600, color: "#2C3530", marginBottom: "14px" }}>
+        Mental Wellness Metrics
+      </p>
+      {metrics.map((metric) => (
+        <MetricBar key={metric.label} {...metric} accent={accent} bg={prog?.bg || '#E8F0EB'} />
+      ))}
+
+      {/* AI Insight */}
+      <InsightCard insight={insight.text} highlight={insight.highlight} accent={accent} bg={prog?.bg || '#E8F0EB'} />
+
+      {/* AI Insights from Reflections */}
+      <AIInsights reflections={reflectionData} program={program} streak={streak} prog={prog} accent={accent} bg={prog?.bg || '#E8F0EB'} />
+        </>
+      )}
+
+      {progressSection === 'memory' && (
+        <>
+
+      {/* Reflection Journal + Memory Lane */}
+      {hasAnyJournal && (
+        <>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px', marginTop: '6px' }}>
+            <p style={{ fontSize: "14px", fontWeight: 700, color: "#2C3530" }}>
+              {reflectionView === 'insights' ? '📝 Your Reflection Journal' : '🕰️ Memory Lane'}
+            </p>
+            {normalizedAllReflections.length > normalizedCurrentReflections.length && (
+              <button
+                onClick={() => setShowCrossProgramHistory((prev) => !prev)}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  color: accent,
+                  fontSize: '11px',
+                  fontWeight: 700,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.04em',
+                }}
+              >
+                {showCrossProgramHistory ? 'Current Program' : 'All Programs'}
+              </button>
+            )}
+          </div>
+
+          <div style={{ display: 'flex', gap: '8px', marginBottom: '12px' }}>
+            <button
+              onClick={() => setReflectionView('insights')}
+              style={sectionPillStyle(reflectionView === 'insights')}
+            >
+              Insights
+            </button>
+            <button
+              onClick={() => setReflectionView('memory')}
+              style={sectionPillStyle(reflectionView === 'memory')}
+            >
+              Memory Lane
+            </button>
+          </div>
+
+          {reflectionView === 'insights' && displayedReflections.map((reflection, idx) => {
+            const date = new Date(reflection.timestamp);
+            const sessionEmoji = reflection.sessionType === 'morning' ? '🌅' : reflection.sessionType === 'midday' ? '🌤' : '🌙';
+
+            return (
+              <Card key={idx} style={{ marginBottom: '12px', background: '#FFFAF4', border: '1px solid #F5E5C8' }}>
+                <div style={{ marginBottom: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ fontSize: '14px' }}>{sessionEmoji}</span>
+                    <span style={{ fontSize: '11px', fontWeight: 700, color: '#C4A882', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+                      Day {reflection.day} · {reflection.sessionType}
+                    </span>
+                    {showCrossProgramHistory && reflection.program && (
+                      <span style={{ fontSize: '10px', color: '#9BA8A0', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                        {reflection.program}
+                      </span>
+                    )}
+                  </div>
+                  <span style={{ fontSize: '10px', color: '#9BA8A0' }}>
+                    {date.toLocaleDateString()}
+                  </span>
+                </div>
+                <p style={{ fontSize: '13px', color: '#5E6B64', lineHeight: 1.6, fontStyle: 'italic' }}>
+                  "{reflection.text}"
+                </p>
+              </Card>
+            );
+          })}
+
+          {reflectionView === 'memory' && (
+            <>
+              {(showAllReflections ? memoryMoments : memoryMoments.slice(0, 5)).map((entry, idx) => {
+                const sessionEmoji = entry.sessionType === 'morning' ? '🌅' : entry.sessionType === 'midday' ? '🌤' : '🌙';
+                const date = new Date(entry.timestamp || 0);
+
+                return (
+                  <Card key={`${entry.timestamp || idx}-${idx}`} style={{ marginBottom: '12px', background: '#F6FBF8', border: '1px solid #DCEBE1' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span style={{ fontSize: '14px' }}>{sessionEmoji}</span>
+                        <span style={{ fontSize: '11px', fontWeight: 700, color: '#5E8A6C', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+                          Day {entry.day} · {entry.sessionType}
+                        </span>
+                        {showCrossProgramHistory && entry.program && (
+                          <span style={{ fontSize: '10px', color: '#8EA095', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                            {entry.program}
+                          </span>
+                        )}
+                      </div>
+                      <span style={{ fontSize: '10px', color: '#8EA095' }}>{date.toLocaleDateString()}</span>
+                    </div>
+
+                    {entry.activityThoughts && (
+                      <div style={{ marginBottom: '8px' }}>
+                        <p style={{ fontSize: '10px', fontWeight: 700, color: accent, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '4px' }}>Activity Thoughts</p>
+                        <p style={{ fontSize: '13px', color: '#42554B', lineHeight: 1.6 }}>{entry.activityThoughts}</p>
+                      </div>
+                    )}
+
+                    {entry.pointerAnswers.length > 0 && (
+                      <div style={{ marginBottom: '8px' }}>
+                        <p style={{ fontSize: '10px', fontWeight: 700, color: accent, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '4px' }}>Pointer Answers</p>
+                        {entry.pointerAnswers.map((answer, answerIdx) => (
+                          <div key={answerIdx} style={{ marginBottom: '6px' }}>
+                            <p style={{ fontSize: '11px', color: '#5E8A6C', fontWeight: 700, lineHeight: 1.5 }}>{answer.prompt}</p>
+                            <p style={{ fontSize: '13px', color: '#42554B', lineHeight: 1.5 }}>{answer.value}</p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {entry.nightlyAnswers.length > 0 && (
+                      <div style={{ marginBottom: '8px' }}>
+                        <p style={{ fontSize: '10px', fontWeight: 700, color: accent, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '4px' }}>Night Reflection Answers</p>
+                        {entry.nightlyAnswers.map((answer, answerIdx) => (
+                          <p key={answerIdx} style={{ fontSize: '13px', color: '#42554B', lineHeight: 1.5 }}>• {answer}</p>
+                        ))}
+                      </div>
+                    )}
+
+                    {entry.journal && (
+                      <div>
+                        <p style={{ fontSize: '10px', fontWeight: 700, color: accent, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '4px' }}>Journal</p>
+                        <p style={{ fontSize: '13px', color: '#42554B', lineHeight: 1.6, fontStyle: 'italic' }}>
+                          "{entry.journal}"
+                        </p>
+                      </div>
+                    )}
+                  </Card>
+                );
+              })}
+            </>
+          )}
+
+          {reflectionView === 'insights' && displayedReflections.length === 0 && (
+            <p style={{ fontSize: '12px', color: '#9BA8A0', marginBottom: '12px', fontStyle: 'italic' }}>
+              No reflections yet for this program. Switch to All Programs to review your previous reflections.
+            </p>
+          )}
+
+          {reflectionView === 'memory' && memoryMoments.length === 0 && (
+            <p style={{ fontSize: '12px', color: '#9BA8A0', marginBottom: '12px', fontStyle: 'italic' }}>
+              Your memory lane will appear after you add activity thoughts, pointer answers, journal entries, or nightly reflections.
+            </p>
+          )}
+
+          {((reflectionView === 'insights' && journalEntries.length > 5) || (reflectionView === 'memory' && memoryMoments.length > 5)) && (
+            <button
+              onClick={() => setShowAllReflections((prev) => !prev)}
+              style={{
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                color: accent,
+                fontSize: '12px',
+                fontWeight: 600,
+                width: '100%',
+                marginBottom: '18px',
+                textDecoration: 'underline',
+              }}
+            >
+              {showAllReflections
+                ? (reflectionView === 'insights' ? 'Show 5 most recent reflections' : 'Show 5 most recent memories')
+                : (reflectionView === 'insights' ? `View all ${journalEntries.length} reflections` : `View all ${memoryMoments.length} memory entries`)}
+            </button>
+          )}
+        </>
+      )}
+      {!hasAnyJournal && (
+        <Card style={{ marginBottom: '18px', background: '#F7F6F2', border: '1px solid #ECE8E1' }}>
+          <p style={{ fontSize: '13px', color: '#5E6B64', lineHeight: 1.7 }}>
+            No memory entries yet. Complete sessions and add activity thoughts, pointer answers, and journal reflections to build your timeline.
+          </p>
+        </Card>
+      )}
+      </>
+      )}
     </div>
     {/* Premium Survey Modal */}
     {showPremiumSurvey && (

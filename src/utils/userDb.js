@@ -40,9 +40,11 @@ export const updateUserProfile = async (userId, updates) => {
 export const saveUserProgress = async (userId, progressData) => {
   try {
     const userRef = doc(db, 'users', userId);
-    await updateDoc(userRef, {
+    await setDoc(userRef, {
       progress: progressData,
       lastUpdated: new Date()
+    }, {
+      merge: true
     });
     return { success: true };
   } catch (error) {

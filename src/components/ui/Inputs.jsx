@@ -1,8 +1,19 @@
 import React from 'react';
 import { parseT, fmtT, fmtAMPM } from '@/utils/helpers';
 
-export const InputField = ({ label, type = "text", value, onChange, placeholder, error }) => (
-  <div style={{ marginBottom: "16px" }}>
+export const InputField = ({
+  label,
+  type = "text",
+  value,
+  onChange,
+  placeholder,
+  error,
+  disabled = false,
+  containerStyle = {},
+  labelStyle = {},
+  inputStyle = {},
+}) => (
+  <div style={{ marginBottom: "16px", ...containerStyle }}>
     <label
       style={{
         display: "block",
@@ -12,6 +23,7 @@ export const InputField = ({ label, type = "text", value, onChange, placeholder,
         marginBottom: "7px",
         letterSpacing: "0.04em",
         textTransform: "uppercase",
+        ...labelStyle,
       }}
     >
       {label}
@@ -21,16 +33,23 @@ export const InputField = ({ label, type = "text", value, onChange, placeholder,
       value={value}
       onChange={(e) => onChange(e.target.value)}
       placeholder={placeholder}
+      disabled={disabled}
       style={{
         width: "100%",
         padding: "13px 16px",
         borderRadius: "14px",
-        border: `1.5px solid ${error ? "#A67B7B" : "#C4D8CB"}`,
-        background: "#fff",
+        border: `1.5px solid ${error ? "#A67B7B" : "var(--ms-accent-soft, #C4D8CB)"}`,
+        background: disabled ? "#F5F7F6" : "linear-gradient(145deg, rgba(255,255,255,0.98) 0%, rgba(247,250,248,0.95) 100%)",
         fontFamily: "'DM Sans', system-ui, sans-serif",
         fontSize: "15px",
         color: "#2C3530",
-        transition: "border-color .2s",
+        transition: "border-color .2s, box-shadow .2s",
+        boxShadow: error
+          ? "0 0 0 3px rgba(166,123,123,0.1)"
+          : "0 8px 20px rgba(44,53,48,0.06), 0 0 12px rgba(122,158,135,0.1)",
+        opacity: disabled ? 0.75 : 1,
+        cursor: disabled ? "not-allowed" : "text",
+        ...inputStyle,
       }}
     />
     {error && <p style={{ fontSize: "12px", color: "#A67B7B", marginTop: "5px" }}>{error}</p>}

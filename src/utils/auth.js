@@ -6,7 +6,7 @@ import {
   GoogleAuthProvider,
   signInWithCredential,
   updateProfile,
-  signInWithRedirect,
+  signInWithPopup,
   getRedirectResult,
   sendPasswordResetEmail,
   fetchSignInMethodsForEmail
@@ -15,6 +15,18 @@ import { doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore';
 import { auth, db } from '../config/firebase';
 import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
 import { Capacitor } from '@capacitor/core';
+
+const GOOGLE_WEB_CLIENT_ID =
+  import.meta.env.VITE_GOOGLE_WEB_CLIENT_ID ||
+  '23022655078-clcvv27p6pcjlih8cgce087t3a5tfm54.apps.googleusercontent.com';
+
+const initializeGoogleAuth = async () => {
+  await GoogleAuth.initialize({
+    clientId: GOOGLE_WEB_CLIENT_ID,
+    scopes: ['profile', 'email'],
+    grantOfflineAccess: true,
+  });
+};
 
 /**
  * Create or update user profile in Firestore
@@ -128,7 +140,7 @@ export const signInWithGoogle = async () => {
     if (Capacitor.isNativePlatform()) {
       // Native platform - use Capacitor Google Auth
       try {
-        await GoogleAuth.initialize();
+        await initializeGoogleAuth();
       } catch (e) {
         console.warn('GoogleAuth already initialized or failed to init:', e);
       }
@@ -141,11 +153,24 @@ export const signInWithGoogle = async () => {
         console.error('[Google Auth] No user or authentication data returned');
         throw new Error('Google sign-in cancelled');
       }
+
+      const idToken =
+        googleUser.authentication?.idToken ||
+        googleUser.idToken ||
+        null;
+      const accessToken =
+        googleUser.authentication?.accessToken ||
+        googleUser.accessToken ||
+        null;
+
+      if (!idToken && !accessToken) {
+        throw new Error('Google Sign-In did not return auth tokens.');
+      }
       
       console.log('[Google Auth] Creating Firebase credential...');
       const credential = GoogleAuthProvider.credential(
-        googleUser.authentication.idToken,
-        googleUser.authentication.accessToken
+        idToken,
+        accessToken
       );
       
       console.log('[Google Auth] Signing in with credential to Firebase...');
@@ -162,8 +187,8 @@ export const signInWithGoogle = async () => {
       
       return { success: true, user: userCredential.user };
     } else {
-      // Web platform - use Firebase Redirect (no popup, works like any standard website)
-      console.log('[Google Auth] Using Firebase redirect for web platform...');
+      // Web platform - use Firebase popup for a faster in-app sign-in flow
+      console.log('[Google Auth] Using Firebase popup for web platform...');
       const provider = new GoogleAuthProvider();
       provider.addScope('profile');
       provider.addScope('email');
@@ -171,9 +196,11 @@ export const signInWithGoogle = async () => {
         prompt: 'select_account'
       });
 
-      await signInWithRedirect(auth, provider);
-      // Page navigates away — execution does not continue here.
-      return { success: true };
+      const userCredential = await signInWithPopup(auth, provider);
+      createUserProfile(userCredential.user, { provider: 'google' }).catch(err =>
+        console.warn('Failed to create/update Firestore profile, but authentication succeeded:', err)
+      );
+      return { success: true, user: userCredential.user };
     }
   } catch (error) {
     console.error('[Google Auth] Error occurred:', error);
@@ -196,7 +223,7 @@ export const logOut = async () => {
     // Also sign out from Google if on native platform
     if (Capacitor.isNativePlatform()) {
       try {
-        await GoogleAuth.initialize();
+        await initializeGoogleAuth();
       } catch (e) {
         // already initialized or unavailable — safe to continue
       }
@@ -299,6 +326,9 @@ const getErrorMessage = (errorCode) => {
 const getGoogleErrorMessage = (error) => {
   let errorMessage = 'Failed to sign in with Google';
 
+  const errorCode = String(error?.code || '').toLowerCase();
+  const errorMessageRaw = String(error?.message || '').toLowerCase();
+
   if (error && typeof error === 'object') {
     if (error.code === 'auth/popup-closed-by-user') {
       errorMessage = 'Sign-in cancelled. Please try again.';
@@ -312,6 +342,14 @@ const getGoogleErrorMessage = (error) => {
       errorMessage = 'Sign-in cancelled. Please try again.';
     } else if (error.error === 'popup_blocked') {
       errorMessage = 'Popup was blocked. Please allow popups and try again.';
+    } else if (
+      errorCode.includes('10') ||
+      errorCode.includes('developer_error') ||
+      errorMessageRaw.includes('10:') ||
+      errorMessageRaw.includes('developer error') ||
+      errorMessageRaw.includes('something went wrong')
+    ) {
+      errorMessage = 'Google Sign-In is not configured for this release certificate. Add your Play App Signing SHA-1/SHA-256 in Firebase Android app settings, download an updated google-services.json, and rebuild the app.';
     } else if (error.message) {
       errorMessage = error.message;
     }

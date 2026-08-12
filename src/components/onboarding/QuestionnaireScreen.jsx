@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Card, ProgressBar } from '@/components/ui';
 import { QUESTIONS } from '@/data/questions';
 
@@ -6,14 +6,28 @@ const QuestionnaireScreen = ({ onNext }) => {
   const [idx, setIdx] = useState(0);
   const [ans, setAns] = useState({});
   const [key, setKey] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const transitionTimeoutRef = useRef(null);
+
+  useEffect(() => {
+    return () => {
+      if (transitionTimeoutRef.current) {
+        clearTimeout(transitionTimeoutRef.current);
+      }
+    };
+  }, []);
 
   const pick = (opt) => {
+    if (isTransitioning) return;
+
+    setIsTransitioning(true);
     const a = { ...ans, [idx]: opt };
     setAns(a);
-    setTimeout(() => {
+    transitionTimeoutRef.current = setTimeout(() => {
       if (idx < QUESTIONS.length - 1) {
         setIdx((i) => i + 1);
         setKey((k) => k + 1);
+        setIsTransitioning(false);
       } else {
         onNext(a);
       }
@@ -21,6 +35,8 @@ const QuestionnaireScreen = ({ onNext }) => {
   };
 
   const goBack = () => {
+    if (isTransitioning) return;
+
     if (idx > 0) {
       setIdx((i) => i - 1);
       setKey((k) => k + 1);
@@ -47,16 +63,18 @@ const QuestionnaireScreen = ({ onNext }) => {
           {idx > 0 && (
             <button
               onClick={goBack}
+              disabled={isTransitioning}
               style={{
                 width: 36,
                 height: 36,
                 borderRadius: "50%",
                 background: "#F0EFE9",
                 border: "none",
-                cursor: "pointer",
+                cursor: isTransitioning ? "not-allowed" : "pointer",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
+                opacity: isTransitioning ? 0.7 : 1,
               }}
             >
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
@@ -111,6 +129,7 @@ const QuestionnaireScreen = ({ onNext }) => {
             <button
               key={opt}
               onClick={() => pick(opt)}
+              disabled={isTransitioning}
               style={{
                 background: ans[idx] === opt ? "#7A9E87" : "#fff",
                 color: ans[idx] === opt ? "#fff" : "#2C3530",
@@ -119,9 +138,10 @@ const QuestionnaireScreen = ({ onNext }) => {
                 padding: "13px 18px",
                 fontFamily: "'DM Sans', system-ui, sans-serif",
                 fontSize: "14px",
-                cursor: "pointer",
+                cursor: isTransitioning ? "not-allowed" : "pointer",
                 textAlign: "left",
                 transition: "all .18s",
+                opacity: isTransitioning ? 0.82 : 1,
               }}
             >
               {opt}
