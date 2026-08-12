@@ -16,7 +16,7 @@ import { PAID_PROGRAM_21DAYS_CALM } from '@/data/paidProgramCalm21';
 import { PAID_PROGRAM_21DAYS_CONFIDENCE } from '@/data/paidProgramConfidence21';
 import { PAID_PROGRAM_21DAYS_PURPOSE } from '@/data/paidProgramPurpose21';
 import { PAID_PROGRAM_21DAYS_HABIT } from '@/data/paidProgramHabit21';
-import { isTesterReviewUser } from '@/utils/helpers';
+import { isTesterReviewUser, isDevMode, isAdminUser } from '@/utils/helpers';
 
 const PROGRAM_DATA_MAP = {
   focus: {
@@ -81,6 +81,7 @@ const ProgramsTab = ({
   const paid = PAID_PROGRAMS[program] || [];
   const activePaidProgramId = activePaidProgram?.programId || null;
   const reviewBypass = isTesterReviewUser(user?.email);
+  const devGoalSwitchBypass = isDevMode() && isAdminUser(user?.email);
 
   const completedTrials = programHistory.filter((p) => p.duration === 3 && p.isPaid === false).length;
   const completedPaidPrograms = programHistory.filter((p) => p.isPaid).length;
@@ -120,7 +121,7 @@ const ProgramsTab = ({
   const hasCompletedFreeTrialForAccess = hasCompletedFreeTrial || reviewBypass;
   const completedFreeForCurrentGoal = programHistory.filter((p) => p.duration === 3 && p.isPaid === false && p.program === program).length;
   const completedPaidForCurrentGoalCount = programHistory.filter((p) => p.isPaid && p.program === program).length;
-  const canSwitchGoals = reviewBypass || (completedFreeForCurrentGoal >= 1 && completedPaidForCurrentGoalCount >= 1);
+  const canSwitchGoals = reviewBypass || devGoalSwitchBypass || (completedFreeForCurrentGoal >= 1 && completedPaidForCurrentGoalCount >= 1);
   const goalsStarted = new Set([
     ...goalHistory.map((entry) => entry.goal),
     ...programHistory.map((entry) => entry.program),
