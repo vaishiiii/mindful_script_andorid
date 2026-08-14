@@ -5,9 +5,12 @@ import { PROGRAMS } from '@/data/programs';
 const DayCelebration = ({ day, program, onContinue, totalDays = 3 }) => {
   const prog = PROGRAMS.find((p) => p.id === program);
   const audioCtxRef = useRef(null);
+  const accent = prog?.color || 'var(--ms-accent, #7A9E87)';
+  const accentBg = prog?.bg || 'var(--ms-accent-bg, #E8F0EB)';
+  const accentContrast = 'var(--ms-accent-contrast, #5A7A67)';
   const confettiPcs = Array.from({ length: 12 }, (_, i) => ({
     x: 10 + i * 7.5,
-    color: [prog?.color, "#7A9E87", "#B5956A", "#7B9CB3"][i % 4],
+    color: [accent, accentBg, '#B5956A', accentContrast][i % 4],
     delay: i * 0.08,
   }));
   const sparklePcs = Array.from({ length: 10 }, (_, i) => ({
@@ -145,13 +148,13 @@ const DayCelebration = ({ day, program, onContinue, totalDays = 3 }) => {
           width: 80,
           height: 80,
           borderRadius: "50%",
-          background: "#7A9E87",
+          background: accent,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           marginBottom: "24px",
           animation: "celebrate .6s ease-out",
-          boxShadow: "0 8px 32px rgba(122,158,135,0.35)",
+          boxShadow: `0 8px 32px ${accent}59`,
         }}
       >
         <CheckIcon size={36} />
@@ -177,8 +180,8 @@ const DayCelebration = ({ day, program, onContinue, totalDays = 3 }) => {
           : `${totalDays} days complete. Your pattern report is ready.`}
       </p>
       {day < totalDays && (
-        <div style={{ padding: "16px 20px", background: "#E8F0EB", borderRadius: "16px", marginBottom: "28px", textAlign: "left", maxWidth: 300, width: "100%" }}>
-          <p style={{ fontSize: "12px", fontWeight: 600, color: "#7A9E87", marginBottom: "4px", letterSpacing: "0.06em", textTransform: "uppercase" }}>Up Next</p>
+        <div style={{ padding: "16px 20px", background: accentBg, borderRadius: "16px", marginBottom: "28px", textAlign: "left", maxWidth: 300, width: "100%" }}>
+          <p style={{ fontSize: "12px", fontWeight: 600, color: accentContrast, marginBottom: "4px", letterSpacing: "0.06em", textTransform: "uppercase" }}>Up Next</p>
           <p style={{ fontSize: "14px", color: "#5E6B64" }}>Day {day + 1} — same structure, new tasks. Sessions unlock on your schedule.</p>
         </div>
       )}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Btn, Card, Tag, Toast, LockIcon, CheckIcon } from '@/components/ui';
+import { Btn, Card, Tag, Toast, CheckIcon } from '@/components/ui';
 import { SessionModal } from '@/components/session';
 import { PROGRAMS } from '@/data/programs';
 import { NOTIF_MSGS } from '@/data/sessions';
@@ -909,7 +909,79 @@ const HomeTab = ({ program, unlocks, day, completions, onSessionComplete, onDevS
         </div>
       </div>
 
-      <div style={{ maxWidth: 480, margin: "0 auto", padding: "14px 22px 0" }}>
+      <div
+        style={{
+          maxWidth: 480,
+          margin: "0 auto",
+          marginTop: '-10px',
+          padding: "18px 22px 12px",
+          position: 'relative',
+          isolation: 'isolate',
+        }}
+      >
+        <div
+          aria-hidden
+          style={{
+            position: 'absolute',
+            inset: '-56px -6px -24px',
+            pointerEvents: 'none',
+            zIndex: 0,
+            background: `
+              radial-gradient(132% 64% at 8% -10%, ${toRgba(theme.glow, 0.24)} 0%, rgba(255,255,255,0) 64%),
+              radial-gradient(110% 58% at 98% 22%, ${toRgba(accent, 0.18)} 0%, rgba(255,255,255,0) 68%),
+              radial-gradient(150% 84% at 50% 108%, ${toRgba(accent, 0.2)} 0%, ${toRgba(theme.contrast, 0.14)} 40%, rgba(255,255,255,0) 80%),
+              linear-gradient(180deg, rgba(255,255,255,0) 0%, ${toRgba(theme.contrast, 0.05)} 28%, ${toRgba(theme.mid, 0.24)} 50%, ${toRgba(accent, 0.18)} 74%, rgba(255,255,255,0) 100%)
+            `,
+          }}
+        />
+        <div
+          aria-hidden
+          style={{
+            position: 'absolute',
+            left: -8,
+            right: -8,
+            top: -52,
+            height: 120,
+            pointerEvents: 'none',
+            zIndex: 0,
+            background: `linear-gradient(180deg, rgba(255,255,255,0) 0%, ${toRgba(theme.mid, 0.18)} 46%, rgba(255,255,255,0) 100%)`,
+            opacity: 0.9,
+          }}
+        />
+        <div
+          aria-hidden
+          style={{
+            position: 'absolute',
+            left: -26,
+            right: -20,
+            top: -34,
+            height: 640,
+            pointerEvents: 'none',
+            zIndex: 0,
+            background: `
+              linear-gradient(180deg, rgba(255,255,255,0) 0%, ${toRgba(theme.glow, 0.07)} 34%, ${toRgba(theme.glow, 0.08)} 60%, rgba(255,255,255,0) 100%),
+              repeating-linear-gradient(150deg, ${toRgba(theme.glow, 0.07)} 0 3px, rgba(255,255,255,0) 3px 18px)
+            `,
+            opacity: 0.2,
+            filter: 'blur(0.35px)',
+          }}
+        />
+        <div
+          aria-hidden
+          style={{
+            position: 'absolute',
+            left: -14,
+            right: -14,
+            bottom: -22,
+            height: 200,
+            pointerEvents: 'none',
+            zIndex: 0,
+            background: `linear-gradient(180deg, rgba(255,255,255,0) 0%, ${toRgba(theme.contrast, 0.11)} 42%, ${toRgba(accent, 0.2)} 100%)`,
+            borderRadius: 36,
+            opacity: 0.86,
+          }}
+        />
+        <div style={{ position: 'relative', zIndex: 1 }}>
 
         {/* Dev mode banner */}
         {effectiveDevMode && (
@@ -988,6 +1060,7 @@ const HomeTab = ({ program, unlocks, day, completions, onSessionComplete, onDevS
           }
 
           const isShaking = shakeS === s.id;
+          const lockedReadable = locked && !comp;
 
           return (
             <div
@@ -1006,25 +1079,55 @@ const HomeTab = ({ program, unlocks, day, completions, onSessionComplete, onDevS
               }}
             >
               <Card style={{
-                opacity: locked ? 0.6 : 1,
+                opacity: locked ? 0.86 : 1,
                 cursor: (comp || (!isPastDay && open)) ? "pointer" : "default",
                 position: 'relative',
                 border: comp
-                  ? `1.5px solid ${toRgba(accent, postTrialHomeMode ? 0.28 : 0.45)}`
-                  : `1.5px solid ${locked ? '#E8ECE9' : toRgba(accent, 0.16)}`,
+                  ? `1.5px solid ${toRgba(accent, postTrialHomeMode ? 0.34 : 0.5)}`
+                  : `1.5px solid ${locked ? toRgba(theme.contrast, 0.24) : toRgba(accent, 0.16)}`,
                 background: comp
-                  ? `linear-gradient(165deg, ${toRgba(theme.glow, postTrialHomeMode ? 0.14 : 0.22)} 0%, rgba(255,255,255,0.96) 72%)`
+                  ? `linear-gradient(156deg, ${toRgba(theme.contrast, postTrialHomeMode ? 0.1 : 0.15)} 0%, ${toRgba(accent, postTrialHomeMode ? 0.12 : 0.18)} 38%, rgba(255,255,255,0.99) 78%)`
                   : locked
-                  ? '#F8F8F7'
+                  ? `linear-gradient(162deg, rgba(255,255,255,0.98) 0%, ${toRgba(theme.mid, 0.42)} 74%, ${toRgba(theme.contrast, 0.14)} 100%)`
                   : `linear-gradient(160deg, rgba(255,255,255,1) 0%, ${toRgba(accent, 0.08)} 100%)`,
                 boxShadow: comp
-                  ? `0 9px 24px ${toRgba(accent, postTrialHomeMode ? 0.11 : 0.2)}, 0 0 14px ${toRgba(theme.glow, 0.18)}`
+                  ? `0 10px 22px ${toRgba(accent, postTrialHomeMode ? 0.14 : 0.22)}, 0 0 14px ${toRgba(accent, postTrialHomeMode ? 0.2 : 0.3)}, 0 0 22px ${toRgba(theme.glow, 0.24)}`
                   : locked
-                  ? '0 1px 4px rgba(44,53,48,0.04)'
+                  ? `0 6px 14px ${toRgba(theme.contrast, 0.1)}, inset 0 1px 0 rgba(255,255,255,0.62)`
                   : `0 9px 22px ${toRgba(accent, 0.14)}, 0 0 12px ${toRgba(theme.glow, 0.14)}`,
                 borderRadius: 26,
                 transition: "all 0.2s"
               }}>
+                {comp && (
+                  <div
+                    style={{
+                      position: 'absolute',
+                      inset: -4,
+                      borderRadius: 30,
+                      pointerEvents: 'none',
+                      background: `radial-gradient(92% 76% at 50% 8%, ${toRgba(accent, 0.34)} 0%, ${toRgba(theme.glow, 0.18)} 42%, rgba(255,255,255,0) 100%)`,
+                      filter: 'blur(8px)',
+                      opacity: postTrialHomeMode ? 0.36 : 0.5,
+                      zIndex: 0,
+                    }}
+                  />
+                )}
+                {comp && (
+                  <div
+                    style={{
+                      position: 'absolute',
+                      inset: 1,
+                      borderRadius: 24,
+                      pointerEvents: 'none',
+                      background: `linear-gradient(120deg, ${toRgba(theme.glow, 0)} 0%, ${toRgba(theme.glow, 0.34)} 35%, ${toRgba(accent, 0.52)} 50%, ${toRgba(theme.glow, 0.34)} 65%, ${toRgba(theme.glow, 0)} 100%)`,
+                      backgroundSize: '220% 220%',
+                      mixBlendMode: 'screen',
+                      opacity: postTrialHomeMode ? 0.24 : 0.34,
+                      animation: 'btnGlowFlow 4.2s ease-in-out infinite',
+                      zIndex: 1,
+                    }}
+                  />
+                )}
                 {!locked && (
                   <div
                     style={{
@@ -1032,18 +1135,36 @@ const HomeTab = ({ program, unlocks, day, completions, onSessionComplete, onDevS
                       inset: 0,
                       borderRadius: 26,
                       pointerEvents: 'none',
-                      border: `1px solid ${toRgba(theme.glow, comp ? 0.3 : 0.2)}`,
-                      boxShadow: `inset 0 0 0 1px ${toRgba(theme.glow, 0.09)}`,
+                      border: `1px solid ${toRgba(theme.glow, comp ? 0.44 : 0.2)}`,
+                      boxShadow: `inset 0 0 0 1px ${toRgba(theme.glow, comp ? 0.18 : 0.09)}`,
                       opacity: comp ? 1 : 0.72,
                     }}
                   />
                 )}
                 {locked && !comp && (
-                  <div style={{ position: 'absolute', top: 11, right: 11, width: 22, height: 22, borderRadius: 999, border: `1px solid ${toRgba(accent, 0.2)}`, background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <LockIcon />
+                  <div
+                    style={{
+                      position: 'absolute',
+                      top: 9,
+                      right: 9,
+                      width: 28,
+                      height: 28,
+                      borderRadius: 999,
+                      border: `1px solid ${toRgba(theme.contrast, 0.34)}`,
+                      background: `linear-gradient(155deg, ${toRgba(theme.contrast, 0.78)} 0%, ${toRgba(accent, 0.78)} 62%, ${toRgba(theme.glow, 0.82)} 100%)`,
+                      boxShadow: `0 6px 14px ${toRgba(accent, 0.3)}, 0 0 10px ${toRgba(theme.glow, 0.24)}`,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden>
+                      <rect x="2" y="6" width="10" height="7" rx="2" stroke="#FFFFFF" strokeWidth="1.5" fill="rgba(255,255,255,0.06)" />
+                      <path d="M4.5 6V4a2.5 2.5 0 0 1 5 0v2" stroke="#FFFFFF" strokeWidth="1.5" strokeLinecap="round" fill="none" />
+                    </svg>
                   </div>
                 )}
-                <div style={{ display: "flex", alignItems: "flex-start", gap: "13px" }}>
+                <div style={{ display: "flex", alignItems: "flex-start", gap: "13px", position: 'relative', zIndex: 2 }}>
                   <div
                     style={{
                       width: 42,
@@ -1062,18 +1183,37 @@ const HomeTab = ({ program, unlocks, day, completions, onSessionComplete, onDevS
                   </div>
                   <div style={{ flex: 1, minWidth: 0, paddingRight: locked && !comp ? '26px' : 0 }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: '8px' }}>
-                      <p style={{ fontWeight: 600, fontSize: "14px", color: comp ? "#7A9E87" : "#2C3530" }}>{s.label}</p>
-                      {comp && <Tag label="Completed" color="#7A9E87" />}
+                      <p style={{ fontWeight: 600, fontSize: "14px", color: comp ? theme.contrast : (lockedReadable ? '#2A3631' : '#2C3530') }}>{s.label}</p>
+                      {comp && (
+                        <span
+                          style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            padding: '4px 10px',
+                            borderRadius: '999px',
+                            fontSize: '10px',
+                            fontWeight: 700,
+                            letterSpacing: '0.05em',
+                            textTransform: 'uppercase',
+                            color: '#fff',
+                            border: `1px solid ${toRgba(theme.glow, 0.55)}`,
+                            background: `linear-gradient(135deg, ${theme.contrast} 0%, ${accent} 58%, ${theme.glow} 100%)`,
+                            boxShadow: `0 0 8px ${toRgba(accent, 0.34)}, 0 4px 10px ${toRgba(accent, 0.2)}`,
+                          }}
+                        >
+                          Completed
+                        </span>
+                      )}
                     </div>
-                    <p style={{ fontSize: '10px', color: '#7F8D85', fontWeight: 700, letterSpacing: '0.02em', marginTop: '2px' }}>{s.duration}</p>
+                    <p style={{ fontSize: '10px', color: lockedReadable ? '#55665D' : '#7F8D85', fontWeight: 700, letterSpacing: '0.02em', marginTop: '2px' }}>{s.duration}</p>
                     {comp ? (
-                      <p style={{ fontSize: '11px', color: '#7A9E87', marginTop: '6px', fontWeight: 600 }}>
+                      <p style={{ fontSize: '11px', color: theme.contrast, marginTop: '6px', fontWeight: 600 }}>
                         {s.label} completed. Tap to review.
                       </p>
                     ) : (
                       <div style={{ display: "flex", gap: "4px", flexWrap: "wrap", marginTop: "4px" }}>
                         {s.sub.map((t, i) => (
-                          <span key={i} style={{ fontSize: "11px", color: "#9BA8A0" }}>
+                          <span key={i} style={{ fontSize: "11px", color: lockedReadable ? '#63746C' : '#9BA8A0' }}>
                             {t}
                             {i < s.sub.length - 1 ? " ·" : ""}
                           </span>
@@ -1095,7 +1235,7 @@ const HomeTab = ({ program, unlocks, day, completions, onSessionComplete, onDevS
                         </Btn>
                       </div>
                     )}
-                    {msg && <p style={{ fontSize: "11px", color: "#9BA8A0", marginTop: "6px", fontStyle: "italic" }}>{msg}</p>}
+                    {msg && <p style={{ fontSize: "11px", color: lockedReadable ? '#5D6D65' : '#9BA8A0', marginTop: "6px", fontStyle: "italic", fontWeight: lockedReadable ? 600 : 400 }}>{msg}</p>}
                   </div>
                 </div>
                 {/* Session button */}
@@ -1108,6 +1248,7 @@ const HomeTab = ({ program, unlocks, day, completions, onSessionComplete, onDevS
             </div>
           );
         })}
+        </div>
       </div>
 
       {activeS && (

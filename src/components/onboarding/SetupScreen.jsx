@@ -7,6 +7,10 @@ const SetupScreen = ({ onNext }) => {
   const [timeMin, setTimeMin] = useState(30);
   const [wake, setWake] = useState("07:00");
   const [sleep, setSleep] = useState("23:00");
+  const accent = 'var(--ms-accent, #7A9E87)';
+  const accentBg = 'var(--ms-accent-bg, #E8F0EB)';
+  const accentSoft = 'var(--ms-accent-soft, #C4D8CB)';
+  const accentContrast = 'var(--ms-accent-contrast, #5A7A67)';
 
   const unlocks = computeUnlocks(wake, sleep);
   const toAMPM = (t) => {
@@ -23,7 +27,7 @@ const SetupScreen = ({ onNext }) => {
   return (
     <div className="slide-up" style={{ minHeight: "100vh", padding: "48px 22px 44px", maxWidth: 480, margin: "0 auto" }}>
       <ProgressBar step={3} total={4} />
-      <p style={{ fontSize: "12px", fontWeight: 600, color: "#7A9E87", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: "8px" }}>
+      <p style={{ fontSize: "12px", fontWeight: 600, color: accentContrast, letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: "8px" }}>
         Step 3 of 4
       </p>
       <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "28px", fontWeight: 500, marginBottom: "6px" }}>
@@ -46,9 +50,9 @@ const SetupScreen = ({ onNext }) => {
                 padding: "14px 0",
                 borderRadius: "16px",
                 cursor: "pointer",
-                background: timeMin === t ? "#7A9E87" : "#fff",
+                background: timeMin === t ? accent : "#fff",
                 color: timeMin === t ? "#fff" : "#2C3530",
-                border: `1.5px solid ${timeMin === t ? "#7A9E87" : "#C4D8CB"}`,
+                border: `1.5px solid ${timeMin === t ? accent : accentSoft}`,
                 fontFamily: "'DM Sans', system-ui, sans-serif",
                 fontWeight: 600,
                 fontSize: "15px",
@@ -69,8 +73,8 @@ const SetupScreen = ({ onNext }) => {
       </div>
 
       {/* Notification schedule preview */}
-      <Card style={{ background: "#E8F0EB", border: "none", marginBottom: "26px" }}>
-        <p style={{ fontSize: "11px", fontWeight: 700, color: "#7A9E87", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "13px" }}>
+      <Card style={{ background: accentBg, border: "none", marginBottom: "26px" }}>
+        <p style={{ fontSize: "11px", fontWeight: 700, color: accentContrast, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "13px" }}>
           🔔 Your notification schedule
         </p>
         {notifSchedule.map((r) => (

@@ -551,16 +551,17 @@ function App() {
       return;
     }
 
+    const devModeEnabled = isDevMode();
     const completedTrials = programHistory.filter((entry) => entry.duration === 3 && !entry.isPaid).length;
     const completedPaidPrograms = programHistory.filter((entry) => entry.isPaid).length;
     const canSwitchGoals = completedTrials >= 1 && completedPaidPrograms >= 1;
 
-    if (!isTesterReview && !canSwitchGoals) {
+    if (!devModeEnabled && !isTesterReview && !canSwitchGoals) {
       console.warn('[App] Goal switch blocked: requires completion of 1 free 3-day program and 1 paid program.');
       return;
     }
 
-    if (!isTesterReview && !programCompleted) {
+    if (!devModeEnabled && !isTesterReview && !programCompleted) {
       console.warn('[App] Goal switch blocked: current program must be completed first.');
       return;
     }

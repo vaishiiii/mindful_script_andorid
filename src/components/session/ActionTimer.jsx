@@ -5,6 +5,7 @@ const ActionTimer = ({
   seconds,
   onComplete,
   devMode = false,
+  accentColor = 'var(--ms-accent, #7A9E87)',
   onStart,
   centerContent = false,
   autoStart = false,
@@ -191,6 +192,9 @@ const ActionTimer = ({
   const ss = left % 60;
   const titleSize = centerContent ? "15px" : "13px";
   const bodySize = centerContent ? "12px" : "11px";
+  const accentBg = 'var(--ms-accent-bg, #E8F0EB)';
+  const accentSoft = 'var(--ms-accent-soft, #C4D8CB)';
+  const accentContrast = 'var(--ms-accent-contrast, #5A7A67)';
 
   const handleMarkFinishedEarly = () => {
     if (!canMarkFinishedEarly) {
@@ -219,9 +223,9 @@ const ActionTimer = ({
         gap: centerContent ? "10px" : "14px",
         flexWrap: "wrap",
         padding: centerContent ? "18px 16px" : "14px 16px",
-        background: "#E8F0EB",
+        background: accentBg,
         borderRadius: "16px",
-        border: "1px solid #D5E5DD",
+        border: `1px solid ${accentSoft}`,
         position: "relative",
       }}
     >
@@ -237,9 +241,9 @@ const ActionTimer = ({
             width: "26px",
             height: "26px",
             borderRadius: "50%",
-            border: "1px solid #BDD0C4",
+            border: `1px solid ${accentSoft}`,
             background: "#F7FCF9",
-            color: "#5E7468",
+            color: accentContrast,
             fontSize: "13px",
             lineHeight: 1,
             display: "flex",
@@ -255,13 +259,13 @@ const ActionTimer = ({
 
       <div style={{ position: "relative", flexShrink: 0 }}>
         <svg width="80" height="80" viewBox="0 0 80 80" style={{ transform: "rotate(-90deg)" }}>
-          <circle cx="40" cy="40" r={R} fill="none" stroke="#C4D8CB" strokeWidth="5" />
+          <circle cx="40" cy="40" r={R} fill="none" stroke={accentSoft} strokeWidth="5" />
           <circle
             cx="40"
             cy="40"
             r={R}
             fill="none"
-            stroke="#7A9E87"
+            stroke={accentColor}
             strokeWidth="5"
             strokeDasharray={circ}
             strokeDashoffset={circ * (1 - pct)}
@@ -270,7 +274,7 @@ const ActionTimer = ({
           />
         </svg>
         <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)" }}>
-          <span style={{ fontSize: centerContent ? "14px" : "12px", fontWeight: 700, color: "#7A9E87" }}>
+          <span style={{ fontSize: centerContent ? "14px" : "12px", fontWeight: 700, color: accentColor }}>
             {mm}:{ss.toString().padStart(2, "0")}
           </span>
         </div>
@@ -278,12 +282,12 @@ const ActionTimer = ({
       <div style={{ flex: centerContent ? "0 1 auto" : 1, minWidth: centerContent ? 0 : 170, width: centerContent ? "100%" : "auto", display: "flex", flexDirection: "column", alignItems: centerContent ? "center" : "flex-start" }}>
         {fin ? (
           <div style={{ textAlign: "center" }}>
-            <p style={{ fontSize: centerContent ? "18px" : "16px", fontWeight: 700, color: "#7A9E87", marginBottom: "4px" }}>✨ Complete!</p>
-            <p style={{ fontSize: bodySize, color: "#5A7A67" }}>Great focus. Moving to next step...</p>
+            <p style={{ fontSize: centerContent ? "18px" : "16px", fontWeight: 700, color: accentColor, marginBottom: "4px" }}>✨ Complete!</p>
+            <p style={{ fontSize: bodySize, color: accentContrast }}>Great focus. Moving to next step...</p>
           </div>
         ) : running ? (
           <>
-            <p style={{ fontSize: titleSize, fontWeight: 700, color: "#5A7A67" }}>
+            <p style={{ fontSize: titleSize, fontWeight: 700, color: accentContrast }}>
               {finishedEarly ? "Reflection mode active" : "Timer running…"}
             </p>
             <p style={{ fontSize: bodySize, color: "#7E8D85", marginTop: "2px" }}>
@@ -297,7 +301,7 @@ const ActionTimer = ({
               </Btn>
             )}
             {finishedEarly && (
-              <p style={{ fontSize: "11px", color: "#4E7861", marginTop: "8px", fontWeight: 600 }}>
+              <p style={{ fontSize: "11px", color: accentContrast, marginTop: "8px", fontWeight: 600 }}>
                 Task marked complete early. Timer continues for reflection.
               </p>
             )}

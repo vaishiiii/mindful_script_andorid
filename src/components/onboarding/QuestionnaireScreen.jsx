@@ -45,6 +45,10 @@ const QuestionnaireScreen = ({ onNext }) => {
 
   const q = QUESTIONS[idx];
   const pct = Math.round((idx / QUESTIONS.length) * 100);
+  const accent = 'var(--ms-accent, #7A9E87)';
+  const accentBg = 'var(--ms-accent-bg, #E8F0EB)';
+  const accentSoft = 'var(--ms-accent-soft, #C4D8CB)';
+  const accentContrast = 'var(--ms-accent-contrast, #5A7A67)';
 
   return (
     <div style={{ minHeight: "100vh", padding: "48px 22px 32px", maxWidth: 480, margin: "0 auto" }}>
@@ -52,7 +56,7 @@ const QuestionnaireScreen = ({ onNext }) => {
       {/* Header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "22px" }}>
         <div>
-          <p style={{ fontSize: "12px", fontWeight: 600, color: "#7A9E87", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: "6px" }}>
+          <p style={{ fontSize: "12px", fontWeight: 600, color: accentContrast, letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: "6px" }}>
             Step 2 of 4
           </p>
           <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "24px", fontWeight: 500 }}>
@@ -87,13 +91,13 @@ const QuestionnaireScreen = ({ onNext }) => {
               width: 42,
               height: 42,
               borderRadius: "50%",
-              background: "#E8F0EB",
+              background: accentBg,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               fontSize: "12px",
               fontWeight: 700,
-              color: "#7A9E87",
+              color: accentContrast,
             }}
           >
             {pct}%
@@ -110,7 +114,7 @@ const QuestionnaireScreen = ({ onNext }) => {
               flex: 1,
               height: 3,
               borderRadius: 2,
-              background: i < idx ? "#7A9E87" : i === idx ? "rgba(122,158,135,0.55)" : "#C4D8CB",
+              background: i < idx ? accent : accentSoft,
               transition: "all .3s",
             }}
           />
@@ -119,7 +123,7 @@ const QuestionnaireScreen = ({ onNext }) => {
 
       {/* Question card */}
       <div key={key} className="slide-up">
-        <Card style={{ marginBottom: "20px", background: "#E8F0EB", border: "none", padding: "20px" }}>
+        <Card style={{ marginBottom: "20px", background: accentBg, border: "none", padding: "20px" }}>
           <p style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "20px", fontWeight: 500, lineHeight: 1.5, color: "#2C3530" }}>
             {q.q}
           </p>
@@ -131,9 +135,9 @@ const QuestionnaireScreen = ({ onNext }) => {
               onClick={() => pick(opt)}
               disabled={isTransitioning}
               style={{
-                background: ans[idx] === opt ? "#7A9E87" : "#fff",
+                background: ans[idx] === opt ? accent : "#fff",
                 color: ans[idx] === opt ? "#fff" : "#2C3530",
-                border: `1.5px solid ${ans[idx] === opt ? "#7A9E87" : "#C4D8CB"}`,
+                border: `1.5px solid ${ans[idx] === opt ? accent : accentSoft}`,
                 borderRadius: "16px",
                 padding: "13px 18px",
                 fontFamily: "'DM Sans', system-ui, sans-serif",

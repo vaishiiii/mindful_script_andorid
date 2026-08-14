@@ -59,8 +59,8 @@ export const InputField = ({
 export const TimePicker = ({ value, onChange, label }) => {
   const { h, m } = parseT(value);
   const selStyle = {
-    background: "#F0EFE9",
-    border: "1.5px solid #C4D8CB",
+    background: "linear-gradient(145deg, rgba(255,255,255,0.98) 0%, var(--ms-accent-bg, #E8F0EB) 100%)",
+    border: "1.5px solid var(--ms-accent-soft, #C4D8CB)",
     borderRadius: "14px",
     padding: "12px 36px 12px 14px",
     fontFamily: "'DM Sans', system-ui, sans-serif",
@@ -76,7 +76,7 @@ export const TimePicker = ({ value, onChange, label }) => {
 
   return (
     <div>
-      <p style={{ fontSize: "13px", fontWeight: 600, color: "#5E6B64", marginBottom: "8px" }}>{label}</p>
+      <p style={{ fontSize: "13px", fontWeight: 600, color: "var(--ms-accent-contrast, #5A7A67)", marginBottom: "8px" }}>{label}</p>
       <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
         <select value={h} onChange={(e) => onChange(fmtT(+e.target.value, m))} style={selStyle}>
           {Array.from({ length: 24 }, (_, i) => i).map((hr) => (

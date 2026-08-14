@@ -290,6 +290,9 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
   }
 
   c = PROG_COLORS[program] || "#7A9E87";
+  const accentBg = 'var(--ms-accent-bg, #E8F0EB)';
+  const accentSoft = 'var(--ms-accent-soft, #C4D8CB)';
+  const accentContrast = 'var(--ms-accent-contrast, #5A7A67)';
   const programLabel = activePaidProgram ? activePaidProgram.title : '';
   
   const SESSION_LABEL = { 
@@ -681,7 +684,7 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
                             width: 20,
                             height: 20,
                             borderRadius: "50%",
-                            background: STEPS.indexOf(step) > i ? "#7A9E87" : STEPS.indexOf(step) === i ? c : "#C4D8CB",
+                            background: STEPS.indexOf(step) > i ? c : STEPS.indexOf(step) === i ? c : accentSoft,
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
@@ -705,7 +708,7 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
                           {s === "breath" ? "Breathe" : s === "journal" ? "Journal" : s === "reflect" ? "Reflect" : "Task"}
                         </span>
                       </div>
-                      {i < STEPS.filter((s) => s !== "done").length - 1 && <div style={{ width: 16, height: 1, background: "#C4D8CB" }} />}
+                      {i < STEPS.filter((s) => s !== "done").length - 1 && <div style={{ width: 16, height: 1, background: accentSoft }} />}
                     </div>
                   ))}
                 </div>
@@ -760,7 +763,7 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
                             width: 22,
                             height: 22,
                             borderRadius: "50%",
-                            background: "#E8F0EB",
+                            background: accentBg,
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
@@ -768,7 +771,7 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
                             marginTop: "1px",
                           }}
                         >
-                          <span style={{ fontSize: "10px", fontWeight: 700, color: "#7A9E87" }}>{i + 1}</span>
+                          <span style={{ fontSize: "10px", fontWeight: 700, color: c }}>{i + 1}</span>
                         </div>
                         <p style={{ fontSize: "14px", color: "#5E6B64", lineHeight: 1.65 }}>{text}</p>
                       </div>
@@ -783,7 +786,7 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
                               width: 22,
                               height: 22,
                               borderRadius: "50%",
-                              background: "#E8F0EB",
+                              background: accentBg,
                               display: "flex",
                               alignItems: "center",
                               justifyContent: "center",
@@ -791,7 +794,7 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
                               marginTop: "1px",
                             }}
                           >
-                            <span style={{ fontSize: "10px", fontWeight: 700, color: "#7A9E87" }}>{i + 1}</span>
+                            <span style={{ fontSize: "10px", fontWeight: 700, color: c }}>{i + 1}</span>
                           </div>
                           <p style={{ fontSize: "14px", color: "#5E6B64", lineHeight: 1.65 }}>{text}</p>
                         </div>
@@ -805,7 +808,7 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
                               minHeight: "80px",
                               padding: "12px 14px",
                               borderRadius: "12px",
-                              border: "1.5px solid #C4D8CB",
+                              border: `1.5px solid ${accentSoft}`,
                               fontFamily: "'DM Sans', system-ui, sans-serif",
                               fontSize: "14px",
                               color: "#2C3530",
@@ -827,7 +830,7 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
                               width: 22,
                               height: 22,
                               borderRadius: "50%",
-                              background: "#E8F0EB",
+                              background: accentBg,
                               display: "flex",
                               alignItems: "center",
                               justifyContent: "center",
@@ -835,7 +838,7 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
                               marginTop: "1px",
                             }}
                           >
-                            <span style={{ fontSize: "10px", fontWeight: 700, color: "#7A9E87" }}>{i + 1}</span>
+                            <span style={{ fontSize: "10px", fontWeight: 700, color: c }}>{i + 1}</span>
                           </div>
                           <p style={{ fontSize: "14px", color: "#5E6B64", lineHeight: 1.65 }}>{text}</p>
                         </div>
@@ -847,7 +850,7 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
                               style={{
                                 padding: "10px 18px",
                                 borderRadius: "12px",
-                                border: `1.5px solid ${taskInputs[i] === option ? c : '#C4D8CB'}`,
+                                border: `1.5px solid ${taskInputs[i] === option ? c : accentSoft}`,
                                 background: taskInputs[i] === option ? `${c}12` : '#fff',
                                 fontFamily: "'DM Sans', system-ui, sans-serif",
                                 fontSize: "13px",
@@ -929,7 +932,7 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
                   width: "100%",
                   padding: "12px 14px",
                   borderRadius: "12px",
-                  border: "1.5px solid #C4D8CB",
+                  border: `1.5px solid ${accentSoft}`,
                   background: "#fff",
                   fontFamily: "'DM Sans', system-ui, sans-serif",
                   fontSize: "13px",
@@ -941,7 +944,7 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
                   boxSizing: "border-box",
                 }}
                 onFocus={(e) => { e.target.style.borderColor = c; }}
-                onBlur={(e) => { e.target.style.borderColor = "#C4D8CB"; }}
+                onBlur={(e) => { e.target.style.borderColor = accentSoft; }}
               />
             </div>
 
@@ -959,7 +962,7 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
             )}
 
             {adaptiveSuggestedSeconds && (
-              <div style={{ marginBottom: "10px", padding: "10px 12px", borderRadius: "12px", background: "linear-gradient(155deg, rgba(255,255,255,0.94) 0%, rgba(122,158,135,0.12) 100%)", border: "1px solid rgba(122,158,135,0.25)" }}>
+              <div style={{ marginBottom: "10px", padding: "10px 12px", borderRadius: "12px", background: `linear-gradient(155deg, rgba(255,255,255,0.94) 0%, ${c}1F 100%)`, border: `1px solid ${c}40` }}>
                 <p style={{ fontSize: "10px", color: c, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: "3px" }}>
                   Smart Timer Insight
                 </p>
@@ -970,14 +973,14 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
             )}
 
             {timerInsight.trim() && (
-              <p style={{ fontSize: "10px", color: "#7A9E87", marginBottom: "10px" }}>✓ Your activity notes will be saved in your reflections</p>
+              <p style={{ fontSize: "10px", color: c, marginBottom: "10px" }}>✓ Your activity notes will be saved in your reflections</p>
             )}
 
             {showOptionalTimerChoicePopup && optionalTimerPopupDismissed && (
               <Btn
                 onClick={() => setOptionalTimerPopupDismissed(false)}
                 variant="ghost"
-                style={{ width: "100%", marginBottom: "10px", borderColor: "#7A9E87", color: "#4E7861" }}
+                style={{ width: "100%", marginBottom: "10px", borderColor: c, color: accentContrast }}
               >
                 Open Timer Options
               </Btn>
@@ -990,6 +993,7 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
                     seconds={customTimerSeconds}
                     onComplete={handleTimerCompleted}
                     devMode={devMode}
+                    accentColor={c}
                     autoStart={optionalInlineAutoStart}
                     centerContent
                     allowFinishEarly
@@ -1007,6 +1011,7 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
                     seconds={task.timer}
                     onComplete={handleTimerCompleted}
                     devMode={devMode}
+                    accentColor={c}
                     centerContent
                     autoStart
                     allowFinishEarly
@@ -1020,12 +1025,12 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
             {showContinueAction && (
               <>
                 {taskFinishedEarly && (
-                  <div style={{ marginBottom: "12px", padding: "12px", borderRadius: "14px", background: "linear-gradient(150deg, rgba(255,255,255,0.98) 0%, rgba(142,199,174,0.14) 100%)", border: "1px solid rgba(122,158,135,0.28)", boxShadow: "0 8px 18px rgba(44,53,48,0.08)" }}>
+                  <div style={{ marginBottom: "12px", padding: "12px", borderRadius: "14px", background: `linear-gradient(150deg, rgba(255,255,255,0.98) 0%, ${c}24 100%)`, border: `1px solid ${c}47`, boxShadow: "0 8px 18px rgba(44,53,48,0.08)" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
                       <p style={{ fontSize: "11px", fontWeight: 700, color: c, letterSpacing: "0.06em", textTransform: "uppercase" }}>
                         Reflection Progress
                       </p>
-                      <span style={{ fontSize: "10px", fontWeight: 700, color: timerDone ? "#2E5B46" : "#6B7A72", background: timerDone ? "rgba(122,158,135,0.18)" : "rgba(110,122,116,0.12)", border: `1px solid ${timerDone ? "rgba(122,158,135,0.35)" : "rgba(110,122,116,0.25)"}`, borderRadius: 999, padding: "3px 8px" }}>
+                      <span style={{ fontSize: "10px", fontWeight: 700, color: timerDone ? accentContrast : "#6B7A72", background: timerDone ? `${c}2E` : "rgba(110,122,116,0.12)", border: `1px solid ${timerDone ? `${c}59` : "rgba(110,122,116,0.25)"}`, borderRadius: 999, padding: "3px 8px" }}>
                         {timerDone ? "Timer Complete" : `Time Left ${fmtDur(reflectionTimeLeft)}`}
                       </span>
                     </div>
@@ -1066,13 +1071,13 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
                             Confirm Reflection Summary
                           </Btn>
                         ) : (
-                          <div style={{ width: "100%", marginTop: "4px", borderRadius: "10px", padding: "10px 12px", fontSize: "12px", fontWeight: 700, color: "#2E5B46", background: "rgba(122,158,135,0.17)", border: "1px solid rgba(122,158,135,0.35)", textAlign: "center" }}>
+                          <div style={{ width: "100%", marginTop: "4px", borderRadius: "10px", padding: "10px 12px", fontSize: "12px", fontWeight: 700, color: accentContrast, background: `${c}2B`, border: `1px solid ${c}59`, textAlign: "center" }}>
                             Confirmed ✓
                           </div>
                         )}
 
                         {!timedReflectionGateMet && (
-                          <div style={{ marginTop: "10px", borderTop: "1px solid rgba(122,158,135,0.2)", paddingTop: "8px", display: "grid", gap: "4px" }}>
+                          <div style={{ marginTop: "10px", borderTop: `1px solid ${c}33`, paddingTop: "8px", display: "grid", gap: "4px" }}>
                             <p style={{ fontSize: "10px", color: "#6E7A74", fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase" }}>
                               Before continuing
                             </p>
@@ -1156,6 +1161,7 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
                   seconds={task.timer}
                   onComplete={handleTimerCompleted}
                   devMode={devMode}
+                  accentColor={c}
                   centerContent
                   onStart={() => setRequiredTimerInline(true)}
                   allowFinishEarly
@@ -1225,7 +1231,7 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
                         style={{
                           padding: "9px 8px",
                           borderRadius: "10px",
-                          border: "1px solid #C4D8CB",
+                          border: `1px solid ${accentSoft}`,
                           background: "#fff",
                           fontFamily: "'DM Sans', system-ui, sans-serif",
                           fontSize: "12px",
@@ -1239,7 +1245,7 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
                           e.target.style.background = `${c}08`;
                         }}
                         onMouseLeave={(e) => {
-                          e.target.style.borderColor = "#C4D8CB";
+                          e.target.style.borderColor = accentSoft;
                           e.target.style.background = "#fff";
                         }}
                       >
@@ -1286,7 +1292,7 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
                 overflowY: "auto",
                 borderRadius: 20,
                 background: "linear-gradient(170deg, #fff 0%, #f3faf5 100%)",
-                border: "1px solid rgba(122,158,135,0.28)",
+                border: `1px solid ${c}47`,
                 boxShadow: "0 24px 48px rgba(28,36,32,0.24)",
                 padding: "16px 14px 14px",
               }}
@@ -1295,7 +1301,7 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
                 <p style={{ fontSize: "11px", fontWeight: 800, color: c, letterSpacing: "0.06em", textTransform: "uppercase" }}>
                   Reflection Sprint
                 </p>
-                <div style={{ padding: "4px 10px", borderRadius: 999, background: "rgba(122,158,135,0.18)", border: "1px solid rgba(122,158,135,0.35)", fontSize: "12px", fontWeight: 700, color: "#2E5B46" }}>
+                <div style={{ padding: "4px 10px", borderRadius: 999, background: `${c}2E`, border: `1px solid ${c}59`, fontSize: "12px", fontWeight: 700, color: accentContrast }}>
                   {timerDone ? "Timer complete" : `Time left ${fmtDur(reflectionTimeLeft)}`}
                 </div>
               </div>
@@ -1313,7 +1319,7 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
                     onChange={(e) => setGuidedReflection((prev) => ({ ...prev, worked: e.target.value }))}
                     rows={2}
                     placeholder="One clear win from this task..."
-                    style={{ width: "100%", boxSizing: "border-box", borderRadius: "10px", border: "1px solid #C4D8CB", padding: "8px 10px", fontSize: "12px", fontFamily: "'DM Sans', system-ui, sans-serif", background: "#fff" }}
+                    style={{ width: "100%", boxSizing: "border-box", borderRadius: "10px", border: `1px solid ${accentSoft}`, padding: "8px 10px", fontSize: "12px", fontFamily: "'DM Sans', system-ui, sans-serif", background: "#fff" }}
                   />
                 </div>
                 <div>
@@ -1323,7 +1329,7 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
                     onChange={(e) => setGuidedReflection((prev) => ({ ...prev, hard: e.target.value }))}
                     rows={2}
                     placeholder="Where did resistance show up?"
-                    style={{ width: "100%", boxSizing: "border-box", borderRadius: "10px", border: "1px solid #C4D8CB", padding: "8px 10px", fontSize: "12px", fontFamily: "'DM Sans', system-ui, sans-serif", background: "#fff" }}
+                    style={{ width: "100%", boxSizing: "border-box", borderRadius: "10px", border: `1px solid ${accentSoft}`, padding: "8px 10px", fontSize: "12px", fontFamily: "'DM Sans', system-ui, sans-serif", background: "#fff" }}
                   />
                 </div>
                 <div>
@@ -1333,7 +1339,7 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
                     onChange={(e) => setGuidedReflection((prev) => ({ ...prev, next: e.target.value }))}
                     rows={2}
                     placeholder="Your next repeatable action..."
-                    style={{ width: "100%", boxSizing: "border-box", borderRadius: "10px", border: "1px solid #C4D8CB", padding: "8px 10px", fontSize: "12px", fontFamily: "'DM Sans', system-ui, sans-serif", background: "#fff" }}
+                    style={{ width: "100%", boxSizing: "border-box", borderRadius: "10px", border: `1px solid ${accentSoft}`, padding: "8px 10px", fontSize: "12px", fontFamily: "'DM Sans', system-ui, sans-serif", background: "#fff" }}
                   />
                 </div>
               </div>
@@ -1381,7 +1387,7 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
                 minHeight: "180px",
                 padding: "16px 18px",
                 borderRadius: "16px",
-                border: "1.5px solid #C4D8CB",
+                border: `1.5px solid ${accentSoft}`,
                 background: "#fff",
                 fontFamily: "'DM Sans', system-ui, sans-serif",
                 fontSize: "14px",
@@ -1395,7 +1401,7 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
                 e.target.style.borderColor = c;
               }}
               onBlur={(e) => {
-                e.target.style.borderColor = "#C4D8CB";
+                e.target.style.borderColor = accentSoft;
               }}
             />
             <Btn
@@ -1432,9 +1438,9 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
                     key={opt}
                     onClick={() => handleReflect(opt)}
                     style={{
-                      background: rAns[currentQ.key] === opt ? "#E8F0EB" : "#fff",
+                      background: rAns[currentQ.key] === opt ? accentBg : "#fff",
                       color: "#2C3530",
-                      border: `1.5px solid ${rAns[currentQ.key] === opt ? "#7A9E87" : "#C4D8CB"}`,
+                      border: `1.5px solid ${rAns[currentQ.key] === opt ? c : accentSoft}`,
                       borderRadius: "16px",
                       padding: "14px 18px",
                       fontFamily: "'DM Sans', system-ui, sans-serif",
@@ -1452,8 +1458,8 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
                         width: 18,
                         height: 18,
                         borderRadius: "50%",
-                        border: `2px solid ${rAns[currentQ.key] === opt ? "#7A9E87" : "#C4D8CB"}`,
-                        background: rAns[currentQ.key] === opt ? "#7A9E87" : "transparent",
+                        border: `2px solid ${rAns[currentQ.key] === opt ? c : accentSoft}`,
+                        background: rAns[currentQ.key] === opt ? c : "transparent",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
@@ -1482,7 +1488,7 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
                 width: 60,
                 height: 60,
                 borderRadius: "50%",
-                background: "#7A9E87",
+                background: c,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -1503,8 +1509,8 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
 
             {/* Quick Reminder Buttons */}
             {!reviewMode && (
-            <div style={{ marginBottom: "26px", padding: "18px", background: "#fff", borderRadius: "20px", border: "1.5px solid #E8F0EB" }}>
-              <p style={{ fontSize: "12px", fontWeight: 700, color: "#7A9E87", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: "12px" }}>
+            <div style={{ marginBottom: "26px", padding: "18px", background: "#fff", borderRadius: "20px", border: `1.5px solid ${accentBg}` }}>
+              <p style={{ fontSize: "12px", fontWeight: 700, color: c, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: "12px" }}>
                 🔔 Remind me for tomorrow
               </p>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "8px" }}>
@@ -1524,14 +1530,14 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
                       gap: "6px",
                       padding: "12px 4px",
                       borderRadius: "14px",
-                      border: `1.5px solid ${scheduledReminders[r.id] ? "#7A9E87" : "#E8F0EB"}`,
-                      background: scheduledReminders[r.id] ? "#F0F7F3" : "#F9FAF9",
+                      border: `1.5px solid ${scheduledReminders[r.id] ? c : accentBg}`,
+                      background: scheduledReminders[r.id] ? `${c}18` : "#F9FAF9",
                       cursor: "pointer",
                       transition: "all 0.2s"
                     }}
                   >
                     <span style={{ fontSize: "18px" }}>{scheduledReminders[r.id] ? '✅' : r.icon}</span>
-                    <span style={{ fontSize: "10px", fontWeight: 700, color: scheduledReminders[r.id] ? "#7A9E87" : "#5E6B64" }}>{r.label}</span>
+                    <span style={{ fontSize: "10px", fontWeight: 700, color: scheduledReminders[r.id] ? c : "#5E6B64" }}>{r.label}</span>
                   </button>
                 ))}
               </div>
