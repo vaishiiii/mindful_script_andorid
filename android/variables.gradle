@@ -13,4 +13,6 @@ ext {
     androidxJunitVersion = '1.3.0'
     androidxEspressoCoreVersion = '3.7.0'
     cordovaAndroidVersion = '14.0.1'
+    // Pinned so plugin modules (e.g. @capacitor/filesystem) don't default to a different Kotlin stdlib version
+    kotlin_version = '2.0.21'
 }

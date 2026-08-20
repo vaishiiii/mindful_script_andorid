@@ -2,9 +2,9 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Card, ProgressBar } from '@/components/ui';
 import { QUESTIONS } from '@/data/questions';
 
-const QuestionnaireScreen = ({ onNext }) => {
-  const [idx, setIdx] = useState(0);
-  const [ans, setAns] = useState({});
+const QuestionnaireScreen = ({ initialAnswers = {}, initialIndex = 0, onProgress, onNext }) => {
+  const [idx, setIdx] = useState(() => Math.min(Math.max(initialIndex, 0), QUESTIONS.length - 1));
+  const [ans, setAns] = useState(initialAnswers);
   const [key, setKey] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const transitionTimeoutRef = useRef(null);
@@ -25,8 +25,10 @@ const QuestionnaireScreen = ({ onNext }) => {
     setAns(a);
     transitionTimeoutRef.current = setTimeout(() => {
       if (idx < QUESTIONS.length - 1) {
-        setIdx((i) => i + 1);
+        const nextIndex = idx + 1;
+        setIdx(nextIndex);
         setKey((k) => k + 1);
+        onProgress?.(a, nextIndex);
         setIsTransitioning(false);
       } else {
         onNext(a);
@@ -38,8 +40,10 @@ const QuestionnaireScreen = ({ onNext }) => {
     if (isTransitioning) return;
 
     if (idx > 0) {
-      setIdx((i) => i - 1);
+      const previousIndex = idx - 1;
+      setIdx(previousIndex);
       setKey((k) => k + 1);
+      onProgress?.(ans, previousIndex);
     }
   };
 

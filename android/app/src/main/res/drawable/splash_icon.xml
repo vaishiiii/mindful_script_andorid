@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Fully transparent splash icon — the dark green background (#152619) is all that shows -->
+<!-- Fully transparent — the CSS pre-JS splash (index.html) shows the logo instead, so the native splash is just the plain background -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="288dp"
     android:height="288dp"

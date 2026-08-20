@@ -2,6 +2,10 @@
   "appId": "com.mindscript.app",
   "appName": "MindScript",
   "webDir": "dist",
+  "backgroundColor": "#152619",
+  "android": {
+    "backgroundColor": "#152619"
+  },
   "plugins": {
     "GoogleAuth": {
       "scopes": ["profile", "email"],

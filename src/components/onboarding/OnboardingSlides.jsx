@@ -7,6 +7,9 @@ const SLIDES = [
     bg: 'radial-gradient(130% 110% at 12% 0%, #F3FFF8 0%, #E8F6EE 48%, #DFEFE5 100%)',
     accent: '#7A9E87',
     accentRgb: '122,158,135',
+    buttonStart: '#B9DCC8',
+    buttonEnd: '#7A9E87',
+    buttonText: '#244A35',
     textPrimary: '#1A3024',
     textSecondary: 'rgba(26,48,36,0.62)',
     cardBg: 'rgba(122,158,135,0.11)',
@@ -41,6 +44,9 @@ const SLIDES = [
     bg: 'radial-gradient(130% 115% at 10% 0%, #FFF8E9 0%, #FDF3DF 50%, #F5EBD5 100%)',
     accent: '#C4A882',
     accentRgb: '196,168,130',
+    buttonStart: '#F4DFC0',
+    buttonEnd: '#C4A882',
+    buttonText: '#5A421F',
     textPrimary: '#2A2210',
     textSecondary: 'rgba(42,34,16,0.62)',
     cardBg: 'rgba(196,168,130,0.13)',
@@ -85,6 +91,9 @@ const SLIDES = [
     bg: 'radial-gradient(130% 112% at 10% 0%, #F3EDFF 0%, #EFE8F8 48%, #E7E0F2 100%)',
     accent: '#B09FD8',
     accentRgb: '176,159,216',
+    buttonStart: '#DED4F3',
+    buttonEnd: '#B09FD8',
+    buttonText: '#3B2D63',
     textPrimary: '#1E1540',
     textSecondary: 'rgba(30,21,64,0.62)',
     cardBg: 'rgba(176,159,216,0.14)',
@@ -124,6 +133,9 @@ const SLIDES = [
     bg: 'radial-gradient(130% 112% at 10% 0%, #E8FBFB 0%, #E2F4F4 48%, #DCEDED 100%)',
     accent: '#5BBFBE',
     accentRgb: '91,191,190',
+    buttonStart: '#C2ECEA',
+    buttonEnd: '#5BBFBE',
+    buttonText: '#174F50',
     textPrimary: '#0D2626',
     textSecondary: 'rgba(13,38,38,0.62)',
     cardBg: 'rgba(91,191,190,0.12)',
@@ -169,6 +181,9 @@ const SLIDES = [
     bg: 'radial-gradient(130% 112% at 10% 0%, #EDF4FF 0%, #E6EDF9 48%, #DEE5F2 100%)',
     accent: '#8E9EC4',
     accentRgb: '142,158,196',
+    buttonStart: '#D4DDF2',
+    buttonEnd: '#8E9EC4',
+    buttonText: '#304166',
     textPrimary: '#111E3A',
     textSecondary: 'rgba(17,30,58,0.62)',
     cardBg: 'rgba(142,158,196,0.13)',
@@ -217,7 +232,7 @@ const SplashScreen = ({ onDone }) => {
   }, [onDone]);
 
   return (
-    <div style={{
+    <div className="premium-splash" style={{
       position: 'fixed', inset: 0,
       background: 'radial-gradient(148% 122% at 50% 8%, #1B4A3D 0%, #113025 52%, #0A1813 100%)',
       display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
@@ -226,27 +241,32 @@ const SplashScreen = ({ onDone }) => {
       transition: 'opacity 0.7s ease',
       overflow: 'hidden',
     }}>
-      <div style={{
+      <div className="premium-splash__particles" aria-hidden="true">
+        {[0, 1, 2, 3, 4].map((particle) => (
+          <span key={particle} style={{ '--particle-index': particle }} />
+        ))}
+      </div>
+      <div className="premium-splash__logo" style={{
         position: 'absolute', inset: 0,
         background: 'radial-gradient(120% 95% at 50% -18%, rgba(122,255,209,0.24) 0%, rgba(122,255,209,0.02) 44%, rgba(0,0,0,0) 100%)',
         animation: 'premiumSplashShift 12s ease-in-out infinite',
       }} />
-      <div style={{
+      <div className="premium-splash__content" style={{
         position: 'absolute', width: 360, height: 360, borderRadius: '50%',
         background: 'radial-gradient(circle, rgba(84,242,183,0.28) 0%, rgba(84,242,183,0) 72%)',
         top: -160, left: -120, filter: 'blur(6px)', animation: 'heroGlowDrift 9.5s ease-in-out infinite',
       }} />
-      <div style={{
+      <div className="premium-splash__dots" style={{
         position: 'absolute', width: 320, height: 320, borderRadius: '50%',
         background: 'radial-gradient(circle, rgba(105,176,255,0.22) 0%, rgba(105,176,255,0) 74%)',
         right: -110, bottom: -120, filter: 'blur(4px)', animation: 'premiumPulse 8.8s ease-in-out infinite',
       }} />
-      <div style={{
+      <div className="premium-splash__halo" style={{
         position: 'absolute', width: 260, height: 260, borderRadius: '50%',
         background: 'radial-gradient(circle, rgba(122,255,209,0.16) 0%, transparent 72%)',
         top: '50%', left: '50%', transform: 'translate(-50%, -60%)', animation: 'premiumPulse 6.8s ease-in-out infinite',
       }} />
-      <div style={{
+      <div className="premium-splash__mark" style={{
         width: 124, height: 124, borderRadius: '50%',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         marginBottom: 22, position: 'relative', animation: 'float 3s ease-in-out infinite',
@@ -270,7 +290,7 @@ const SplashScreen = ({ onDone }) => {
         </svg>
         </div>
       </div>
-      <div style={{
+      <div className="premium-splash__copy" style={{
         opacity: phase >= 1 ? 1 : 0,
         transform: phase >= 1 ? 'translateY(0)' : 'translateY(10px)',
         transition: 'opacity 0.5s ease, transform 0.5s ease',
@@ -289,7 +309,7 @@ const SplashScreen = ({ onDone }) => {
           marginTop: 8, letterSpacing: '0.12em', textTransform: 'uppercase',
         }}>Rewire Your Mind</p>
       </div>
-      <div style={{
+      <div className="premium-splash__loader" style={{
         display: 'flex', gap: 7, marginTop: 44,
         opacity: phase >= 1 ? 1 : 0,
         transition: 'opacity 0.4s ease 0.3s',
@@ -302,6 +322,7 @@ const SplashScreen = ({ onDone }) => {
             animation: `splashDot 1.2s ${i * 0.2}s ease-in-out infinite`,
           }} />
         ))}
+        <span className="premium-splash__loader-ring" />
       </div>
     </div>
   );
@@ -322,18 +343,21 @@ const Slide = ({ slide, active, direction, onNext, onSkip, current, total }) => 
     }
   }, [active]);
 
-  const translateX = !active ? (direction > 0 ? '100%' : '-100%') : '0%';
   const isFinal = !!slide.isFinal;
 
   return (
-    <div style={{
+    <div className={`onboarding-slide ${active ? 'is-active' : 'is-inactive'} ${direction > 0 ? 'is-forward' : 'is-backward'}`} style={{
       position: 'absolute', inset: 0,
       background: slide.bg,
+      '--slide-accent': slide.accent,
+      '--slide-accent-rgb': slide.accentRgb,
+      '--button-start': slide.buttonStart,
+      '--button-end': slide.buttonEnd,
+      '--button-text': slide.buttonText,
       display: 'flex', flexDirection: 'column',
-      transform: active ? 'translateX(0)' : `translateX(${translateX})`,
-      transition: active ? 'transform 0.42s cubic-bezier(0.4,0,0.2,1)' : 'none',
       overflow: 'hidden',
     }}>
+      <div className="onboarding-slide__wash" aria-hidden="true" />
       {/* Ambient glows */}
       <div style={{
         position: 'absolute', width: 370, height: 370, borderRadius: '50%',
@@ -477,13 +501,13 @@ const Slide = ({ slide, active, direction, onNext, onSkip, current, total }) => 
         </div>
 
         {/* Next / Get Started */}
-        <button
+        <button className="premium-cta"
           onClick={onNext}
           style={{
             width: '100%', padding: '12px 20px',
             borderRadius: 14, border: 'none',
-            background: `linear-gradient(135deg, ${slide.accent} 0%, rgba(${slide.accentRgb},0.80) 100%)`,
-            color: '#fff', fontSize: 15, fontWeight: 700,
+            background: `linear-gradient(135deg, ${slide.buttonStart} 0%, ${slide.buttonEnd} 100%)`,
+            color: slide.buttonText, fontSize: 15, fontWeight: 700,
             cursor: 'pointer', letterSpacing: '-0.01em',
             fontFamily: "'DM Sans', system-ui, sans-serif",
             boxShadow: `0 10px 26px rgba(${slide.accentRgb},0.42), 0 0 20px rgba(${slide.accentRgb},0.26)`,
@@ -502,7 +526,7 @@ const Slide = ({ slide, active, direction, onNext, onSkip, current, total }) => 
         </button>
 
         {!isFinal && (
-          <button
+          <button className="premium-skip"
             onClick={onSkip}
             style={{
               display: 'block', margin: '8px auto 0',
@@ -567,8 +591,8 @@ const OnboardingSlides = ({ onDone, showIntroSplash = true }) => {
   if (showSplash) return <SplashScreen onDone={() => setShowSplash(false)} />;
 
   return (
-    <div
-      style={{ position: 'fixed', inset: 0, overflow: 'hidden', touchAction: 'pan-y' }}
+    <div className="onboarding-entry"
+      style={{ position: 'fixed', inset: 0, overflow: 'hidden', touchAction: 'pan-y', perspective: '1200px' }}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >

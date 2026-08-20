@@ -130,6 +130,7 @@ function App() {
               setStreak(state.streak || 0);
               setProgramCompleted(state.programCompleted || false);
               setQuestionnaireAnswers(state.questionnaireAnswers || {});
+              setQuestionnaireStep(state.questionnaireStep || 0);
               setReflectionData(state.reflectionData || []);
               setProgramHistory(state.programHistory || []);
               setGoalHistory(state.goalHistory || []);
@@ -154,7 +155,8 @@ function App() {
                 setAllDayCompletions(Array(duration).fill(null).map((_, i) => saved[i] || null));
               }
 
-              setScreen(state.program ? 'app' : 'goal');
+              const isOnboardingInProgress = ['goal', 'questionnaire', 'setup', 'identity'].includes(state.screen);
+              setScreen(isOnboardingInProgress ? state.screen : (state.program ? 'app' : 'goal'));
             };
 
             // 1. If onboarding was interrupted by login, finish restoring it
@@ -281,8 +283,15 @@ function App() {
         }
       } else if (currentScreen === 'login') {
         CapApp.minimizeApp();
+      } else if (currentScreen === 'goal') {
+        CapApp.minimizeApp();
+      } else if (currentScreen === 'questionnaire') {
+        setScreen('goal');
+      } else if (currentScreen === 'setup') {
+        setScreen('questionnaire');
+      } else if (currentScreen === 'identity') {
+        setScreen('setup');
       } else {
-        // celebrate, report, onboarding screens — go back to app if possible
         setScreen('app');
       }
     });
@@ -340,6 +349,7 @@ function App() {
   const [streak, setStreak] = useState(0);
   const [programCompleted, setProgramCompleted] = useState(false);
   const [questionnaireAnswers, setQuestionnaireAnswers] = useState({});
+  const [questionnaireStep, setQuestionnaireStep] = useState(0);
   const [reflectionData, setReflectionData] = useState([]);
   
   // Paid program state
@@ -400,6 +410,7 @@ function App() {
     setStreak(savedState.streak || 0);
     setProgramCompleted(savedState.programCompleted || false);
     setQuestionnaireAnswers(savedState.questionnaireAnswers || {});
+    setQuestionnaireStep(savedState.questionnaireStep || 0);
     setReflectionData(savedState.reflectionData || []);
     setProgramHistory(savedState.programHistory || []);
     setGoalHistory(savedState.goalHistory || []);
@@ -420,6 +431,7 @@ function App() {
     streak,
     programCompleted,
     questionnaireAnswers,
+    questionnaireStep,
     reflectionData,
     activePaidProgram,
     activeProgramDuration,
@@ -443,6 +455,7 @@ function App() {
     setStreak(savedState.streak || 0);
     setProgramCompleted(savedState.programCompleted || false);
     setQuestionnaireAnswers(savedState.questionnaireAnswers || {});
+    setQuestionnaireStep(savedState.questionnaireStep || 0);
     setReflectionData(savedState.reflectionData || []);
     setProgramHistory(savedState.programHistory || []);
     setGoalHistory(savedState.goalHistory || []);
@@ -495,7 +508,7 @@ function App() {
         });
       }
     }
-  }, [screen, program, setup, tab, day, completions, allDayCompletions, totalMinutes, streak, programCompleted, questionnaireAnswers, reflectionData, activePaidProgram, activeProgramDuration, programHistory, goalHistory, moodHistory, currentUser]);
+  }, [screen, program, setup, tab, day, completions, allDayCompletions, totalMinutes, streak, programCompleted, questionnaireAnswers, questionnaireStep, reflectionData, activePaidProgram, activeProgramDuration, programHistory, goalHistory, moodHistory, currentUser]);
 
   const handleMoodLog = ({ day: moodDay, program: moodProgram, programDuration, moodIndex, moodLabel, moodEmoji }) => {
     if (!moodProgram || typeof moodIndex !== 'number') {
@@ -575,6 +588,7 @@ function App() {
     setAllDayCompletions([null, null, null]);
     setProgramCompleted(false);
     setQuestionnaireAnswers({});
+    setQuestionnaireStep(0);
     setSetup(DEFAULT_SETUP);
     setTab('home');
     setScreen('questionnaire');
@@ -842,7 +856,7 @@ function App() {
   // Show branded splash while Firebase resolves auth — prevents login flash and blank handoff.
   if (!authInitialized) {
     return (
-      <div
+      <div className="premium-splash premium-splash--prelogin"
         style={{
           minHeight: '100vh',
           background: 'radial-gradient(150% 120% at 50% 8%, #194438 0%, #102920 52%, #0a1712 100%)',
@@ -858,7 +872,12 @@ function App() {
           overflow: 'hidden',
         }}
       >
-        <div
+        <div className="premium-splash__particles" aria-hidden="true">
+          {[0, 1, 2, 3, 4].map((particle) => (
+            <span key={particle} style={{ '--particle-index': particle }} />
+          ))}
+        </div>
+        <div className="premium-splash__logo"
           style={{
             position: 'absolute',
             inset: 0,
@@ -892,7 +911,7 @@ function App() {
             animation: 'premiumPulse 8.8s ease-in-out infinite',
           }}
         />
-        <div
+        <div className="premium-splash__mark"
           style={{
             position: 'absolute',
             inset: 0,
@@ -944,17 +963,18 @@ function App() {
           </div>
         </div>
 
-        <div className="fade-in" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '7px', zIndex: 1 }}>
+        <div className="premium-splash__content premium-splash__copy fade-in" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '7px', zIndex: 1 }}>
           <h1 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '38px', fontWeight: 500, letterSpacing: '0.05em', color: '#EFFFF7', animation: 'premiumTextGlow 3.2s ease-in-out infinite' }}>
             Mindscript
           </h1>
           <p style={{ fontSize: '13px', color: 'rgba(220,247,235,0.9)', letterSpacing: '0.02em' }}>Rewire your mind. One mindful script at a time.</p>
         </div>
 
-        <div style={{ display: 'flex', gap: '10px', marginTop: '2px', zIndex: 1 }}>
+        <div className="premium-splash__dots premium-splash__loader" style={{ display: 'flex', gap: '10px', marginTop: '2px', zIndex: 1 }}>
           <span style={{ width: 9, height: 9, borderRadius: '50%', background: '#D9FFF2', boxShadow: '0 0 12px rgba(130,255,214,0.72)', animation: 'splashDot 1.2s ease-in-out 0s infinite' }} />
           <span style={{ width: 9, height: 9, borderRadius: '50%', background: '#D9FFF2', boxShadow: '0 0 12px rgba(130,255,214,0.72)', animation: 'splashDot 1.2s ease-in-out 0.15s infinite' }} />
           <span style={{ width: 9, height: 9, borderRadius: '50%', background: '#D9FFF2', boxShadow: '0 0 12px rgba(130,255,214,0.72)', animation: 'splashDot 1.2s ease-in-out 0.3s infinite' }} />
+          <span className="premium-splash__loader-ring" />
         </div>
       </div>
     );
@@ -963,10 +983,10 @@ function App() {
   // First-ever launch: show animated onboarding slides
   if (showPreLoginSplash) {
     return (
-      <div
+      <div className="premium-splash premium-splash--prelogin"
         style={{
           minHeight: '100vh',
-          background: 'radial-gradient(150% 120% at 50% 8%, #194438 0%, #102920 52%, #0a1712 100%)',
+          background: 'radial-gradient(148% 122% at 50% 8%, #1B4A3D 0%, #113025 52%, #0A1813 100%)',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
@@ -979,6 +999,11 @@ function App() {
           overflow: 'hidden',
         }}
       >
+        <div className="premium-splash__particles" aria-hidden="true">
+          {[0, 1, 2, 3, 4].map((particle) => (
+            <span key={particle} style={{ '--particle-index': particle }} />
+          ))}
+        </div>
         <div
           style={{
             position: 'absolute',
@@ -1000,7 +1025,7 @@ function App() {
             animation: 'heroGlowDrift 9.5s ease-in-out infinite',
           }}
         />
-        <div
+        <div className="premium-splash__halo"
           style={{
             position: 'absolute',
             width: 340,
@@ -1013,7 +1038,13 @@ function App() {
             animation: 'premiumPulse 8.8s ease-in-out infinite',
           }}
         />
-        <div
+        <div className="premium-splash__halo" style={{
+          position: 'absolute', width: 260, height: 260, borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(122,255,209,0.16) 0%, transparent 72%)',
+          top: '50%', left: '50%', transform: 'translate(-50%, -60%)',
+          animation: 'premiumPulse 6.8s ease-in-out infinite',
+        }} />
+        <div className="premium-splash__mark"
           style={{
             position: 'absolute',
             inset: 0,
@@ -1065,17 +1096,18 @@ function App() {
           </div>
         </div>
 
-        <div className="fade-in" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '7px', zIndex: 1 }}>
+        <div className="premium-splash__copy fade-in" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '7px', zIndex: 1 }}>
           <h1 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '38px', fontWeight: 500, letterSpacing: '0.05em', color: '#EFFFF7', animation: 'premiumTextGlow 3.2s ease-in-out infinite' }}>
             Mindscript
           </h1>
           <p style={{ fontSize: '13px', color: 'rgba(220,247,235,0.9)', letterSpacing: '0.02em' }}>Preparing your daily ritual...</p>
         </div>
 
-        <div style={{ display: 'flex', gap: '10px', marginTop: '2px', zIndex: 1 }}>
+        <div className="premium-splash__loader" style={{ display: 'flex', gap: '10px', marginTop: '2px', zIndex: 1 }}>
           <span style={{ width: 9, height: 9, borderRadius: '50%', background: '#D9FFF2', boxShadow: '0 0 12px rgba(130,255,214,0.72)', animation: 'splashDot 1.2s ease-in-out 0s infinite' }} />
           <span style={{ width: 9, height: 9, borderRadius: '50%', background: '#D9FFF2', boxShadow: '0 0 12px rgba(130,255,214,0.72)', animation: 'splashDot 1.2s ease-in-out 0.15s infinite' }} />
           <span style={{ width: 9, height: 9, borderRadius: '50%', background: '#D9FFF2', boxShadow: '0 0 12px rgba(130,255,214,0.72)', animation: 'splashDot 1.2s ease-in-out 0.3s infinite' }} />
+          <span className="premium-splash__loader-ring" />
         </div>
       </div>
     );
@@ -1288,15 +1320,24 @@ function App() {
             setCompletions({ morning: false, midday: false, night: false });
             setAllDayCompletions([null, null, null]);
             setProgramCompleted(false);
+            setQuestionnaireAnswers({});
+            setQuestionnaireStep(0);
             setScreen("questionnaire");
           }}
           onBack={() => setScreen("login")}
         />
       )}
       {screen === "questionnaire" && (
-        <QuestionnaireScreen 
+        <QuestionnaireScreen
+          initialAnswers={questionnaireAnswers}
+          initialIndex={questionnaireStep}
+          onProgress={(answers, nextIndex) => {
+            setQuestionnaireAnswers(answers);
+            setQuestionnaireStep(nextIndex);
+          }}
           onNext={(answers) => {
             setQuestionnaireAnswers(answers);
+            setQuestionnaireStep(0);
             setScreen("setup");
           }} 
         />

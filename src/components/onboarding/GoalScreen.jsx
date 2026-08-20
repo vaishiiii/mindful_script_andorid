@@ -90,13 +90,11 @@ const GoalScreen = ({ onNext, onBack }) => {
             <Card
               key={p.id}
               onClick={() => setSel(p.id)}
-              selected={isSelected}
               style={{
                 background: `linear-gradient(165deg, ${palette.bg} 0%, ${hexToRgba(p.color, 0.12)} 100%)`,
                 border: `1.5px solid ${isSelected ? palette.selectedAccent : hexToRgba(palette.accent, 0.38)}`,
-                outline: isSelected ? `3px solid ${hexToRgba(palette.selectedAccent, 0.24)}` : "none",
                 boxShadow: isSelected
-                  ? `0 0 0 1px ${hexToRgba(palette.selectedAccent, 0.28)}, 0 10px 26px ${hexToRgba(palette.selectedAccent, 0.3)}`
+                  ? `inset 0 0 0 1px ${hexToRgba(palette.selectedAccent, 0.2)}, 0 10px 26px ${hexToRgba(palette.selectedAccent, 0.3)}`
                   : `0 1px 4px ${hexToRgba(palette.accent, 0.12)}`,
                 transform: isSelected ? "translateY(-1px)" : "none",
                 cursor: "pointer",

@@ -37,10 +37,10 @@ const PROGRAM_THEMES = {
 };
 
 const HOME_MOODS = [
-  { emoji: '😄', label: 'Happy', tone: '#4C9AB5', soft: '#D9ECF4' },
-  { emoji: '😢', label: 'Sad', tone: '#6C88BE', soft: '#E1E9F8' },
+  { emoji: '😄', label: 'Happy', tone: '#D7A128', soft: '#FFF0BF' },
+  { emoji: '😢', label: 'Sad', tone: '#5B7FB5', soft: '#DCE8F8' },
   { emoji: '😟', label: 'Anxious', tone: '#C38C4E', soft: '#F8E8D3' },
-  { emoji: '😠', label: 'Irritated', tone: '#D96A62', soft: '#F7DFDD' },
+  { emoji: '😡', label: 'Irritated', tone: '#D96A62', soft: '#F7DFDD' },
   { emoji: '😌', label: 'Calm', tone: '#6EA67A', soft: '#DFF1E4' },
 ];
 
@@ -71,6 +71,7 @@ const HomeMoodDial = ({ accent, glow, selectedIndex, onSelect }) => {
   const selectedAngle = startAngle + selectedIndex * step;
   const pointerX = cx + Math.cos((selectedAngle * Math.PI) / 180) * (radius - 12);
   const pointerY = cy + Math.sin((selectedAngle * Math.PI) / 180) * (radius - 12);
+  const selectedMood = HOME_MOODS[selectedIndex];
 
   return (
     <div
@@ -87,9 +88,9 @@ const HomeMoodDial = ({ accent, glow, selectedIndex, onSelect }) => {
           position: 'absolute',
           inset: 0,
           borderRadius: '45% 55% 52% 48% / 34% 34% 66% 66%',
-          background: `radial-gradient(125% 100% at 45% 10%, rgba(255,255,255,0.94) 0%, ${toRgba(glow, 0.16)} 45%, ${toRgba(accent, 0.1)} 100%)`,
-          border: `1px solid ${toRgba(accent, 0.14)}`,
-          boxShadow: `0 8px 20px ${toRgba(accent, 0.12)}`,
+          background: `radial-gradient(125% 100% at 45% 10%, rgba(255,255,255,0.94) 0%, ${toRgba(selectedMood.tone, 0.2)} 45%, ${toRgba(accent, 0.1)} 100%)`,
+          border: `1px solid ${toRgba(selectedMood.tone, 0.34)}`,
+          boxShadow: `0 8px 20px ${toRgba(selectedMood.tone, 0.22)}`,
           animation: 'eggFloat 5.2s ease-in-out infinite',
         }}
       />
@@ -97,16 +98,16 @@ const HomeMoodDial = ({ accent, glow, selectedIndex, onSelect }) => {
       <svg width="110" height="146" viewBox="0 0 110 146" fill="none" aria-hidden="true" style={{ position: 'absolute', inset: 0 }}>
         <path d="M54 20 A52 52 0 0 1 54 126" stroke={toRgba(accent, 0.2)} strokeWidth="7" strokeLinecap="round" />
         <path d="M54 24 A48 48 0 0 1 54 122" stroke={toRgba(glow, 0.34)} strokeWidth="2" strokeLinecap="round" strokeDasharray="2 6" />
-        <line x1={cx} y1={cy} x2={pointerX} y2={pointerY} stroke={toRgba(accent, 0.46)} strokeWidth="2" strokeLinecap="round" />
-        <circle cx={cx} cy={cy} r="4" fill={toRgba(accent, 0.45)} />
+        <line x1={cx} y1={cy} x2={pointerX} y2={pointerY} stroke={selectedMood.tone} strokeWidth="2.5" strokeLinecap="round" />
+        <circle cx={cx} cy={cy} r="4" fill={selectedMood.tone} />
       </svg>
 
       <div style={{ position: 'absolute', left: 0, right: 0, top: 76, textAlign: 'center' }}>
         <p style={{ fontSize: '12px', color: '#F7FFFE', fontWeight: 700, textShadow: `0 0 8px ${toRgba(glow, 0.76)}, 0 0 14px ${toRgba(accent, 0.48)}`, letterSpacing: '0.04em' }}>
           Mood
         </p>
-        <p style={{ fontSize: '10px', color: HOME_MOODS[selectedIndex].tone, fontWeight: 700, marginTop: '1px' }}>
-          {HOME_MOODS[selectedIndex].label}
+        <p style={{ fontSize: '10px', color: selectedMood.tone, fontWeight: 700, marginTop: '1px' }}>
+          {selectedMood.label}
         </p>
       </div>
 
@@ -130,11 +131,11 @@ const HomeMoodDial = ({ accent, glow, selectedIndex, onSelect }) => {
               width: 26,
               height: 26,
               borderRadius: '50%',
-              border: selected ? `1.5px solid ${mood.tone}` : `1px solid ${toRgba(accent, 0.16)}`,
+              border: selected ? `1.5px solid ${mood.tone}` : `1px solid ${toRgba(mood.tone, 0.42)}`,
               background: selected ? `linear-gradient(160deg, #ffffff 0%, ${mood.soft} 100%)` : mood.soft,
               transform: selected ? 'scale(1.32)' : 'scale(1)',
               transition: 'all .18s ease',
-              boxShadow: selected ? `0 8px 16px ${toRgba(accent, 0.26)}` : `0 2px 6px ${toRgba(accent, 0.08)}`,
+              boxShadow: selected ? `0 0 0 3px ${toRgba(mood.tone, 0.16)}, 0 8px 16px ${toRgba(mood.tone, 0.34)}` : `0 2px 6px ${toRgba(mood.tone, 0.16)}`,
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
@@ -618,7 +619,7 @@ const HomeTab = ({ program, unlocks, day, completions, onSessionComplete, onDevS
             <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '11px', position: 'relative' }}>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: '26px', fontWeight: 500, color: '#1F2C25', lineHeight: 1.04, marginBottom: '7px' }}>
-                  {userName ? `Hi, ${userName} 🙂` : `${timeGreeting()} 🙂`}
+                  {userName ? `Hi, ${userName} ${HOME_MOODS[moodIndex].emoji}` : `${timeGreeting()} ${HOME_MOODS[moodIndex].emoji}`}
                 </h2>
                 <span style={{ fontSize: '12px', color: '#6C7F75', display: 'block', lineHeight: 1.5, paddingRight: '4px' }}>
                   {goalPrompt}
