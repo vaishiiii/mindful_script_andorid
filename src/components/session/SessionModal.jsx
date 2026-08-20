@@ -55,6 +55,7 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
   const [optionalTimerPopupDismissed, setOptionalTimerPopupDismissed] = useState(false);
   const [requiredTimerInline, setRequiredTimerInline] = useState(false);
   const [optionalInlineAutoStart, setOptionalInlineAutoStart] = useState(false);
+  const [breathSceneReady, setBreathSceneReady] = useState(reviewMode);
   const timerPopupAudioCtxRef = useRef(null);
   const sessionVictoryAudioCtxRef = useRef(null);
   const playedDoneSoundRef = useRef(false);
@@ -94,8 +95,29 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
     setOptionalTimerPopupDismissed(false);
     setRequiredTimerInline(false);
     setOptionalInlineAutoStart(false);
+    setBreathSceneReady(reviewMode);
     playedDoneSoundRef.current = false;
   }, [reviewMode, type, day, program]);
+
+  useEffect(() => {
+    if (step !== 'breath') {
+      return undefined;
+    }
+
+    let secondFrameId;
+    let revealTimeoutId;
+    const firstFrameId = requestAnimationFrame(() => {
+      secondFrameId = requestAnimationFrame(() => {
+        revealTimeoutId = setTimeout(() => setBreathSceneReady(true), 180);
+      });
+    });
+
+    return () => {
+      cancelAnimationFrame(firstFrameId);
+      if (secondFrameId) cancelAnimationFrame(secondFrameId);
+      if (revealTimeoutId) clearTimeout(revealTimeoutId);
+    };
+  }, [step]);
 
   const getSessionVictoryAudioContext = () => {
     if (typeof window === 'undefined') return null;
@@ -621,7 +643,7 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
         display: "flex",
         alignItems: immersiveMode ? "stretch" : "flex-end",
         justifyContent: "center",
-        backdropFilter: "blur(6px)",
+        backdropFilter: immersiveMode ? "none" : "blur(6px)",
         transition: "background .4s ease",
       }}
       onClick={(e) => {
@@ -629,7 +651,7 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
       }}
     >
       <div
-        className="slide-up"
+        className={immersiveMode ? undefined : "slide-up"}
         style={{
           background: immersiveMode
             ? "linear-gradient(180deg, rgba(16,30,24,0.95) 0%, rgba(20,36,30,0.94) 100%)"
@@ -643,6 +665,7 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
           overflowX: "hidden",
           overscrollBehavior: immersiveMode ? "none" : "auto",
           padding: immersiveMode ? "16px 10px 0" : "24px 22px 44px",
+          position: "relative",
           boxShadow: immersiveMode
             ? "0 -10px 36px rgba(11,22,18,0.42), inset 0 0 0 1px rgba(188,226,212,0.12)"
             : "none",
@@ -732,6 +755,29 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
               }}
               devMode={devMode}
             />
+          </div>
+        )}
+        {step === "breath" && (
+          <div
+            aria-hidden="true"
+            style={{
+              position: "absolute",
+              inset: 0,
+              zIndex: 10,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "10px",
+              background: "radial-gradient(120% 100% at 50% 0%, rgba(77, 124, 105, 0.5) 0%, rgba(16, 30, 24, 0.98) 64%, rgba(11, 21, 17, 1) 100%)",
+              opacity: breathSceneReady ? 0 : 1,
+              visibility: breathSceneReady ? "hidden" : "visible",
+              pointerEvents: "none",
+              transition: "opacity 180ms ease, visibility 0ms linear 180ms",
+            }}
+          >
+            <div style={{ width: 42, height: 42, borderRadius: "50%", border: `2px solid ${c}55`, borderTopColor: c, animation: "spin 900ms linear infinite" }} />
+            <p style={{ fontSize: "11px", color: "#D6EEE5", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase" }}>Preparing breathwork</p>
           </div>
         )}
 
