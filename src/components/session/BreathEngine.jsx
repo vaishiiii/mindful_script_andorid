@@ -136,8 +136,9 @@ const BreathEngine = ({ program, sessionType, onComplete, devMode = false, onAct
         boxShadow: immersiveActive
           ? `inset 0 0 0 1px ${toRgba(baseA, 0.2)}, 0 14px 24px ${toRgba('#0F1D18', 0.24)}`
           : "none",
-        transition: "background 420ms ease, box-shadow 420ms ease",
-        willChange: "background, box-shadow",
+        transition: "box-shadow 420ms ease",
+        isolation: "isolate",
+        contain: "layout paint style",
       }}
     >
       {immersiveActive && (

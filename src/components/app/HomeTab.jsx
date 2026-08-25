@@ -44,6 +44,72 @@ const HOME_MOODS = [
   { emoji: '😌', label: 'Calm', tone: '#6EA67A', soft: '#DFF1E4' },
 ];
 
+const DAILY_GOAL_PROMPTS = {
+  calm: [
+    '🌊 Give yourself one slower breath before your next response.',
+    '🌊 Choose one moment today to soften your pace and reset.',
+    '🌊 Let a steady breath create more space in your day.',
+    '🌊 Notice what helps you feel grounded, then return to it.',
+    '🌊 Practice meeting today with a little more ease.',
+    '🌊 Your calm grows each time you pause before reacting.',
+  ],
+  focus: [
+    '🎯 Pick one important task and give it your full attention.',
+    '🎯 Clear one small distraction so your best work can begin.',
+    '🎯 Protect a focused block of time for what matters most.',
+    '🎯 Let your next action be simple, deliberate, and present.',
+    '🎯 Bring your attention back to the one thing in front of you.',
+    '🎯 Progress gets clearer when you do one thing well.',
+  ],
+  confidence: [
+    '🛡️ Keep one promise to yourself today, however small.',
+    '🛡️ Let your next brave action be evidence of your strength.',
+    '🛡️ Trust the person you are becoming through daily practice.',
+    '🛡️ Speak to yourself with the respect you are learning to own.',
+    '🛡️ Take up space in one moment that matters today.',
+    '🛡️ Confidence grows when you act before you feel fully ready.',
+  ],
+  healing: [
+    '🌷 Give yourself permission to move through today gently.',
+    '🌷 Notice one feeling with kindness instead of judgment.',
+    '🌷 Small acts of care can make today feel safer.',
+    '🌷 Let rest and honesty be part of your progress today.',
+    '🌷 You can release what is heavy one breath at a time.',
+    '🌷 Meet yourself where you are, with patience and care.',
+  ],
+  discipline: [
+    '⚙️ Keep your standard simple today: show up for the next step.',
+    '⚙️ One completed action is stronger than a perfect plan.',
+    '⚙️ Build trust with yourself by doing the useful thing first.',
+    '⚙️ Choose consistency today, even when motivation is quiet.',
+    '⚙️ Let your routine carry you through the moment of resistance.',
+    '⚙️ The small task you do now strengthens tomorrow too.',
+  ],
+  purpose: [
+    '🧭 Make one choice today that reflects what matters to you.',
+    '🧭 Let your values guide one decision in front of you.',
+    '🧭 Notice the work that leaves you feeling more like yourself.',
+    '🧭 Take one meaningful step toward the life you want to build.',
+    '🧭 Your direction becomes clearer through action, not waiting.',
+    '🧭 Look for one way to bring intention into your day.',
+  ],
+  habit: [
+    '🔁 Make your healthy choice easy by starting with the smallest step.',
+    '🔁 Repetition today is a vote for the routine you want tomorrow.',
+    '🔁 Link one helpful action to something you already do.',
+    '🔁 A tiny repeatable step can reshape your whole week.',
+    '🔁 Focus on showing up, not on doing everything at once.',
+    '🔁 Let one simple routine support the person you want to become.',
+  ],
+};
+
+const getDailyGoalPrompt = (program) => {
+  const prompts = DAILY_GOAL_PROMPTS[program] || ['✨ Your journey is built around your chosen growth path.'];
+  const now = new Date();
+  const dayNumber = Math.floor(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()) / 86400000);
+  return prompts[dayNumber % prompts.length];
+};
+
 const resolveMoodIndex = (history = [], currentDay, currentProgram, currentDuration) => {
   const latestMood = [...history]
     .filter((entry) => Number(entry?.day) === Number(currentDay) && entry?.program === currentProgram && Number(entry?.programDuration || 3) === Number(currentDuration))
@@ -426,15 +492,7 @@ const HomeTab = ({ program, unlocks, day, completions, onSessionComplete, onDevS
   ];
 
   const unreadCount = notifications.filter((n) => n.unread).length;
-  const goalPrompt = {
-    calm: '🌊 Your calm goal is about softer reactions and steadier breathing.',
-    focus: '🎯 Your focus goal is about deep attention and clean execution.',
-    confidence: '🛡️ Your confidence goal is about self-trust through action.',
-    healing: '🌷 Your healing goal is about emotional safety and release.',
-    discipline: '⚙️ Your discipline goal is about consistency over intensity.',
-    purpose: '🧭 Your purpose goal is about meaning-led daily choices.',
-    habit: '🔁 Your habit goal is about building automatic healthy routines.',
-  }[program] || '✨ Your journey is built around your chosen growth path.';
+  const goalPrompt = getDailyGoalPrompt(program);
 
   const uniformCtaStyle = {
     width: '100%',

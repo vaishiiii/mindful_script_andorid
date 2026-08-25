@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { Btn, CheckIcon } from '@/components/ui';
 import { SESSION_TASKS } from '@/data/sessions';
 import { REFLECTION_QS, NIGHT_REFLECTION_QUESTIONS } from '@/data/questions';
@@ -631,20 +632,21 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
   const canContinueTaskStep = taskStepReadyByTimer && (!requiresTimedReflectionGate || timedReflectionGateMet);
   const showContinueAction = reviewMode || Boolean(task?.timer) || useTimer !== null;
 
-  return (
+  return createPortal(
     <div
       style={{
         position: "fixed",
         inset: 0,
         background: immersiveMode
           ? "radial-gradient(120% 120% at 50% 6%, rgba(52,86,74,0.78) 0%, rgba(29,46,39,0.88) 62%, rgba(18,29,24,0.94) 100%)"
-          : "rgba(44,53,48,0.58)",
+          : "rgba(30,36,33,0.72)",
         zIndex: 100,
         display: "flex",
         alignItems: immersiveMode ? "stretch" : "flex-end",
         justifyContent: "center",
-        backdropFilter: immersiveMode ? "none" : "blur(6px)",
         transition: "background .4s ease",
+        isolation: "isolate",
+        contain: "layout paint style",
       }}
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
@@ -1155,12 +1157,11 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
               position: "fixed",
               inset: 0,
               zIndex: 140,
-              background: "rgba(44,53,48,0.34)",
+              background: "rgba(30,36,33,0.62)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               padding: "18px",
-              backdropFilter: "blur(2px)",
             }}
           >
             <div
@@ -1321,12 +1322,11 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
               position: "fixed",
               inset: 0,
               zIndex: 155,
-              background: "rgba(44,53,48,0.46)",
+              background: "rgba(30,36,33,0.7)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               padding: "16px",
-              backdropFilter: "blur(3px)",
             }}
           >
             <div
@@ -1604,7 +1604,8 @@ const SessionModal = ({ type, program, day = 1, isPractice = false, onClose, onC
           </div>
         )}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 

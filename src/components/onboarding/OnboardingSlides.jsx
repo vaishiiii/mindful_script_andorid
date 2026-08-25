@@ -214,8 +214,8 @@ const SLIDES = [
     features: [
       { icon: '🆓', title: 'Always free to start', desc: 'No credit card, no hidden charges ever' },
       { icon: '📱', title: '7 complete programs', desc: 'From 5-day sprints to 21-day journeys' },
-      { icon: '📈', title: 'Track your daily progress', desc: 'Watch your streak and growth stack up' },
-      { icon: '🚀', title: 'See results from day 1', desc: 'Something shifts after your very first session' },
+      { icon: '😊', title: 'Mood check-ins & AI reports', desc: 'See patterns in how you feel, personalized for you' },
+      { icon: '📝', title: 'Daily journal & personalized activities', desc: 'Reflect each day with prompts tailored to your goal' },
     ],
     isFinal: true,
   },
